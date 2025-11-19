@@ -14,13 +14,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import {
-  IconHome,
-  IconId,
-  IconUpload,
-  IconBook2,
-  IconSettings,
-} from "@tabler/icons-react";
+  import {
+    IconHome,
+    IconId,
+    IconUpload,
+    IconLock,
+    IconBook2,
+    IconSettings,
+  } from "@tabler/icons-react";
 
 export function AppSidebar() {
   return (
@@ -65,6 +66,14 @@ export function AppSidebar() {
                   <Link href="/dashboard/issue">
                     <IconUpload />
                     <span>Emitir</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/dashboard/vault">
+                    <IconLock />
+                    <span>Vault</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { WalletProvider } from "@/providers/wallet.provider";
+import { NetworkProvider } from "@/providers/network.provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,9 +38,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <WalletProvider>
-          {children}
-        </WalletProvider>
+        <NetworkProvider>
+          <WalletProvider>
+            {children}
+            <Toaster />
+          </WalletProvider>
+        </NetworkProvider>
       </body>
     </html>
   );

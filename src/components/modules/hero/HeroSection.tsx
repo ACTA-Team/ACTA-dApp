@@ -4,7 +4,6 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import { HoverBorderGradient } from "../../ui/hover-border-gradient";
 import { CredentialCard } from "../credentials/CredentialCard";
-// import { CredentialCard } from "../modules/credential/CredentialCard";
 
 export default function HeroSection() {
   return (

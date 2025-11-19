@@ -1,5 +1,5 @@
-import Link from "next/link";
 import CredentialsList from "@/components/modules/credentials/CredentialsList";
+import Link from "next/link";
 
 export const metadata = {
   title: "My Credentials",
@@ -12,7 +12,10 @@ export default function CredentialsPage() {
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-neutral-200">
           My Credentials
         </h1>
-        <Link href="/dashboard" className="text-sm text-blue-600 hover:underline">
+        <Link
+          href="/dashboard"
+          className="text-sm text-blue-600 hover:underline"
+        >
           ← Back
         </Link>
       </div>
