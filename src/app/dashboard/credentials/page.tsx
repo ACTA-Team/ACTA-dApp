@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function CredentialsPage() {
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10">
+    <div className="space-y-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-neutral-200">
           My Credentials
@@ -21,8 +21,8 @@ export default function CredentialsPage() {
       </div>
 
       <p className="text-neutral-600 dark:text-neutral-400 mb-8">
-        This is a mockup list of your verifiable credentials. Use it to
-        visualize how credentials might appear in the app.
+        Estas son tus credenciales reales consultadas desde tu vault.
+        Puedes filtrarlas y buscarlas manteniendo el mismo diseño.
       </p>
 
       <CredentialsList />

@@ -19,6 +19,7 @@ import {
     IconId,
     IconUpload,
     IconLock,
+    IconShieldCheck,
     IconBook2,
     IconSettings,
   } from "@tabler/icons-react";
@@ -77,6 +78,14 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/dashboard/authorize">
+                    <IconShieldCheck />
+                    <span>Autorizar</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -87,7 +96,7 @@ export function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href="https://nextjs.org/docs">
+                  <Link href="https://docs.acta.build/">
                     <IconBook2 />
                     <span>Documentación</span>
                   </Link>

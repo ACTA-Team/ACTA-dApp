@@ -1,53 +1,46 @@
 "use client";
 
+import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { useVault } from "@/components/modules/vault/hooks/use-vault";
-import { VaultAuthorize } from "@/components/modules/vault/ui/VaultAuthorize";
 
 export function VaultDashboard() {
-  const { ownerDid, xlmBalance, vcIds, vcs, ownerCreatedAt } = useVault();
+  const { ownerDid, xlmBalance, vcIds, ownerCreatedAt } = useVault();
 
   const createdAtLabel = ownerCreatedAt
     ? new Date(ownerCreatedAt).toLocaleString()
-    : "No disponible"; // El contrato no guarda timestamp de creación
+    : "No disponible";
   const credsCount = vcIds?.length ?? 0;
 
   return (
-    <div className="space-y-6">
-      {/* Encabezado */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold">Vault de usuario</h1>
-          {ownerDid && (
-            <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">{ownerDid}</div>
-          )}
-        </div>
-      </div>
+    <div className="space-y-8">
+      {ownerDid && (
+        <p className="text-sm text-neutral-600 dark:text-neutral-400 font-mono truncate">
+          {ownerDid}
+        </p>
+      )}
 
-      {/* Resumen */}
-      <Card className="p-4 bg-neutral-950 text-white border border-white/20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <div className="text-xs text-neutral-400">Balance XLM</div>
-            <div className="text-lg font-medium">{xlmBalance ?? "-"}</div>
+      <div className="grid gap-6 sm:grid-cols-3">
+        <Card className="p-5">
+          <div className="text-xs text-neutral-500 dark:text-neutral-400">
+            Balance XLM
           </div>
-          <div className="text-right">
-            <div className="text-xs text-neutral-400">Credenciales</div>
-            <div className="text-lg font-medium">{credsCount}</div>
+          <div className="mt-2 text-2xl font-semibold">{xlmBalance ?? "-"}</div>
+        </Card>
+        <Card className="p-5">
+          <div className="text-xs text-neutral-500 dark:text-neutral-400">
+            Credenciales
           </div>
-        </div>
-      </Card>
-
-      <Separator />
-
-      {/* Autorización (sección inferior a ancho completo) */}
-      <div className="flex items-center w-full">
-        <VaultAuthorize />
+          <div className="mt-2 text-2xl font-semibold">{credsCount}</div>
+        </Card>
+        <Card className="p-5">
+          <div className="text-xs text-neutral-500 dark:text-neutral-400">
+            Creado
+          </div>
+          <div className="mt-2 text-lg font-medium">{createdAtLabel}</div>
+        </Card>
       </div>
-
-      {/* Se eliminó la lista de credenciales del dashboard del Vault */}
     </div>
   );
 }

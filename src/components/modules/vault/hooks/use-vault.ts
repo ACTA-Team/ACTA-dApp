@@ -349,11 +349,70 @@ export function useVault() {
     [walletAddress, signTransaction, ensureConfig]
   );
 
+  const revokeAddress = useCallback(
+    async (address: string) => {
+      if (!walletAddress) throw new Error("Conecta tu wallet primero");
+      const { rpcUrl, networkPassphrase, vaultContractId } = await ensureConfig();
+      if (!vaultContractId) throw new Error("Vault contract ID no está configurado");
+      if (!signTransaction) throw new Error("Firmador no disponible");
+      if (!address) throw new Error("Dirección requerida");
+      setLoading(true);
+      try {
+        const server = new StellarSdk.rpc.Server(rpcUrl);
+        const sourceAccount = await server.getAccount(walletAddress);
+        const account = new StellarSdk.Account(walletAddress, sourceAccount.sequenceNumber());
+        const contract = new StellarSdk.Contract(vaultContractId);
+
+        let tx = new StellarSdk.TransactionBuilder(account, {
+          fee: StellarSdk.BASE_FEE.toString(),
+          networkPassphrase,
+        })
+          .addOperation(
+            contract.call(
+              "revoke_issuer",
+              StellarSdk.Address.fromString(walletAddress).toScVal(),
+              StellarSdk.Address.fromString(address).toScVal()
+            )
+          )
+          .setTimeout(60)
+          .build();
+
+        tx = await server.prepareTransaction(tx);
+        const signedXdr = await signTransaction(tx.toXDR(), { networkPassphrase });
+        const signed = StellarSdk.TransactionBuilder.fromXDR(signedXdr, networkPassphrase);
+        const send = await server.sendTransaction(signed);
+        if (
+          send.status === "PENDING" ||
+          send.status === "DUPLICATE" ||
+          send.status === "TRY_AGAIN_LATER"
+        ) {
+          await waitForTx(server, send.hash!);
+        } else if (send.status === "ERROR") {
+          throw new Error("ERROR");
+        }
+        return { txId: send.hash! };
+      } catch (e: unknown) {
+        const msg =
+          e instanceof Error
+            ? e.message
+            : typeof e === "object" && e && "message" in (e as any)
+              ? String((e as any).message)
+              : String(e);
+        const friendly = mapContractErrorToMessage(msg);
+        throw new Error(friendly);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [walletAddress, signTransaction, ensureConfig]
+  );
+
   return {
     loading,
     createVault,
     authorizeSelf,
     authorizeAddress,
+    revokeAddress,
     ownerDid,
     vaultExists,
     vcIds,

@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useVault } from "@/components/modules/vault/hooks/use-vault";
 
 type Credential = {
   id: string;
@@ -12,42 +13,47 @@ type Credential = {
   status: "valid" | "expired" | "revoked";
 };
 
-const MOCK_CREDENTIALS: Credential[] = [
-  {
-    id: "cred-001",
-    title: "University Degree",
-    issuer: "did:example:university-abc",
-    subject: "did:example:user123",
-    type: "UniversityDegree",
-    issuedAt: "2024-06-01T12:00:00Z",
+function adaptVcToCredential(vc: any): Credential {
+  let parsed: any = null;
+  try {
+    parsed = typeof vc?.data === "string" ? JSON.parse(vc.data) : vc?.data || null;
+  } catch {
+    parsed = null;
+  }
+
+  const title =
+    parsed?.title || parsed?.name || parsed?.credentialSubject?.name || "Credential";
+  const issuer = vc?.issuer_did || parsed?.issuer || parsed?.issuerName || "-";
+  const subject =
+    parsed?.subject || parsed?.subjectDID || parsed?.credentialSubject?.id || "-";
+  const type = parsed?.type || parsed?.credentialType || "VC";
+  const issuedAt = parsed?.issuedAt || parsed?.issuanceDate || new Date().toISOString();
+
+  return {
+    id: String(vc?.id ?? "unknown"),
+    title: String(title),
+    issuer: String(issuer),
+    subject: String(subject),
+    type: String(type),
+    issuedAt: String(issuedAt),
     status: "valid",
-  },
-  {
-    id: "cred-002",
-    title: "KYC Verification",
-    issuer: "did:example:kyc-provider",
-    subject: "did:example:user123",
-    type: "KYC",
-    issuedAt: "2023-11-15T08:30:00Z",
-    status: "expired",
-  },
-  {
-    id: "cred-003",
-    title: "Membership Card",
-    issuer: "did:example:acta-club",
-    subject: "did:example:user123",
-    type: "Membership",
-    issuedAt: "2025-01-10T09:00:00Z",
-    status: "valid",
-  },
-];
+  };
+}
 
 export default function CredentialsList() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<string>("all");
+  const { vcs } = useVault();
+
+  const [source, setSource] = useState<Credential[]>([]);
+
+  useEffect(() => {
+    const mapped = Array.isArray(vcs) ? vcs.map((vc: any) => adaptVcToCredential(vc)) : [];
+    setSource(mapped);
+  }, [vcs]);
 
   const items = useMemo(() => {
-    return MOCK_CREDENTIALS.filter((c) => {
+    return source.filter((c) => {
       const matchesQuery =
         !query ||
         c.title.toLowerCase().includes(query.toLowerCase()) ||
@@ -56,7 +62,7 @@ export default function CredentialsList() {
       const matchesFilter = filter === "all" ? true : c.status === filter;
       return matchesQuery && matchesFilter;
     });
-  }, [query, filter]);
+  }, [query, filter, source]);
 
   return (
     <div className="space-y-6">
