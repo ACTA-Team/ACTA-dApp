@@ -7,6 +7,7 @@ import {
   allowAllModules,
   FREIGHTER_ID,
 } from "@creit.tech/stellar-wallets-kit";
+import { useNetwork } from "@/providers/network.provider";
 
 type WalletContextType = {
   walletAddress: string | null;
@@ -27,6 +28,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const [walletName, setWalletName] = useState<string | null>(null);
   const [authMethod, setAuthMethod] = useState<"wallet" | null>(null);
   const [walletKit, setWalletKit] = useState<StellarWalletsKit | null>(null);
+  const { network } = useNetwork();
 
   useEffect(() => {
     const storedAddress = typeof window !== "undefined" ? localStorage.getItem("walletAddress") : null;
@@ -34,16 +36,20 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     if (storedAddress) setWalletAddress(storedAddress);
     if (storedName) setWalletName(storedName);
     if (storedAddress) setAuthMethod("wallet");
+  }, []);
 
+  // Recreate kit when network changes to ensure proper signing context
+  useEffect(() => {
     if (typeof window !== "undefined") {
+      const net = network === "mainnet" ? WalletNetwork.PUBLIC : WalletNetwork.TESTNET;
       const kit = new StellarWalletsKit({
-        network: WalletNetwork.TESTNET,
+        network: net,
         selectedWalletId: FREIGHTER_ID,
         modules: allowAllModules(),
       });
       setWalletKit(kit);
     }
-  }, []);
+  }, [network]);
 
   const setWalletInfo = async (address: string, name: string) => {
     setWalletAddress(address);
