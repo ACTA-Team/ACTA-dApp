@@ -1,144 +1,158 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import Image from "next/image";
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
+  SidebarSeparator,
+} from '@/components/ui/sidebar';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import {
   IconHome,
   IconId,
   IconUpload,
-  IconLock,
-  IconShieldCheck,
-  IconBook2,
-  IconSettings,
-} from "@tabler/icons-react";
+  IconArrowLeft,
+  IconUser,
+  IconChevronLeft,
+  IconChevronRight,
+  IconPlayerPlay,
+} from '@tabler/icons-react';
 
 export function AppSidebar() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [vaultOpen, setVaultOpen] = useState<boolean>(
+    pathname !== '/dashboard' && pathname !== '/dashboard/tutorials'
+  );
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { open?: boolean } | undefined;
+      if (detail && typeof detail.open === 'boolean') {
+        setVaultOpen(detail.open);
+      }
+    };
+    window.addEventListener('vault-panel-state', handler as EventListener);
+    return () => window.removeEventListener('vault-panel-state', handler as EventListener);
+  }, []);
+
+  useEffect(() => {
+    setVaultOpen(pathname !== '/dashboard' && pathname !== '/dashboard/tutorials');
+  }, [pathname]);
   return (
     <Sidebar variant="inset">
       <SidebarHeader>
-        <div className="mt-2 flex items-center gap-2 px-2">
-          <div className="size-8 rounded-mdtext-white grid place-items-center">
-            <Image
-              src="/black.png"
-              alt="ACTA"
-              width={32}
-              height={32}
-              className="dark:hidden"
-            />
-            <Image
-              src="/logo.png"
-              alt="ACTA"
-              width={32}
-              height={32}
-              className="hidden dark:block"
-            />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold">ACTA dApp</span>
-            <span className="text-xs text-neutral-500 dark:text-neutral-400">
-              The new infrastructure <br />
-            </span>
+        <div className="px-2 pt-2">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
+            aria-label="Volver"
+          >
+            <IconArrowLeft className="size-5" />
+          </button>
+          <div className="mt-3">
+            <button
+              type="button"
+              onClick={() => {
+                try {
+                  window.dispatchEvent(new CustomEvent('toggle-vault-panel'));
+                } catch {}
+              }}
+              className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
+              aria-label="Toggle vault panel"
+            >
+              {vaultOpen ? (
+                <IconChevronLeft className="size-5" />
+              ) : (
+                <IconChevronRight className="size-5" />
+              )}
+            </button>
           </div>
         </div>
+        <SidebarSeparator className="my-3" />
       </SidebarHeader>
 
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Platform</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/dashboard">
-                    <IconHome />
-                    <span>Dashboard</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/dashboard/credentials">
-                    <IconId />
-                    <span>Credentials</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/dashboard/issue">
-                    <IconUpload />
-                    <span>Issue</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/dashboard/vault">
-                    <IconLock />
-                    <span>Vault</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/dashboard/authorize">
-                    <IconShieldCheck />
-                    <span>Authorize</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+      <SidebarContent className="px-2">
+        <div className="flex flex-col items-center gap-5 pt-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                aria-label="Inicio"
+                href="/dashboard"
+                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
+              >
+                <IconHome className="size-5" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">Home</TooltipContent>
+          </Tooltip>
 
-        <SidebarGroup>
-          <SidebarGroupLabel>Resources</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="https://docs.acta.build/">
-                    <IconBook2 />
-                    <span>Documentation</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/settings">
-                    <IconSettings />
-                    <span>Settings</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                aria-label="Issue"
+                href="/dashboard/issue"
+                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
+              >
+                <IconUpload className="size-5" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">Issue</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                aria-label="Credenciales"
+                href="/dashboard/credentials"
+                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
+              >
+                <IconId className="size-5" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">Credentials</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                aria-label="Tutorials"
+                href="/dashboard/tutorials"
+                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
+              >
+                <IconPlayerPlay className="size-5" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">Tutorials</TooltipContent>
+          </Tooltip>
+        </div>
       </SidebarContent>
 
       <SidebarFooter>
-        <div className="flex items-center gap-3 px-2 py-1">
-          <div className="size-8 rounded-full bg-neutral-700 grid place-items-center text-white text-sm">
-            SH
-          </div>
-          <div className="flex flex-col">
-            <span className="text-sm font-medium">shadcn</span>
-            <span className="text-xs text-neutral-500 dark:text-neutral-400">
-              m@example.com
-            </span>
-          </div>
+        <div className="px-2 pb-2 mt-auto">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                aria-label="Settings"
+                onClick={() => {
+                  try {
+                    window.dispatchEvent(new CustomEvent('open-settings'));
+                  } catch {
+                    router.push('/settings');
+                  }
+                }}
+                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
+              >
+                <IconUser className="size-5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="right">Settings</TooltipContent>
+          </Tooltip>
         </div>
       </SidebarFooter>
     </Sidebar>
