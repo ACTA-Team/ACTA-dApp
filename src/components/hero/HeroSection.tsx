@@ -2,8 +2,8 @@
 
 import { motion } from "motion/react";
 import Link from "next/link";
-import { HoverBorderGradient } from "../../ui/hover-border-gradient";
-import { CredentialCard } from "../credentials/CredentialCard";
+import { HoverBorderGradient } from "../ui/hover-border-gradient";
+import { CredentialCard } from "../modules/credential/CredentialCard";
 
 export default function HeroSection() {
   return (
@@ -19,7 +19,7 @@ export default function HeroSection() {
       </div>
       <div className="px-4 py-10 md:py-20">
         <h1 className="relative z-10 mx-auto max-w-4xl text-center text-2xl font-bold text-gray-700 md:text-4xl lg:text-7xl dark:text-neutral-300">
-          {"Welcome to ACTA".split(" ").map((word, index) => (
+          {"ACTA Demo Flow".split(" ").map((word, index) => (
             <motion.span
               key={index}
               initial={{ opacity: 0, filter: "blur(4px)", y: 10 }}
@@ -48,9 +48,8 @@ export default function HeroSection() {
           }}
           className="relative z-10 mx-auto max-w-xl py-4 text-center text-lg font-normal text-neutral-600 dark:text-neutral-400"
         >
-          On this page, you can issue credentials, share them, authorize
-          issuers, verify them, and much more <br /> All without needing a third
-          party or any programming knowledge.
+          This demo separates the flow into four steps: create a vault, <br />{" "}
+          authorize issuers, compute the credential, and issue the credential.
         </motion.p>
         <motion.div
           initial={{
@@ -71,10 +70,10 @@ export default function HeroSection() {
             className=" text-white flex items-center space-x-2 transition-all duration-300 hover:-translate-y-0.5 "
           >
             <Link
-              href="/dashboard"
+              href="/demo"
               className="w-full sm:w-60 rounded-full px-6 py-2 font-medium text-white text-center"
             >
-              Dashboard
+              View Demo
             </Link>
           </HoverBorderGradient>
 
@@ -84,10 +83,10 @@ export default function HeroSection() {
             className=" text-black flex items-center bg-white space-x-2 transition-all duration-300 hover:-translate-y-0.5 "
           >
             <Link
-              href="/dashboard/credentials"
+              href="https://stellar.expert/"
               className="w-full sm:w-60 rounded-full px-6 py-2 font-medium text-black text-center"
             >
-              My Credentials
+              View Stellar Expert
             </Link>
           </HoverBorderGradient>
         </motion.div>

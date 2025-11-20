@@ -30,6 +30,7 @@ export function CredentialCard() {
             </span>
           </div>
 
+          {/* Credential Details */}
           <div className="border-t border-border/30 pt-3 sm:pt-4 flex-1 flex flex-col">
             <div className="grid grid-cols-1 gap-2 sm:gap-3">
               <div className="flex items-center justify-between">
@@ -85,7 +86,7 @@ export function CredentialCard() {
               </div>
             </div>
 
-            <div className="flex items-baseline justify-between mt-5 ">
+            <div className="flex items-baseline justify-between mt-auto mb-5">
               <div className="text-[7px] sm:text-[8px] md:text-[9px] lg:text-[10px] uppercase tracking-wide opacity-70">
                 ACTA • Verifiable Credential
               </div>
