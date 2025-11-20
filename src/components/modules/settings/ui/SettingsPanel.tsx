@@ -10,7 +10,6 @@ interface ProfilePanelProps {
 
   network?: 'testnet' | 'mainnet';
   onNetworkChange?: (network: 'testnet' | 'mainnet') => void;
-  apiBaseUrl?: string;
 
   walletAddress?: string;
   walletName?: string;

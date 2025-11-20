@@ -1,27 +1,11 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { WalletProvider } from '@/providers/wallet.provider';
 import { NetworkProvider } from '@/providers/network.provider';
 import { Toaster } from '@/components/ui/sonner';
 import { QueryProvider } from '@/providers/query.provider';
 import GlobalHeaderHost from '@/layouts/header/GlobalHeaderHost';
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: '--font-cabinet',
-  subsets: ['latin'],
-  weight: ['200', '300', '400', '500', '600', '700', '800'],
-});
+import { ActaProvider } from '@/providers/acta.provider';
 
 export const metadata: Metadata = {
   title: 'ACTA',
@@ -49,16 +33,15 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${plusJakartaSans.variable} antialiased`}
-        suppressHydrationWarning
-      >
+      <body className={`antialiased`} suppressHydrationWarning>
         <QueryProvider>
           <NetworkProvider>
             <WalletProvider>
-              <GlobalHeaderHost />
-              {children}
-              <Toaster />
+              <ActaProvider>
+                <GlobalHeaderHost />
+                {children}
+                <Toaster />
+              </ActaProvider>
             </WalletProvider>
           </NetworkProvider>
         </QueryProvider>

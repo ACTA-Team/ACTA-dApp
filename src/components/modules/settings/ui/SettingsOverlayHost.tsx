@@ -14,7 +14,7 @@ interface ProfileOverlayHostProps {
   onThemeChange?: (theme: 'light' | 'dark') => void;
   network?: 'testnet' | 'mainnet';
   onNetworkChange?: (network: 'testnet' | 'mainnet') => void;
-  apiBaseUrl?: string;
+
   walletAddress?: string;
   walletName?: string;
   onConnect?: () => void;
@@ -28,7 +28,6 @@ export function SettingsOverlayHost({
   onThemeChange,
   network,
   onNetworkChange,
-  apiBaseUrl,
   walletAddress,
   walletName,
   onConnect,
@@ -37,7 +36,7 @@ export function SettingsOverlayHost({
   appVersion,
 }: ProfileOverlayHostProps) {
   const [open, setOpen] = useState(false);
-  const { network: net, setNetwork, apiBaseUrl: apiUrl } = useNetwork();
+  const { network: net, setNetwork } = useNetwork();
   const { walletAddress: addr, walletName: wName } = useWalletContext();
   const { connectWithWalletKit, disconnectWalletKit } = useWalletKit();
 
@@ -101,7 +100,6 @@ export function SettingsOverlayHost({
             onThemeChange={handleThemeChange}
             network={network ?? net}
             onNetworkChange={onNetworkChange ?? setNetwork}
-            apiBaseUrl={apiBaseUrl ?? apiUrl}
             walletAddress={walletAddress ?? addr ?? undefined}
             walletName={walletName ?? wName ?? undefined}
             onConnect={onConnect ?? connectWithWalletKit}

@@ -6,7 +6,7 @@ import { useWalletContext } from '@/providers/wallet.provider';
 import { useWalletKit } from '@/components/modules/auth/hooks/useWalletKit';
 
 export function useSettings() {
-  const { network, setNetwork, apiBaseUrl } = useNetwork();
+  const { network, setNetwork } = useNetwork();
   const { walletAddress, walletName } = useWalletContext();
   const { connectWithWalletKit, disconnectWalletKit } = useWalletKit();
 
@@ -44,7 +44,6 @@ export function useSettings() {
     // Red
     network,
     setNetwork,
-    apiBaseUrl,
     // Billetera
     walletAddress,
     walletName,

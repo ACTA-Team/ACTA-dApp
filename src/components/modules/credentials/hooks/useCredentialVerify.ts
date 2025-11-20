@@ -2,8 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useNetwork } from '@/providers/network.provider';
-import { getVerifyStatus, postVaultVerify } from '@/lib/actaApi';
-import { getClientConfig } from '@/lib/env';
+import { useVaultApi, useActaClient } from '@acta-team/acta-sdk';
 import { verifyOnChain } from '@/lib/actaOnChain';
 import { useWalletContext } from '@/providers/wallet.provider';
 
@@ -18,8 +17,8 @@ export function useCredentialVerify(vcId: string) {
   const { walletAddress } = useWalletContext();
   const [verify, setVerify] = useState<VerifyResult | null>(null);
   const [revealed, setRevealed] = useState<Record<string, unknown> | null>(null);
-  const { apiBaseUrl: baseUrl } = useNetwork();
-  const apiBaseUrl = baseUrl;
+  const { verifyInVault } = useVaultApi();
+  const client = useActaClient();
   const shareParam = useMemo(() => {
     if (typeof window === 'undefined') return null;
     try {
@@ -36,17 +35,18 @@ export function useCredentialVerify(vcId: string) {
   useEffect(() => {
     const run = async () => {
       try {
-        const cfg = await getClientConfig(apiBaseUrl);
+        const cfg = client.getDefaults();
+        const vaultIdOverride = cfg.vaultContractId || '';
         if (shareParam) {
           setRevealed(shareParam.revealedFields || null);
         }
 
         if (vcId && walletAddress) {
           try {
-            const v = await postVaultVerify(apiBaseUrl, {
+            const v = await verifyInVault({
               owner: walletAddress,
               vcId,
-              vaultContractId: cfg.vaultContractId || undefined,
+              vaultContractId: vaultIdOverride || undefined,
             });
             const norm = (v?.status || '').toLowerCase();
             if (norm === 'valid' || norm === 'revoked') {
@@ -56,12 +56,13 @@ export function useCredentialVerify(vcId: string) {
           } catch {}
         }
 
-        if (vcId && cfg.issuanceContractId) {
+        const issuanceId = cfg.issuanceContractId || '';
+        if (vcId && issuanceId) {
           try {
             const r = await verifyOnChain({
               rpcUrl: cfg.rpcUrl,
               networkPassphrase: cfg.networkPassphrase,
-              issuanceContractId: cfg.issuanceContractId,
+              issuanceContractId: issuanceId,
               vcId,
             });
             const norm = (r?.status || '').toLowerCase();
@@ -72,19 +73,13 @@ export function useCredentialVerify(vcId: string) {
           } catch {}
         }
 
-        try {
-          const res = await getVerifyStatus(apiBaseUrl, vcId);
-          setVerify(res);
-          return;
-        } catch {}
-
         setVerify({ vc_id: vcId, status: 'not_verified' });
       } catch {
         setVerify({ vc_id: vcId, status: 'not_verified' });
       }
     };
     run();
-  }, [vcId, apiBaseUrl, network, walletAddress, shareParam]);
+  }, [vcId, network, walletAddress, shareParam, verifyInVault, client]);
 
   return { verify, revealed };
 }

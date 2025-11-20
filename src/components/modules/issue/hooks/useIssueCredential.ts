@@ -3,13 +3,12 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useWalletContext } from '@/providers/wallet.provider';
 import { useNetwork } from '@/providers/network.provider';
-import { getClientConfig } from '@/lib/env';
 import {
-  postPrepareStore,
-  postVaultStore,
-  postPrepareIssue,
-  postIssueCredential,
-} from '@/lib/actaApi';
+  useTxPrepare,
+  useVaultStore,
+  useActaClient,
+  useCreateCredential,
+} from '@acta-team/acta-sdk';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { mapContractErrorToMessage } from '@/lib/utils';
@@ -21,7 +20,12 @@ import type { MockCredential } from '@/@types/credentials';
 export function useIssueCredential() {
   const { walletAddress, walletName, signTransaction, walletKit, setWalletInfo } =
     useWalletContext();
-  const { apiBaseUrl, network } = useNetwork();
+  const { network } = useNetwork();
+  const client = useActaClient();
+  const { prepareStore, prepareIssue } = useTxPrepare();
+  const { vaultStore } = useVaultStore();
+  const { createCredential } = useCreateCredential();
+
   const queryClient = useQueryClient();
   const { checkSelfAuthorized, authorizeSelf } = useVault();
 
@@ -143,12 +147,8 @@ export function useIssueCredential() {
     } catch {}
 
     const vc = buildPreview() || {};
-    const cfg = await getClientConfig(apiBaseUrl);
-    const vaultIdOverride =
-      network === 'mainnet'
-        ? process.env.NEXT_PUBLIC_VAULT_CONTRACT_ID_MAINNET || ''
-        : process.env.NEXT_PUBLIC_VAULT_CONTRACT_ID_TESTNET || '';
-    const vaultContractId = vaultIdOverride || cfg.vaultContractId;
+    const cfg = client.getDefaults();
+    const vaultContractId = cfg.vaultContractId;
     if (!vaultContractId) throw new Error('Vault contract ID not configured');
 
     setState((s) => ({ ...s, issuing: true, error: null }));
@@ -169,7 +169,7 @@ export function useIssueCredential() {
       const ownerDidLocal = `did:pkh:stellar:${
         network === 'mainnet' ? 'public' : 'testnet'
       }:${ownerG}`;
-      const prep = await postPrepareStore(apiBaseUrl, {
+      const prep = await prepareStore({
         owner: ownerG,
         vcId: ensuredVcId,
         didUri: ownerDidLocal,
@@ -181,7 +181,7 @@ export function useIssueCredential() {
         address: ownerG,
         networkPassphrase: cfg.networkPassphrase,
       });
-      const res = await postVaultStore(apiBaseUrl, {
+      const res = await vaultStore({
         signedXdr,
         vcId: ensuredVcId,
         owner: ownerG,
@@ -202,7 +202,7 @@ export function useIssueCredential() {
       });
 
       const vcDataStr = JSON.stringify(vc);
-      const prepIssue = await postPrepareIssue(apiBaseUrl, {
+      const prepIssue = await prepareIssue({
         owner: ownerG,
         vcId: ensuredVcId,
         vcData: vcDataStr,
@@ -217,10 +217,7 @@ export function useIssueCredential() {
           networkPassphrase: cfg.networkPassphrase,
         }
       );
-      const issueRes = await postIssueCredential(apiBaseUrl, {
-        signedXdr: signedIssueXdr,
-        vcId: ensuredVcId,
-      });
+      const issueRes = await createCredential({ signedXdr: signedIssueXdr, vcId: ensuredVcId });
       const issueUrl = `https://stellar.expert/explorer/${explorerNet}/tx/${issueRes.tx_id}`;
       toast.success('Issuance executed', {
         action: {
@@ -268,17 +265,17 @@ export function useIssueCredential() {
               setState((s) => ({ ...s, vcId: ensuredVcId }));
             }
             const vcRetry = buildPreview() || {};
-            const cfg = await getClientConfig(apiBaseUrl);
+            const cfg = client.getDefaults();
             const vaultIdOverride =
               network === 'mainnet'
                 ? process.env.NEXT_PUBLIC_VAULT_CONTRACT_ID_MAINNET || ''
                 : process.env.NEXT_PUBLIC_VAULT_CONTRACT_ID_TESTNET || '';
-            const vaultContractId = vaultIdOverride || cfg.vaultContractId;
+            const vaultContractId = vaultIdOverride;
 
             const ownerDidLocal2 = `did:pkh:stellar:${
               network === 'mainnet' ? 'public' : 'testnet'
             }:${ownerG}`;
-            const prep2 = await postPrepareStore(apiBaseUrl, {
+            const prep2 = await prepareStore({
               owner: ownerG,
               vcId: ensuredVcId,
               didUri: ownerDidLocal2,
@@ -293,7 +290,7 @@ export function useIssueCredential() {
                 networkPassphrase: cfg.networkPassphrase,
               }
             );
-            const res2 = await postVaultStore(apiBaseUrl, {
+            const res2 = await vaultStore({
               signedXdr: signedXdr2,
               vcId: ensuredVcId,
               owner: ownerG,
@@ -301,7 +298,7 @@ export function useIssueCredential() {
             });
 
             const vcDataStr2 = JSON.stringify(vcRetry);
-            const prepIssue2 = await postPrepareIssue(apiBaseUrl, {
+            const prepIssue2 = await prepareIssue({
               owner: ownerG,
               vcId: ensuredVcId,
               vcData: vcDataStr2,
@@ -316,7 +313,7 @@ export function useIssueCredential() {
                 networkPassphrase: cfg.networkPassphrase,
               }
             );
-            const issueRes2 = await postIssueCredential(apiBaseUrl, {
+            const issueRes2 = await createCredential({
               signedXdr: signedIssueXdr2,
               vcId: ensuredVcId,
             });
@@ -358,7 +355,6 @@ export function useIssueCredential() {
   }, [
     walletAddress,
     walletName,
-    apiBaseUrl,
     network,
     state.template,
     state.vcId,

@@ -1,6 +1,7 @@
 'use client';
 
 import { useShareCredential } from '@/components/modules/credentials/hooks/useShareCredential';
+import { useState } from 'react';
 
 import type { Credential } from '@/@types/credentials';
 

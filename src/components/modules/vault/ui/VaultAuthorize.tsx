@@ -37,7 +37,7 @@ export function VaultAuthorize() {
   };
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2">
+    <div className="grid mt-4 gap-6 sm:grid-cols-2">
       <Card className="p-6 space-y-3">
         <div>
           <h3 className="text-lg font-semibold">Authorize Me</h3>
