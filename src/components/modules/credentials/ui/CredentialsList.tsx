@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useVault } from "@/components/modules/vault/hooks/use-vault";
+import ShareCredentialModal from "./ShareCredentialModal";
 
 type Credential = {
   id: string;
@@ -12,6 +13,7 @@ type Credential = {
   subject: string;
   type: string;
   issuedAt: string;
+  expirationDate?: string | null;
   status: "valid" | "expired" | "revoked";
 };
 
@@ -51,6 +53,8 @@ function adaptVcToCredential(vc: any): Credential {
   }
   const issuedAt =
     parsed?.issuedAt || parsed?.issuanceDate || new Date().toISOString();
+  const expirationDate =
+    parsed?.expirationDate || parsed?.validUntil || parsed?.credentialSubject?.expirationDate || null;
 
   return {
     id: String(vc?.id ?? "unknown"),
@@ -59,6 +63,7 @@ function adaptVcToCredential(vc: any): Credential {
     subject: String(subject),
     type: String(type),
     issuedAt: String(issuedAt),
+    expirationDate: expirationDate ? String(expirationDate) : null,
     status: "valid",
   };
 }
@@ -69,6 +74,8 @@ export default function CredentialsList() {
   const { vcs } = useVault();
 
   const [source, setSource] = useState<Credential[]>([]);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [toShare, setToShare] = useState<Credential | null>(null);
 
   useEffect(() => {
     const mapped = Array.isArray(vcs)
@@ -147,49 +154,45 @@ export default function CredentialsList() {
               <div className="font-medium truncate">{c.issuer}</div>
               <div className="opacity-70">Subject</div>
               <div className="font-medium truncate">{c.subject}</div>
-              <div className="opacity-70">Issued</div>
+              <div className="opacity-70">Issued At</div>
               <div className="font-medium">
                 {new Date(c.issuedAt).toLocaleString()}
               </div>
+              {c.expirationDate && (
+                <>
+                  <div className="opacity-70">Expires</div>
+                  <div className="font-medium">
+                    {new Date(c.expirationDate).toLocaleString()}
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="mt-4 flex gap-2">
-              <Link
-                href={`/credential/${encodeURIComponent(c.id)}`}
-                className="rounded-full bg-black text-white px-4 py-1 text-sm"
-              >
-                View
-              </Link>
               <button
                 onClick={() => {
-                  try {
-                    const origin =
-                      typeof window !== "undefined"
-                        ? window.location.origin
-                        : "";
-                    const url = `${origin}/credential/${encodeURIComponent(
-                      c.id
-                    )}`;
-                    if (navigator?.clipboard?.writeText) {
-                      navigator.clipboard.writeText(url);
-                      toast.success("Link copied to clipboard");
-                    } else {
-                      // Fallback: open new tab to show the URL
-                      window.open(url, "_blank");
-                    }
-                  } catch (e: any) {
-                    toast.error(e?.message || "Error copying link");
-                  }
+                  setToShare(c);
+                  setShareOpen(true);
                 }}
                 className="rounded-full border border-neutral-300 dark:border-neutral-700 px-4 py-1 text-sm"
               >
-                Share
+                Share (ZK)
               </button>
             </div>
           </div>
         ))}
         {items.length === 0 && (
           <div className="text-sm text-neutral-500">No credentials found.</div>
+        )}
+        {shareOpen && (
+          <ShareCredentialModal
+            open={shareOpen}
+            credential={toShare}
+            onClose={() => {
+              setShareOpen(false);
+              setToShare(null);
+            }}
+          />
         )}
       </div>
     </div>

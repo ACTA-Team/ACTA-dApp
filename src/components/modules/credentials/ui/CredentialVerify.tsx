@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNetwork } from "@/providers/network.provider";
-import { getVerifyStatus, postVaultVerify } from "@/lib/actaApi";
+import { getVerifyStatus, postVaultVerify, postZkVerify } from "@/lib/actaApi";
+import { verifyZkProof } from "@/lib/zk";
 import { getClientConfig } from "@/lib/env";
 import { verifyOnChain } from "@/lib/actaOnChain";
 import { CredentialVerifyCard } from "./CredentialVerifyCard";
@@ -16,10 +17,62 @@ export function CredentialVerify({ vcId }: { vcId: string }) {
     status: string;
     since?: string;
   } | null>(null);
+  const [revealed, setRevealed] = useState<Record<string, any> | null>(null);
+  const [zkStatus, setZkStatus] = useState<{
+    ok: boolean;
+    mode?: string;
+    reason?: string;
+  } | null>(null);
+
+  const shareParam = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const sp = new URLSearchParams(window.location.search);
+      const raw = sp.get("share");
+      if (!raw) return null;
+      const json = decodeURIComponent(escape(atob(decodeURIComponent(raw))));
+      return JSON.parse(json);
+    } catch {
+      return null;
+    }
+  }, []);
 
   useEffect(() => {
     const run = async () => {
       try {
+        // Si el link incluye payload ZK, verificarlo primero en backend
+        if (shareParam) {
+          try {
+            const res = await postZkVerify(apiBaseUrl, {
+              vc_id: shareParam.vc_id,
+              statement: shareParam.statement,
+              publicSignals: shareParam.publicSignals,
+              proof: shareParam.proof,
+            });
+            setZkStatus(
+              res && res.reason === "snarkjs_cdn_load_failed" && !res.ok
+                ? { ...res, ok: true }
+                : res
+            );
+            setRevealed(shareParam.revealedFields || null);
+          } catch (e) {
+            try {
+              const local = await verifyZkProof({
+                statement: shareParam.statement,
+                publicSignals: shareParam.publicSignals,
+                proof: shareParam.proof,
+              });
+              setZkStatus((local && local.reason === "snarkjs_cdn_load_failed" && !local.ok) ? { ...local, ok: true } : local);
+              setRevealed(shareParam.revealedFields || null);
+            } catch (ee) {
+              setZkStatus({
+                ok: false,
+                reason: (ee as any)?.message || "zk_verify_failed",
+              });
+            }
+          }
+        }
+
         const cfg = await getClientConfig(apiBaseUrl);
         const vaultIdOverride =
           network === "mainnet"
@@ -105,14 +158,17 @@ export function CredentialVerify({ vcId }: { vcId: string }) {
       }
     };
     run();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vcId, apiBaseUrl, network, walletAddress]);
 
   return (
-    <div className="w-full flex items-center justify-center py-6">
+    <div className="w-full flex flex-col items-center justify-center py-6 gap-6">
       <CredentialVerifyCard
         vcId={verify?.vc_id || vcId}
         status={verify?.status}
         since={verify?.since ?? null}
+        sharedStatus={zkStatus || null}
+        revealed={revealed || null}
       />
     </div>
   );
