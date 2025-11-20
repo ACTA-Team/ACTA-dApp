@@ -1,23 +1,9 @@
-export type IssueCredentialPayload =
-  | {
-      signedXdr: string;
-      vcId: string;
-    }
-  | {
-      owner: string;
-      vcId: string;
-      vcData: string;
-      vaultContractId: string;
-      didUri?: string;
-    };
+import type { IssueCredentialPayload, VaultStorePayload } from '@/@types/api';
 
-export async function postIssueCredential(
-  apiBaseUrl: string,
-  payload: IssueCredentialPayload
-) {
+export async function postIssueCredential(apiBaseUrl: string, payload: IssueCredentialPayload) {
   const resp = await fetch(`${apiBaseUrl}/credentials`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify(payload),
   });
   const json = await resp.json().catch(() => ({}));
@@ -34,14 +20,14 @@ export async function postPrepareStore(
     owner: string;
     vcId: string;
     didUri: string;
-    fields: Record<string, any>;
+    fields: Record<string, unknown>;
     vaultContractId?: string;
     issuer?: string;
   }
 ) {
   const resp = await fetch(`${apiBaseUrl}/tx/prepare/store`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify(args),
   });
   const json = await resp.json().catch(() => ({}));
@@ -64,8 +50,8 @@ export async function postPrepareIssue(
   }
 ) {
   const resp = await fetch(`${apiBaseUrl}/tx/prepare/issue`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify(args),
   });
   const json = await resp.json().catch(() => ({}));
@@ -76,26 +62,10 @@ export async function postPrepareIssue(
   return json as { unsignedXdr: string };
 }
 
-export type VaultStorePayload =
-  | {
-      signedXdr: string;
-      vcId: string;
-      owner?: string;
-      vaultContractId?: string;
-    }
-  | {
-      owner: string;
-      vcId: string;
-      vcData: string;
-      vaultContractId: string;
-      issuerDid?: string;
-      issuanceContractId?: string;
-    };
-
 export async function postVaultStore(apiBaseUrl: string, payload: VaultStorePayload) {
   const resp = await fetch(`${apiBaseUrl}/vault/store`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify(payload),
   });
   const json = await resp.json().catch(() => ({}));
@@ -111,13 +81,10 @@ export async function postVaultStore(apiBaseUrl: string, payload: VaultStorePayl
   };
 }
 
-export async function getVerifyStatus(
-  apiBaseUrl: string,
-  vcId: string
-) {
+export async function getVerifyStatus(apiBaseUrl: string, vcId: string) {
   const resp = await fetch(`${apiBaseUrl}/verify/${encodeURIComponent(vcId)}`, {
-    method: "GET",
-    headers: { Accept: "application/json" },
+    method: 'GET',
+    headers: { Accept: 'application/json' },
   });
   const json = await resp.json().catch(() => ({}));
   if (!resp.ok) {
@@ -132,8 +99,8 @@ export async function postVaultVerify(
   args: { owner: string; vcId: string; vaultContractId?: string }
 ) {
   const resp = await fetch(`${apiBaseUrl}/vault/verify`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify(args),
   });
   const json = await resp.json().catch(() => ({}));
@@ -142,21 +109,4 @@ export async function postVaultVerify(
     throw new Error(msg);
   }
   return json as { vc_id: string; status: string; since?: string };
-}
-
-export async function postZkVerify(
-  apiBaseUrl: string,
-  args: { vc_id: string; statement: any; publicSignals: any; proof: any }
-) {
-  const resp = await fetch(`${apiBaseUrl}/zk/verify`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify(args),
-  });
-  const json = await resp.json().catch(() => ({}));
-  if (!resp.ok) {
-    const msg = (json && json.message) || `HTTP ${resp.status}`;
-    throw new Error(msg);
-  }
-  return json as { ok: boolean; mode?: string; reason?: string };
 }
