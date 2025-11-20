@@ -4,7 +4,6 @@ import { WalletProvider } from '@/providers/wallet.provider';
 import { NetworkProvider } from '@/providers/network.provider';
 import { Toaster } from '@/components/ui/sonner';
 import { QueryProvider } from '@/providers/query.provider';
-import GlobalHeaderHost from '@/layouts/header/GlobalHeaderHost';
 import { ActaProvider } from '@/providers/acta.provider';
 
 export const metadata: Metadata = {
@@ -38,7 +37,6 @@ export default function RootLayout({
           <NetworkProvider>
             <WalletProvider>
               <ActaProvider>
-                <GlobalHeaderHost />
                 {children}
                 <Toaster />
               </ActaProvider>
