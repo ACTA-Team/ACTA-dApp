@@ -1,49 +1,33 @@
-"use client";
+'use client';
 
-import { useCallback, useMemo, useState } from "react";
-import { useWalletContext } from "@/providers/wallet.provider";
-import { useNetwork } from "@/providers/network.provider";
-import { getClientConfig } from "@/lib/env";
+import { useCallback, useMemo, useState } from 'react';
+import { useWalletContext } from '@/providers/wallet.provider';
+import { useNetwork } from '@/providers/network.provider';
+import { getClientConfig } from '@/lib/env';
 import {
   postPrepareStore,
   postVaultStore,
   postPrepareIssue,
   postIssueCredential,
-} from "@/lib/actaApi";
-import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { mapContractErrorToMessage } from "@/lib/utils";
-import { useVault } from "@/components/modules/vault/hooks/use-vault";
-import type {
-  CredentialTemplate,
-  TemplateField,
-} from "./useCredentialTemplates";
-
-export type IssueState = {
-  template: CredentialTemplate | null;
-  vcId: string;
-  values: Record<string, string>;
-  issuing: boolean;
-  preview: any | null;
-  error: string | null;
-  txId: string | null;
-};
+} from '@/lib/actaApi';
+import { useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { mapContractErrorToMessage } from '@/lib/utils';
+import { useVault } from '@/components/modules/vault/hooks/use-vault';
+import type { CredentialTemplate, TemplateField } from '@/@types/templates';
+import type { IssueState } from '@/@types/issue';
+import type { MockCredential } from '@/@types/credentials';
 
 export function useIssueCredential() {
-  const {
-    walletAddress,
-    walletName,
-    signTransaction,
-    walletKit,
-    setWalletInfo,
-  } = useWalletContext();
+  const { walletAddress, walletName, signTransaction, walletKit, setWalletInfo } =
+    useWalletContext();
   const { apiBaseUrl, network } = useNetwork();
   const queryClient = useQueryClient();
   const { checkSelfAuthorized, authorizeSelf } = useVault();
 
   const [state, setState] = useState<IssueState>({
     template: null,
-    vcId: "",
+    vcId: '',
     values: {},
     issuing: false,
     preview: null,
@@ -53,9 +37,7 @@ export function useIssueCredential() {
 
   const ownerDid = useMemo(() => {
     return walletAddress
-      ? `did:pkh:stellar:${
-          network === "mainnet" ? "public" : "testnet"
-        }:${walletAddress}`
+      ? `did:pkh:stellar:${network === 'mainnet' ? 'public' : 'testnet'}:${walletAddress}`
       : undefined;
   }, [walletAddress, network]);
 
@@ -63,9 +45,7 @@ export function useIssueCredential() {
     try {
       return `vc-${crypto.randomUUID()}`;
     } catch {
-      return `vc-${Date.now().toString(36)}-${Math.random()
-        .toString(36)
-        .slice(2, 8)}`;
+      return `vc-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
     }
   };
 
@@ -96,48 +76,37 @@ export function useIssueCredential() {
     const tpl = state.template;
     if (!tpl) return null;
     const nowIso = new Date().toISOString();
-    const expiration = state.values["expirationDate"] || undefined;
-    const rawSubject = state.values["subject"] || "";
+    const expiration = state.values['expirationDate'] || undefined;
+    const rawSubject = state.values['subject'] || '';
     const toSubjectDid = (input: string) => {
-      if (!input) return "";
+      if (!input) return '';
       const trimmed = input.trim();
-      if (trimmed.startsWith("did:")) return trimmed;
-      const env = network === "mainnet" ? "public" : "testnet";
+      if (trimmed.startsWith('did:')) return trimmed;
+      const env = network === 'mainnet' ? 'public' : 'testnet';
       return `did:pkh:stellar:${env}:${trimmed}`;
     };
     const subjectId = toSubjectDid(rawSubject);
 
-    const credentialSubject: Record<string, any> = { id: subjectId };
+    const credentialSubject: Record<string, string> = { id: subjectId };
     for (const [k, v] of Object.entries(state.values)) {
-      if (k === "subject" || !v) continue;
+      if (k === 'subject' || !v) continue;
       credentialSubject[k] = v;
     }
 
     const vc = {
       id: state.vcId,
-      "@context": ["https://www.w3.org/2018/credentials/v1"],
-      type: ["VerifiableCredential", tpl.vcType],
-      issuer: ownerDid || "",
-      issuanceDate: state.values["issueDate"] || nowIso,
+      '@context': ['https://www.w3.org/2018/credentials/v1'],
+      type: ['VerifiableCredential', tpl.vcType],
+      issuer: ownerDid || '',
+      issuanceDate: state.values['issueDate'] || nowIso,
       expirationDate: expiration,
       credentialSubject,
     };
     setState((s) => ({ ...s, preview: vc }));
     return vc;
-  }, [state.template, state.values, ownerDid, network]);
+  }, [state.template, state.values, ownerDid, network, state.vcId]);
 
-  const extractGFromSubject = useCallback((): string | null => {
-    const rawSubject = state.values["subject"] || "";
-    const trimmed = (rawSubject || "").trim();
-    if (!trimmed) return null;
-    // Accept either raw G... address or DID:pkh for current network
-    const didMatch = trimmed.match(
-      /did:pkh:stellar:(public|testnet):([A-Z0-9]{56})/i
-    );
-    if (didMatch) return didMatch[2];
-    if (/^[A-Z0-9]{56}$/.test(trimmed)) return trimmed;
-    return null;
-  }, [state.values]);
+  // Removed unused helper to satisfy lint rules
 
   const validateRequired = useCallback(
     (fields: TemplateField[]) => {
@@ -148,14 +117,14 @@ export function useIssueCredential() {
       }
       return null;
     },
-    [state.values, state.vcId]
+    [state.values]
   );
 
   const issue = useCallback(async () => {
-    if (!walletAddress) throw new Error("Connect your wallet first");
-    if (!signTransaction) throw new Error("Signer unavailable");
+    if (!walletAddress) throw new Error('Connect your wallet first');
+    if (!signTransaction) throw new Error('Signer unavailable');
     const tpl = state.template;
-    if (!tpl) throw new Error("Select a template first");
+    if (!tpl) throw new Error('Select a template first');
 
     const requiredErr = validateRequired(tpl.fields);
     if (requiredErr) {
@@ -168,7 +137,7 @@ export function useIssueCredential() {
     try {
       const addr = await walletKit?.getAddress();
       if (addr?.address && addr.address !== walletAddress) {
-        await setWalletInfo(addr.address, walletName || "Wallet");
+        await setWalletInfo(addr.address, walletName || 'Wallet');
         activeAddress = addr.address;
       }
     } catch {}
@@ -176,11 +145,11 @@ export function useIssueCredential() {
     const vc = buildPreview() || {};
     const cfg = await getClientConfig(apiBaseUrl);
     const vaultIdOverride =
-      network === "mainnet"
-        ? process.env.NEXT_PUBLIC_VAULT_CONTRACT_ID_MAINNET || ""
-        : process.env.NEXT_PUBLIC_VAULT_CONTRACT_ID_TESTNET || "";
+      network === 'mainnet'
+        ? process.env.NEXT_PUBLIC_VAULT_CONTRACT_ID_MAINNET || ''
+        : process.env.NEXT_PUBLIC_VAULT_CONTRACT_ID_TESTNET || '';
     const vaultContractId = vaultIdOverride || cfg.vaultContractId;
-    if (!vaultContractId) throw new Error("Vault contract ID not configured");
+    if (!vaultContractId) throw new Error('Vault contract ID not configured');
 
     setState((s) => ({ ...s, issuing: true, error: null }));
     try {
@@ -198,23 +167,20 @@ export function useIssueCredential() {
         } catch {}
       }
       const ownerDidLocal = `did:pkh:stellar:${
-        network === "mainnet" ? "public" : "testnet"
+        network === 'mainnet' ? 'public' : 'testnet'
       }:${ownerG}`;
       const prep = await postPrepareStore(apiBaseUrl, {
         owner: ownerG,
         vcId: ensuredVcId,
         didUri: ownerDidLocal,
-        fields: vc as Record<string, any>,
+        fields: vc as Record<string, unknown>,
         vaultContractId,
         issuer: ownerG,
       });
-      const { signedTxXdr: signedXdr } = await walletKit!.signTransaction(
-        prep.unsignedXdr,
-        {
-          address: ownerG,
-          networkPassphrase: cfg.networkPassphrase,
-        }
-      );
+      const { signedTxXdr: signedXdr } = await walletKit!.signTransaction(prep.unsignedXdr, {
+        address: ownerG,
+        networkPassphrase: cfg.networkPassphrase,
+      });
       const res = await postVaultStore(apiBaseUrl, {
         signedXdr,
         vcId: ensuredVcId,
@@ -222,20 +188,20 @@ export function useIssueCredential() {
         vaultContractId,
       });
       setState((s) => ({ ...s, issuing: false, txId: res.tx_id }));
-      const explorerNet = network === "mainnet" ? "public" : "testnet";
+      const explorerNet = network === 'mainnet' ? 'public' : 'testnet';
       const expertUrl = `https://stellar.expert/explorer/${explorerNet}/tx/${res.tx_id}`;
-      toast.success("Credential issued", {
+      toast.success('Credential issued', {
         action: {
-          label: "View in Stellar Expert",
+          label: 'View in Stellar Expert',
           onClick: () => {
             try {
-              window.open(expertUrl, "_blank");
+              window.open(expertUrl, '_blank');
             } catch {}
           },
         },
       });
 
-      const vcDataStr = JSON.stringify(vc as Record<string, any>);
+      const vcDataStr = JSON.stringify(vc);
       const prepIssue = await postPrepareIssue(apiBaseUrl, {
         owner: ownerG,
         vcId: ensuredVcId,
@@ -256,32 +222,36 @@ export function useIssueCredential() {
         vcId: ensuredVcId,
       });
       const issueUrl = `https://stellar.expert/explorer/${explorerNet}/tx/${issueRes.tx_id}`;
-      toast.success("Issuance executed", {
+      toast.success('Issuance executed', {
         action: {
-          label: "View issuance",
+          label: 'View issuance',
           onClick: () => {
             try {
-              window.open(issueUrl, "_blank");
+              window.open(issueUrl, '_blank');
             } catch {}
           },
         },
       });
       await queryClient.invalidateQueries({
-        queryKey: ["vault", "dashboard", walletAddress, network],
+        queryKey: ['vault', 'dashboard', walletAddress, network],
       });
       await queryClient.refetchQueries({
-        queryKey: ["vault", "dashboard", walletAddress, network],
+        queryKey: ['vault', 'dashboard', walletAddress, network],
       });
       return { store: res, issue: issueRes };
-    } catch (e: any) {
-      const raw = e?.message || String(e);
+    } catch (e: unknown) {
+      const raw = (
+        e && typeof e === 'object' && 'message' in (e as Record<string, unknown>)
+          ? String((e as Record<string, unknown>).message)
+          : String(e)
+      ) as string;
       let friendly = mapContractErrorToMessage(raw);
       if (
         /insufficient|no balance|fee|TRY_AGAIN_LATER|Send status: ERROR|Transaction failed/i.test(
           raw
         )
       ) {
-        friendly = "Insufficient USDC balance to perform the transaction";
+        friendly = 'Insufficient USDC balance to perform the transaction';
       }
       if (/Error\(Contract,\s*#2\)|IssuerNotAuthorized/i.test(raw)) {
         let ownerG = walletAddress!;
@@ -300,19 +270,19 @@ export function useIssueCredential() {
             const vcRetry = buildPreview() || {};
             const cfg = await getClientConfig(apiBaseUrl);
             const vaultIdOverride =
-              network === "mainnet"
-                ? process.env.NEXT_PUBLIC_VAULT_CONTRACT_ID_MAINNET || ""
-                : process.env.NEXT_PUBLIC_VAULT_CONTRACT_ID_TESTNET || "";
+              network === 'mainnet'
+                ? process.env.NEXT_PUBLIC_VAULT_CONTRACT_ID_MAINNET || ''
+                : process.env.NEXT_PUBLIC_VAULT_CONTRACT_ID_TESTNET || '';
             const vaultContractId = vaultIdOverride || cfg.vaultContractId;
 
             const ownerDidLocal2 = `did:pkh:stellar:${
-              network === "mainnet" ? "public" : "testnet"
+              network === 'mainnet' ? 'public' : 'testnet'
             }:${ownerG}`;
             const prep2 = await postPrepareStore(apiBaseUrl, {
               owner: ownerG,
               vcId: ensuredVcId,
               didUri: ownerDidLocal2,
-              fields: vcRetry as Record<string, any>,
+              fields: vcRetry as Record<string, unknown>,
               vaultContractId,
               issuer: ownerG,
             });
@@ -330,7 +300,7 @@ export function useIssueCredential() {
               vaultContractId,
             });
 
-            const vcDataStr2 = JSON.stringify(vcRetry as Record<string, any>);
+            const vcDataStr2 = JSON.stringify(vcRetry);
             const prepIssue2 = await postPrepareIssue(apiBaseUrl, {
               owner: ownerG,
               vcId: ensuredVcId,
@@ -339,24 +309,24 @@ export function useIssueCredential() {
               issuer: ownerG,
               issuerDid: ownerDidLocal2,
             });
-            const { signedTxXdr: signedIssueXdr2 } =
-              await walletKit!.signTransaction(prepIssue2.unsignedXdr, {
+            const { signedTxXdr: signedIssueXdr2 } = await walletKit!.signTransaction(
+              prepIssue2.unsignedXdr,
+              {
                 address: ownerG,
                 networkPassphrase: cfg.networkPassphrase,
-              });
+              }
+            );
             const issueRes2 = await postIssueCredential(apiBaseUrl, {
               signedXdr: signedIssueXdr2,
               vcId: ensuredVcId,
             });
 
-            toast.success(
-              "Issuer automatically authorized and issuance retried."
-            );
+            toast.success('Issuer automatically authorized and issuance retried.');
             await queryClient.invalidateQueries({
-              queryKey: ["vault", "dashboard", walletAddress, network],
+              queryKey: ['vault', 'dashboard', walletAddress, network],
             });
             await queryClient.refetchQueries({
-              queryKey: ["vault", "dashboard", walletAddress, network],
+              queryKey: ['vault', 'dashboard', walletAddress, network],
             });
             setState((s) => ({
               ...s,
@@ -365,10 +335,14 @@ export function useIssueCredential() {
               txId: res2.tx_id,
             }));
             return { store: res2, issue: issueRes2 };
-          } catch (retryErr: any) {
-            friendly = mapContractErrorToMessage(
-              retryErr?.message || String(retryErr)
-            );
+          } catch (retryErr: unknown) {
+            const rmsg =
+              retryErr &&
+              typeof retryErr === 'object' &&
+              'message' in (retryErr as Record<string, unknown>)
+                ? String((retryErr as Record<string, unknown>).message)
+                : String(retryErr);
+            friendly = mapContractErrorToMessage(rmsg);
           }
         } else {
           friendly =
@@ -387,12 +361,10 @@ export function useIssueCredential() {
     apiBaseUrl,
     network,
     state.template,
-    state.values,
     state.vcId,
     buildPreview,
     validateRequired,
     queryClient,
-    ownerDid,
     signTransaction,
     checkSelfAuthorized,
     authorizeSelf,
@@ -407,5 +379,36 @@ export function useIssueCredential() {
     setFieldValue,
     buildPreview,
     issue,
+  };
+}
+
+export function buildMockCredential(params: {
+  issuer: string;
+  subject: string;
+  type: string;
+  attributesJson: string;
+  expires: string;
+}): MockCredential {
+  let attrs: Record<string, unknown> = {};
+  const raw = params.attributesJson || '{}';
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object') {
+      attrs = parsed as Record<string, unknown>;
+    }
+  } catch {
+    throw new Error('Attributes JSON is not valid');
+  }
+
+  return {
+    '@context': ['https://www.w3.org/2018/credentials/v1'],
+    type: ['VerifiableCredential', params.type],
+    issuer: params.issuer,
+    issuanceDate: new Date().toISOString(),
+    expirationDate: params.expires || undefined,
+    credentialSubject: {
+      id: params.subject,
+      ...attrs,
+    },
   };
 }

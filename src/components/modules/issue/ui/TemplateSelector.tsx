@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import type { CredentialTemplate } from "../hooks/useCredentialTemplates";
+import type { CredentialTemplate } from '@/@types/templates';
 
 export default function TemplateSelector({
   templates,
@@ -12,28 +12,25 @@ export default function TemplateSelector({
   onSelect: (tpl: CredentialTemplate) => void;
 }) {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {templates.map((tpl) => (
-        <button
-          key={tpl.id}
-          onClick={() => onSelect(tpl)}
-          className={`text-left rounded-xl border p-4 transition ${
-            selectedId === tpl.id
-              ? "border-black dark:border-white bg-neutral-50 dark:bg-neutral-900"
-              : "border-neutral-200 dark:border-neutral-800 hover:border-neutral-400"
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <h3 className="text-base font-semibold">{tpl.title}</h3>
-            {selectedId === tpl.id && (
-              <span className="text-xs px-2 py-1 rounded-full bg-black text-white dark:bg-white dark:text-black">Selected</span>
-            )}
-          </div>
-          <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-            {tpl.description}
-          </p>
-        </button>
-      ))}
+    <div className="space-y-2">
+      <label className="block mt-4 text-sm font-medium text-white">Select Template</label>
+      <select
+        value={selectedId || ''}
+        onChange={(e) => {
+          const tpl = templates.find((t) => t.id === e.target.value);
+          if (tpl) onSelect(tpl);
+        }}
+        className="w-full rounded-xl border border-zinc-800 bg-zinc-950/50 text-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+      >
+        <option value="" disabled>
+          Choose a template...
+        </option>
+        {templates.map((tpl) => (
+          <option key={tpl.id} value={tpl.id}>
+            {tpl.title} - {tpl.description}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
