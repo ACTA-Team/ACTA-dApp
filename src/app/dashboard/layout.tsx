@@ -1,22 +1,10 @@
-import type { Metadata } from "next";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/layouts/sidebar/Sidebar";
-import { HeaderHome } from "@/layouts/header/Header";
+import DashboardLayoutClient from '@/layouts/client/Client';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Dashboard",
+  title: 'Dashboard',
 };
 
-export default function DashboardLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <HeaderHome />
-        <div className="p-6">{children}</div>
-      </SidebarInset>
-    </SidebarProvider>
-  );
+export default function DashboardLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return <DashboardLayoutClient>{children}</DashboardLayoutClient>;
 }
