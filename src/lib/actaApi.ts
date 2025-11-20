@@ -143,3 +143,20 @@ export async function postVaultVerify(
   }
   return json as { vc_id: string; status: string; since?: string };
 }
+
+export async function postZkVerify(
+  apiBaseUrl: string,
+  args: { vc_id: string; statement: any; publicSignals: any; proof: any }
+) {
+  const resp = await fetch(`${apiBaseUrl}/zk/verify`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(args),
+  });
+  const json = await resp.json().catch(() => ({}));
+  if (!resp.ok) {
+    const msg = (json && json.message) || `HTTP ${resp.status}`;
+    throw new Error(msg);
+  }
+  return json as { ok: boolean; mode?: string; reason?: string };
+}
