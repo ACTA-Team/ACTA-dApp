@@ -13,30 +13,30 @@ export function mapContractErrorToMessage(err: unknown): string {
   const code = codeMatch ? codeMatch[1] : undefined
 
   if (code === '1' || /AlreadyInitialized/i.test(s)) {
-    return 'Vault ya fue inicializado'
+    return 'Vault already initialized'
   }
   if (code === '2' || /IssuerNotAuthorized/i.test(s)) {
-    return 'Issuer no autorizado en este vault'
+    return 'Issuer not authorized in this vault'
   }
   if (code === '3' || /IssuerAlreadyAuthorized/i.test(s)) {
-    return 'Issuer ya autorizado'
+    return 'Issuer already authorized'
   }
   if (code === '4' || /VaultRevoked/i.test(s)) {
-    return 'Vault revocado'
+    return 'Vault revoked'
   }
   if (code === '5' || /VCSAlreadyMigrated/i.test(s)) {
-    return 'Credenciales ya migradas'
+    return 'Credentials already migrated'
   }
 
-  if (/FAILED/i.test(s)) return 'Transacción fallida'
-  if (/ERROR/i.test(s)) return 'Error en la transacción'
-  if (/Please set the wallet first/i.test(s)) return 'Primero conecta tu wallet'
+  if (/FAILED/i.test(s)) return 'Transaction failed'
+  if (/ERROR/i.test(s)) return 'Transaction error'
+  if (/Please set the wallet first/i.test(s)) return 'Connect your wallet first'
 
-  if (/Connect your wallet first/i.test(s)) return 'Primero conecta tu wallet'
-  if (/Signer unavailable/i.test(s)) return 'Firmador no disponible'
-  if (/Missing NEXT_PUBLIC_VAULT_CONTRACT_ID/i.test(s)) return 'ID de contrato Vault no configurado'
+  if (/Connect your wallet first/i.test(s)) return 'Connect your wallet first'
+  if (/Signer unavailable/i.test(s)) return 'Signer unavailable'
+  if (/Missing NEXT_PUBLIC_VAULT_CONTRACT_ID/i.test(s)) return 'Vault contract ID not configured'
 
-  if (s.trim()) return `Error inesperado: ${s.trim()}`
+  if (s.trim()) return `Unexpected error: ${s.trim()}`
 
-  return 'Error inesperado'
+  return 'Unexpected error'
 }

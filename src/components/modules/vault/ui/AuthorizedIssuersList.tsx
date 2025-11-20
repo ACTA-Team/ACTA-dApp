@@ -11,28 +11,28 @@ export function AuthorizedIssuersList() {
   const onRevoke = async (addr: string) => {
     try {
       const res = await revoke(addr);
-      toast.success(`Revocado. TX: ${res.txId}`);
+      toast.success("Revoked");
     } catch (e: any) {
-      toast.error(e?.message || "Error al revocar");
+      toast.error(e?.message || "Error revoking");
     }
   };
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Wallets autorizadas</h2>
+      <h2 className="text-xl font-semibold">Authorized Wallets</h2>
       <p className="text-sm text-neutral-600 dark:text-neutral-400">
-        Lista derivada de credenciales emitidas. Puede que una wallet autorizada no aparezca hasta emitir.
+        List derived from issued credentials. An authorized wallet may not appear until issuance.
       </p>
 
       <Card className="p-0 overflow-hidden">
         <div className="grid grid-cols-12 px-4 py-3 text-xs text-neutral-500 dark:text-neutral-400">
-          <div className="col-span-6">Dirección</div>
+          <div className="col-span-6">Address</div>
           <div className="col-span-5">DID</div>
-          <div className="col-span-1 text-right">Acción</div>
+          <div className="col-span-1 text-right">Action</div>
         </div>
         <div>
           {issuers.length === 0 && (
-            <div className="px-4 py-6 text-sm text-neutral-500 dark:text-neutral-400">No hay wallets autorizadas detectadas.</div>
+            <div className="px-4 py-6 text-sm text-neutral-500 dark:text-neutral-400">No authorized wallets detected.</div>
           )}
           {issuers.map((it) => (
             <div key={it.address} className="grid grid-cols-12 items-center px-4 py-3 border-t">
@@ -47,7 +47,7 @@ export function AuthorizedIssuersList() {
                   disabled={loading || revoking === it.address}
                   className="rounded-md"
                 >
-                  {revoking === it.address ? "Revocando..." : "Revocar"}
+                  {revoking === it.address ? "Revoking..." : "Revoke"}
                 </Button>
               </div>
             </div>

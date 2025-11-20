@@ -4,6 +4,7 @@ import { Wallet } from "@/components/auth/Wallet";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { useNetwork } from "@/providers/network.provider";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 
 export function HeaderHome() {
   const { network, setNetwork } = useNetwork();
@@ -13,7 +14,11 @@ export function HeaderHome() {
         <div className="flex items-center gap-3">
           <SidebarTrigger />
         </div>
+
         <div className="flex items-center gap-3">
+          <div className="scale-75">
+            <AnimatedThemeToggler />
+          </div>
           <div className="flex items-center gap-1 rounded-md border px-1 py-1">
             <Button
               size="sm"

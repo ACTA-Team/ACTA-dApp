@@ -10,7 +10,7 @@ export function VaultDashboard() {
 
   const createdAtLabel = ownerCreatedAt
     ? new Date(ownerCreatedAt).toLocaleString()
-    : "No disponible";
+    : "Not available";
   const credsCount = vcIds?.length ?? 0;
 
   return (
@@ -30,13 +30,13 @@ export function VaultDashboard() {
         </Card>
         <Card className="p-5">
           <div className="text-xs text-neutral-500 dark:text-neutral-400">
-            Credenciales
+            Credentials
           </div>
           <div className="mt-2 text-2xl font-semibold">{credsCount}</div>
         </Card>
         <Card className="p-5">
           <div className="text-xs text-neutral-500 dark:text-neutral-400">
-            Creado
+            Created
           </div>
           <div className="mt-2 text-lg font-medium">{createdAtLabel}</div>
         </Card>

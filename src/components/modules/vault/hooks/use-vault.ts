@@ -2,12 +2,16 @@
 
 import * as StellarSdk from "@stellar/stellar-sdk";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getClientConfig } from "@/lib/env";
 import { useWalletContext } from "@/providers/wallet.provider";
 import { useNetwork } from "@/providers/network.provider";
 import { mapContractErrorToMessage } from "@/lib/utils";
 
-async function waitForTx(server: StellarSdk.rpc.Server, hash: string): Promise<void> {
+async function waitForTx(
+  server: StellarSdk.rpc.Server,
+  hash: string
+): Promise<void> {
   for (let i = 0; i < 40; i++) {
     try {
       const res = await server.getTransaction(hash);
@@ -25,6 +29,7 @@ export function useVault() {
   const { walletAddress, signTransaction } = useWalletContext();
   const { apiBaseUrl, network } = useNetwork();
   const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
   const [config, setConfig] = useState<{
     rpcUrl: string;
     networkPassphrase: string;
@@ -33,7 +38,13 @@ export function useVault() {
   const [vaultExists, setVaultExists] = useState<boolean | null>(null);
   const [vcIds, setVcIds] = useState<string[] | null>(null);
   const [vcs, setVcs] = useState<any[] | null>(null);
-  const horizonUrl = useMemo(() => (network === "mainnet" ? "https://horizon.stellar.org" : "https://horizon-testnet.stellar.org"), [network]);
+  const horizonUrl = useMemo(
+    () =>
+      network === "mainnet"
+        ? "https://horizon.stellar.org"
+        : "https://horizon-testnet.stellar.org",
+    [network]
+  );
   const [xlmBalance, setXlmBalance] = useState<string | null>(null);
   const [ownerCreatedAt, setOwnerCreatedAt] = useState<string | null>(null);
 
@@ -54,7 +65,9 @@ export function useVault() {
   }, [config, apiBaseUrl, network]);
 
   const ownerDid = walletAddress
-    ? `did:pkh:stellar:${network === "mainnet" ? "public" : "testnet"}:${walletAddress}`
+    ? `did:pkh:stellar:${
+        network === "mainnet" ? "public" : "testnet"
+      }:${walletAddress}`
     : null;
 
   const checkVaultExists = useCallback(async () => {
@@ -64,7 +77,10 @@ export function useVault() {
     try {
       const server = new StellarSdk.rpc.Server(rpcUrl);
       const sourceAccount = await server.getAccount(walletAddress);
-      const account = new StellarSdk.Account(walletAddress, sourceAccount.sequenceNumber());
+      const account = new StellarSdk.Account(
+        walletAddress,
+        sourceAccount.sequenceNumber()
+      );
       const contract = new StellarSdk.Contract(vaultContractId);
       const tx = new StellarSdk.TransactionBuilder(account, {
         fee: StellarSdk.BASE_FEE.toString(),
@@ -84,7 +100,7 @@ export function useVault() {
       const err: any = (sim as any).error;
       if (err && typeof err === "string") {
         const friendly = mapContractErrorToMessage(err);
-        if (/inicializado/i.test(friendly)) return true; // "Vault ya fue inicializado"
+        if (/initialized/i.test(friendly)) return true; // "Vault already initialized"
         return false;
       }
       // If no error, vault not initialized yet
@@ -100,11 +116,18 @@ export function useVault() {
     const resp = await fetch(`${apiBaseUrl}/vault/list_vc_ids_direct`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ owner: walletAddress, vaultContractId: cfg.vaultContractId }),
+      body: JSON.stringify({
+        owner: walletAddress,
+        vaultContractId: cfg.vaultContractId,
+      }),
     });
     if (!resp.ok) throw new Error(`read_vc_ids_http_${resp.status}`);
     const json = await resp.json();
-    const ids: string[] = Array.isArray(json?.vc_ids) ? json.vc_ids : Array.isArray(json?.result) ? json.result : [];
+    const ids: string[] = Array.isArray(json?.vc_ids)
+      ? json.vc_ids
+      : Array.isArray(json?.result)
+      ? json.result
+      : [];
     return ids;
   }, [walletAddress, ensureConfig, apiBaseUrl]);
 
@@ -115,7 +138,11 @@ export function useVault() {
       const resp = await fetch(`${apiBaseUrl}/vault/get_vc_direct`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ owner: walletAddress, vcId, vaultContractId: cfg.vaultContractId }),
+        body: JSON.stringify({
+          owner: walletAddress,
+          vcId,
+          vaultContractId: cfg.vaultContractId,
+        }),
       });
       if (!resp.ok) throw new Error(`get_vc_http_${resp.status}`);
       const json = await resp.json();
@@ -127,7 +154,9 @@ export function useVault() {
   const fetchXlmBalance = useCallback(async () => {
     if (!walletAddress) return null;
     try {
-      const resp = await fetch(`${horizonUrl}/accounts/${walletAddress}`, { method: "GET" });
+      const resp = await fetch(`${horizonUrl}/accounts/${walletAddress}`, {
+        method: "GET",
+      });
       if (!resp.ok) return null;
       const json = await resp.json();
       const bal = Array.isArray(json?.balances)
@@ -143,110 +172,171 @@ export function useVault() {
     }
   }, [walletAddress, horizonUrl]);
 
+  const readDashboard = useCallback(async () => {
+    if (!walletAddress) {
+      return {
+        vaultExists: null as boolean | null,
+        xlmBalance: null as string | null,
+        vcIds: null as string[] | null,
+        vcs: null as any[] | null,
+        ownerCreatedAt: ownerCreatedAt as string | null,
+      };
+    }
+    try {
+      const exists = await checkVaultExists();
+      const bal = await fetchXlmBalance();
+      const ids = await fetchVcIdsDirect();
+      const items = [] as any[];
+      for (const id of ids) {
+        try {
+          const vc = await fetchVcDirect(id);
+          if (vc) items.push({ id, ...vc });
+        } catch (e) {
+          console.warn("get_vc_direct failed", e);
+        }
+      }
+      return {
+        vaultExists: exists,
+        xlmBalance: bal,
+        vcIds: ids,
+        vcs: items,
+        ownerCreatedAt,
+      };
+    } catch (e) {
+      console.warn("vault dashboard load failed", e);
+      return {
+        vaultExists: false,
+        xlmBalance: null,
+        vcIds: [],
+        vcs: [],
+        ownerCreatedAt,
+      };
+    }
+  }, [
+    walletAddress,
+    checkVaultExists,
+    fetchXlmBalance,
+    fetchVcIdsDirect,
+    fetchVcDirect,
+    ownerCreatedAt,
+  ]);
+
+  const dashboardQuery = useQuery<{
+    vaultExists: boolean | null;
+    xlmBalance: string | null;
+    vcIds: string[] | null;
+    vcs: any[] | null;
+    ownerCreatedAt: string | null;
+  }>({
+    queryKey: ["vault", "dashboard", walletAddress, network],
+    queryFn: readDashboard,
+    enabled: !!walletAddress,
+    staleTime: 10_000,
+  });
+
   useEffect(() => {
-    // Refresh dashboard data when wallet or network changes
-    (async () => {
-      try {
-        if (!walletAddress) {
-          setVaultExists(null);
-          setVcIds(null);
-          setVcs(null);
-          setXlmBalance(null);
-          return;
-        }
-        const exists = await checkVaultExists();
-        setVaultExists(exists);
-        const bal = await fetchXlmBalance();
-        setXlmBalance(bal);
-        const ids = await fetchVcIdsDirect();
-        setVcIds(ids);
-        const items = [] as any[];
-        for (const id of ids) {
-          try {
-            const vc = await fetchVcDirect(id);
-            if (vc) items.push({ id, ...vc });
-          } catch (e) {
-            // ignore failed fetch for individual VC
-            console.warn("get_vc_direct failed", e);
-          }
-        }
-        setVcs(items);
-      } catch (e) {
-        console.warn("vault dashboard load failed", e);
-        setVcIds([]);
-        setVcs([]);
-      }
-    })();
-  }, [walletAddress, network, checkVaultExists, fetchXlmBalance, fetchVcIdsDirect, fetchVcDirect]);
+    const data = dashboardQuery.data;
+    if (!data) {
+      setVaultExists(null);
+      setXlmBalance(null);
+      setVcIds(null);
+      setVcs(null);
+      return;
+    }
+    setVaultExists(data.vaultExists);
+    setXlmBalance(data.xlmBalance);
+    setVcIds(data.vcIds);
+    setVcs(data.vcs);
+  }, [dashboardQuery.data]);
 
-  const createVault = useCallback(
-    async () => {
-      if (!walletAddress) throw new Error("Conecta tu wallet primero");
-      const { rpcUrl, networkPassphrase, vaultContractId } = await ensureConfig();
-      if (!vaultContractId) throw new Error("Vault contract ID no está configurado");
-      if (!signTransaction) throw new Error("Firmador no disponible");
-      if (!ownerDid) throw new Error("No se pudo calcular el DID del propietario");
-
-      setLoading(true);
-      try {
-        const server = new StellarSdk.rpc.Server(rpcUrl);
-        const sourceAccount = await server.getAccount(walletAddress);
-        const account = new StellarSdk.Account(walletAddress, sourceAccount.sequenceNumber());
-        const contract = new StellarSdk.Contract(vaultContractId);
-
-        let tx = new StellarSdk.TransactionBuilder(account, {
-          fee: StellarSdk.BASE_FEE.toString(),
-          networkPassphrase,
-        })
-          .addOperation(
-            contract.call(
-              "initialize",
-              StellarSdk.Address.fromString(walletAddress).toScVal(),
-              StellarSdk.xdr.ScVal.scvString(ownerDid)
-            )
-          )
-          .setTimeout(60)
-          .build();
-        tx = await server.prepareTransaction(tx);
-        const signedXdr = await signTransaction(tx.toXDR(), { networkPassphrase });
-        const signed = StellarSdk.TransactionBuilder.fromXDR(signedXdr, networkPassphrase);
-        const send = await server.sendTransaction(signed);
-        if (
-          send.status === "PENDING" ||
-          send.status === "DUPLICATE" ||
-          send.status === "TRY_AGAIN_LATER"
-        ) {
-          await waitForTx(server, send.hash!);
-        } else if (send.status === "ERROR") {
-          throw new Error("ERROR");
-        }
-        return { txId: send.hash! };
-      } catch (e: unknown) {
-        const msg =
-          e instanceof Error
-            ? e.message
-            : typeof e === "object" && e && "message" in (e as any)
-              ? String((e as any).message)
-              : String(e);
-        const friendly = mapContractErrorToMessage(msg);
-        throw new Error(friendly);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [walletAddress, signTransaction, ensureConfig, ownerDid]
-  );
-
-  const authorizeSelf = useCallback(async () => {
-    if (!walletAddress) throw new Error("Conecta tu wallet primero");
+  const createVault = useCallback(async () => {
+    if (!walletAddress) throw new Error("Connect your wallet first");
     const { rpcUrl, networkPassphrase, vaultContractId } = await ensureConfig();
-    if (!vaultContractId) throw new Error("Vault contract ID no está configurado");
-    if (!signTransaction) throw new Error("Firmador no disponible");
+    if (!vaultContractId) throw new Error("Vault contract ID not configured");
+    if (!signTransaction) throw new Error("Signer unavailable");
+    if (!ownerDid) throw new Error("Could not compute owner DID");
+
     setLoading(true);
     try {
       const server = new StellarSdk.rpc.Server(rpcUrl);
       const sourceAccount = await server.getAccount(walletAddress);
-      const account = new StellarSdk.Account(walletAddress, sourceAccount.sequenceNumber());
+      const account = new StellarSdk.Account(
+        walletAddress,
+        sourceAccount.sequenceNumber()
+      );
+      const contract = new StellarSdk.Contract(vaultContractId);
+
+      let tx = new StellarSdk.TransactionBuilder(account, {
+        fee: StellarSdk.BASE_FEE.toString(),
+        networkPassphrase,
+      })
+        .addOperation(
+          contract.call(
+            "initialize",
+            StellarSdk.Address.fromString(walletAddress).toScVal(),
+            StellarSdk.xdr.ScVal.scvString(ownerDid)
+          )
+        )
+        .setTimeout(60)
+        .build();
+      tx = await server.prepareTransaction(tx);
+      const signedXdr = await signTransaction(tx.toXDR(), {
+        networkPassphrase,
+      });
+      const signed = StellarSdk.TransactionBuilder.fromXDR(
+        signedXdr,
+        networkPassphrase
+      );
+      const send = await server.sendTransaction(signed);
+      if (
+        send.status === "PENDING" ||
+        send.status === "DUPLICATE" ||
+        send.status === "TRY_AGAIN_LATER"
+      ) {
+        await waitForTx(server, send.hash!);
+      } else if (send.status === "ERROR") {
+        throw new Error("ERROR");
+      }
+      const txId = send.hash!;
+
+      queryClient.setQueryData(
+        ["vault", "dashboard", walletAddress, network],
+        (prev: any) => ({ ...(prev ?? {}), vaultExists: true })
+      );
+      await queryClient.invalidateQueries({
+        queryKey: ["vault", "dashboard", walletAddress, network],
+      });
+      await queryClient.refetchQueries({
+        queryKey: ["vault", "dashboard", walletAddress, network],
+      });
+      return { txId };
+    } catch (e: unknown) {
+      const msg =
+        e instanceof Error
+          ? e.message
+          : typeof e === "object" && e && "message" in (e as any)
+          ? String((e as any).message)
+          : String(e);
+      const friendly = mapContractErrorToMessage(msg);
+      throw new Error(friendly);
+    } finally {
+      setLoading(false);
+    }
+  }, [walletAddress, signTransaction, ensureConfig, ownerDid, queryClient]);
+
+  const authorizeSelf = useCallback(async () => {
+    if (!walletAddress) throw new Error("Connect your wallet first");
+    const { rpcUrl, networkPassphrase, vaultContractId } = await ensureConfig();
+    if (!vaultContractId) throw new Error("Vault contract ID not configured");
+    if (!signTransaction) throw new Error("Signer unavailable");
+    setLoading(true);
+    try {
+      const server = new StellarSdk.rpc.Server(rpcUrl);
+      const sourceAccount = await server.getAccount(walletAddress);
+      const account = new StellarSdk.Account(
+        walletAddress,
+        sourceAccount.sequenceNumber()
+      );
       const contract = new StellarSdk.Contract(vaultContractId);
 
       let tx = new StellarSdk.TransactionBuilder(account, {
@@ -264,8 +354,13 @@ export function useVault() {
         .build();
 
       tx = await server.prepareTransaction(tx);
-      const signedXdr = await signTransaction(tx.toXDR(), { networkPassphrase });
-      const signed = StellarSdk.TransactionBuilder.fromXDR(signedXdr, networkPassphrase);
+      const signedXdr = await signTransaction(tx.toXDR(), {
+        networkPassphrase,
+      });
+      const signed = StellarSdk.TransactionBuilder.fromXDR(
+        signedXdr,
+        networkPassphrase
+      );
       const send = await server.sendTransaction(signed);
       if (
         send.status === "PENDING" ||
@@ -276,33 +371,44 @@ export function useVault() {
       } else if (send.status === "ERROR") {
         throw new Error("ERROR");
       }
-      return { txId: send.hash! };
+      const txId = send.hash!;
+      await queryClient.invalidateQueries({
+        queryKey: ["vault", "dashboard", walletAddress, network],
+      });
+      await queryClient.refetchQueries({
+        queryKey: ["vault", "dashboard", walletAddress, network],
+      });
+      return { txId };
     } catch (e: unknown) {
       const msg =
         e instanceof Error
           ? e.message
           : typeof e === "object" && e && "message" in (e as any)
-            ? String((e as any).message)
-            : String(e);
+          ? String((e as any).message)
+          : String(e);
       const friendly = mapContractErrorToMessage(msg);
       throw new Error(friendly);
     } finally {
       setLoading(false);
     }
-  }, [walletAddress, signTransaction, ensureConfig]);
+  }, [walletAddress, signTransaction, ensureConfig, queryClient]);
 
   const authorizeAddress = useCallback(
     async (address: string) => {
-      if (!walletAddress) throw new Error("Conecta tu wallet primero");
-      const { rpcUrl, networkPassphrase, vaultContractId } = await ensureConfig();
-      if (!vaultContractId) throw new Error("Vault contract ID no está configurado");
-      if (!signTransaction) throw new Error("Firmador no disponible");
-      if (!address) throw new Error("Dirección requerida");
+      if (!walletAddress) throw new Error("Connect your wallet first");
+      const { rpcUrl, networkPassphrase, vaultContractId } =
+        await ensureConfig();
+      if (!vaultContractId) throw new Error("Vault contract ID not configured");
+      if (!signTransaction) throw new Error("Signer unavailable");
+      if (!address) throw new Error("Address required");
       setLoading(true);
       try {
         const server = new StellarSdk.rpc.Server(rpcUrl);
         const sourceAccount = await server.getAccount(walletAddress);
-        const account = new StellarSdk.Account(walletAddress, sourceAccount.sequenceNumber());
+        const account = new StellarSdk.Account(
+          walletAddress,
+          sourceAccount.sequenceNumber()
+        );
         const contract = new StellarSdk.Contract(vaultContractId);
 
         let tx = new StellarSdk.TransactionBuilder(account, {
@@ -320,8 +426,13 @@ export function useVault() {
           .build();
 
         tx = await server.prepareTransaction(tx);
-        const signedXdr = await signTransaction(tx.toXDR(), { networkPassphrase });
-        const signed = StellarSdk.TransactionBuilder.fromXDR(signedXdr, networkPassphrase);
+        const signedXdr = await signTransaction(tx.toXDR(), {
+          networkPassphrase,
+        });
+        const signed = StellarSdk.TransactionBuilder.fromXDR(
+          signedXdr,
+          networkPassphrase
+        );
         const send = await server.sendTransaction(signed);
         if (
           send.status === "PENDING" ||
@@ -332,35 +443,46 @@ export function useVault() {
         } else if (send.status === "ERROR") {
           throw new Error("ERROR");
         }
-        return { txId: send.hash! };
+        const txId = send.hash!;
+        await queryClient.invalidateQueries({
+          queryKey: ["vault", "dashboard", walletAddress, network],
+        });
+        await queryClient.refetchQueries({
+          queryKey: ["vault", "dashboard", walletAddress, network],
+        });
+        return { txId };
       } catch (e: unknown) {
         const msg =
           e instanceof Error
             ? e.message
             : typeof e === "object" && e && "message" in (e as any)
-              ? String((e as any).message)
-              : String(e);
+            ? String((e as any).message)
+            : String(e);
         const friendly = mapContractErrorToMessage(msg);
         throw new Error(friendly);
       } finally {
         setLoading(false);
       }
     },
-    [walletAddress, signTransaction, ensureConfig]
+    [walletAddress, signTransaction, ensureConfig, queryClient]
   );
 
   const revokeAddress = useCallback(
     async (address: string) => {
-      if (!walletAddress) throw new Error("Conecta tu wallet primero");
-      const { rpcUrl, networkPassphrase, vaultContractId } = await ensureConfig();
-      if (!vaultContractId) throw new Error("Vault contract ID no está configurado");
-      if (!signTransaction) throw new Error("Firmador no disponible");
-      if (!address) throw new Error("Dirección requerida");
+      if (!walletAddress) throw new Error("Connect your wallet first");
+      const { rpcUrl, networkPassphrase, vaultContractId } =
+        await ensureConfig();
+      if (!vaultContractId) throw new Error("Vault contract ID not configured");
+      if (!signTransaction) throw new Error("Signer unavailable");
+      if (!address) throw new Error("Address required");
       setLoading(true);
       try {
         const server = new StellarSdk.rpc.Server(rpcUrl);
         const sourceAccount = await server.getAccount(walletAddress);
-        const account = new StellarSdk.Account(walletAddress, sourceAccount.sequenceNumber());
+        const account = new StellarSdk.Account(
+          walletAddress,
+          sourceAccount.sequenceNumber()
+        );
         const contract = new StellarSdk.Contract(vaultContractId);
 
         let tx = new StellarSdk.TransactionBuilder(account, {
@@ -378,8 +500,13 @@ export function useVault() {
           .build();
 
         tx = await server.prepareTransaction(tx);
-        const signedXdr = await signTransaction(tx.toXDR(), { networkPassphrase });
-        const signed = StellarSdk.TransactionBuilder.fromXDR(signedXdr, networkPassphrase);
+        const signedXdr = await signTransaction(tx.toXDR(), {
+          networkPassphrase,
+        });
+        const signed = StellarSdk.TransactionBuilder.fromXDR(
+          signedXdr,
+          networkPassphrase
+        );
         const send = await server.sendTransaction(signed);
         if (
           send.status === "PENDING" ||
@@ -390,24 +517,32 @@ export function useVault() {
         } else if (send.status === "ERROR") {
           throw new Error("ERROR");
         }
-        return { txId: send.hash! };
+        const txId = send.hash!;
+        await queryClient.invalidateQueries({
+          queryKey: ["vault", "dashboard", walletAddress, network],
+        });
+        await queryClient.refetchQueries({
+          queryKey: ["vault", "dashboard", walletAddress, network],
+        });
+        return { txId };
       } catch (e: unknown) {
         const msg =
           e instanceof Error
             ? e.message
             : typeof e === "object" && e && "message" in (e as any)
-              ? String((e as any).message)
-              : String(e);
+            ? String((e as any).message)
+            : String(e);
         const friendly = mapContractErrorToMessage(msg);
         throw new Error(friendly);
       } finally {
         setLoading(false);
       }
     },
-    [walletAddress, signTransaction, ensureConfig]
+    [walletAddress, signTransaction, ensureConfig, queryClient]
   );
 
   return {
+    dashboardStatus: dashboardQuery.status,
     loading,
     createVault,
     authorizeSelf,

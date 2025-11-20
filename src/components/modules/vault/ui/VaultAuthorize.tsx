@@ -12,18 +12,18 @@ export function VaultAuthorize() {
   const onAuthorizeMe = async () => {
     try {
       const res = await authorizeMe();
-      toast.success(`Autorizado. TX: ${res.txId}`);
+      toast.success("Authorized");
     } catch (e: any) {
-      toast.error(e?.message || "Error al autorizarme");
+      toast.error(e?.message || "Error authorizing myself");
     }
   };
 
   const onAuthorizeAddress = async () => {
     try {
       const res = await authorizeWithInput();
-      toast.success(`Dirección autorizada. TX: ${res.txId}`);
+      toast.success("Address authorized");
     } catch (e: any) {
-      toast.error(e?.message || "Error al autorizar dirección");
+      toast.error(e?.message || "Error authorizing address");
     }
   };
 
@@ -31,32 +31,32 @@ export function VaultAuthorize() {
     <div className="grid gap-6 sm:grid-cols-2">
       <Card className="p-6 space-y-3">
         <div>
-          <h3 className="text-lg font-semibold">Autorizarme</h3>
+          <h3 className="text-lg font-semibold">Authorize Me</h3>
           <p className="text-sm text-neutral-600 dark:text-neutral-400">
-            Te habilita como emisor autorizado en tu vault.
+            Grants you permission as an authorized issuer in your vault.
           </p>
         </div>
         <Button onClick={onAuthorizeMe} disabled={loading} className="w-full rounded-md">
-          {loading ? "Autorizando..." : "Autorizarme"}
+          {loading ? "Authorizing..." : "Authorize Me"}
         </Button>
       </Card>
 
       <Card className="p-6 space-y-3">
         <div>
-          <h3 className="text-lg font-semibold">Autorizar dirección</h3>
+          <h3 className="text-lg font-semibold">Authorize Address</h3>
           <p className="text-sm text-neutral-600 dark:text-neutral-400">
-            Ingresa una wallet Stellar (G...) para autorizarla.
+            Enter a Stellar wallet (G...) to authorize it.
           </p>
         </div>
         <div className="flex w-full gap-2 items-center">
           <Input
-            placeholder="Dirección a autorizar (G...)"
+            placeholder="Address to authorize (G...)"
             value={addressInput}
             onChange={(e) => setAddressInput(e.target.value)}
             className="flex-1 min-w-0"
           />
           <Button onClick={onAuthorizeAddress} disabled={loading} className="rounded-md">
-            {loading ? "Autorizando..." : "Autorizar"}
+            {loading ? "Authorizing..." : "Authorize"}
           </Button>
         </div>
       </Card>

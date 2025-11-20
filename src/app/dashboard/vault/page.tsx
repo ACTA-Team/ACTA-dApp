@@ -11,7 +11,7 @@ export default function VaultPage() {
         Vault
       </h1>
       <p className="text-neutral-600 dark:text-neutral-400">
-        Crea tu vault y autoriza wallets para emitir.
+        Create your vault and authorize wallets to issue.
       </p>
       <VaultSection />
     </div>

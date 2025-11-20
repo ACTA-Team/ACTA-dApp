@@ -14,15 +14,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-  import {
-    IconHome,
-    IconId,
-    IconUpload,
-    IconLock,
-    IconShieldCheck,
-    IconBook2,
-    IconSettings,
-  } from "@tabler/icons-react";
+import {
+  IconHome,
+  IconId,
+  IconUpload,
+  IconLock,
+  IconShieldCheck,
+  IconBook2,
+  IconSettings,
+} from "@tabler/icons-react";
 
 export function AppSidebar() {
   return (
@@ -30,7 +30,20 @@ export function AppSidebar() {
       <SidebarHeader>
         <div className="mt-2 flex items-center gap-2 px-2">
           <div className="size-8 rounded-mdtext-white grid place-items-center">
-            <Image src="/logo.png" alt="ACTA" width={32} height={32} />
+            <Image
+              src="/black.png"
+              alt="ACTA"
+              width={32}
+              height={32}
+              className="dark:hidden"
+            />
+            <Image
+              src="/logo.png"
+              alt="ACTA"
+              width={32}
+              height={32}
+              className="hidden dark:block"
+            />
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-semibold">ACTA dApp</span>
@@ -58,7 +71,7 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild>
                   <Link href="/dashboard/credentials">
                     <IconId />
-                    <span>Credenciales</span>
+                    <span>Credentials</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -66,7 +79,7 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild>
                   <Link href="/dashboard/issue">
                     <IconUpload />
-                    <span>Emitir</span>
+                    <span>Issue</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -82,7 +95,7 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild>
                   <Link href="/dashboard/authorize">
                     <IconShieldCheck />
-                    <span>Autorizar</span>
+                    <span>Authorize</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -98,7 +111,7 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild>
                   <Link href="https://docs.acta.build/">
                     <IconBook2 />
-                    <span>Documentación</span>
+                    <span>Documentation</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

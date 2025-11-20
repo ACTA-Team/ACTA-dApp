@@ -4,6 +4,7 @@ import "./globals.css";
 import { WalletProvider } from "@/providers/wallet.provider";
 import { NetworkProvider } from "@/providers/network.provider";
 import { Toaster } from "@/components/ui/sonner";
+import { QueryProvider } from "@/providers/query.provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,12 +39,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <NetworkProvider>
-          <WalletProvider>
-            {children}
-            <Toaster />
-          </WalletProvider>
-        </NetworkProvider>
+        <QueryProvider>
+          <NetworkProvider>
+            <WalletProvider>
+              {children}
+              <Toaster />
+            </WalletProvider>
+          </NetworkProvider>
+        </QueryProvider>
       </body>
     </html>
   );

@@ -21,8 +21,8 @@ export default function CredentialsPage() {
       </div>
 
       <p className="text-neutral-600 dark:text-neutral-400 mb-8">
-        Estas son tus credenciales reales consultadas desde tu vault.
-        Puedes filtrarlas y buscarlas manteniendo el mismo diseño.
+        These are your real credentials fetched from your vault.
+        You can filter and search them while keeping the same design.
       </p>
 
       <CredentialsList />

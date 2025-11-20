@@ -13,7 +13,7 @@ export function useVaultAuthorize() {
 
   const authorizeWithInput = useCallback(async () => {
     const addr = addressInput.trim();
-    if (!addr) throw new Error("Dirección requerida");
+    if (!addr) throw new Error("Address required");
     return authorizeAddress(addr);
   }, [authorizeAddress, addressInput]);
 
