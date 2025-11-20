@@ -46,6 +46,7 @@ export function useVault() {
     [network]
   );
   const [xlmBalance, setXlmBalance] = useState<string | null>(null);
+  const [usdcBalance, setUsdcBalance] = useState<string | null>(null);
   const [ownerCreatedAt, setOwnerCreatedAt] = useState<string | null>(null);
 
   const ensureConfig = useCallback(async () => {
@@ -172,11 +173,40 @@ export function useVault() {
     }
   }, [walletAddress, horizonUrl]);
 
+  const fetchUsdcBalance = useCallback(async () => {
+    if (!walletAddress) return null;
+    try {
+      const resp = await fetch(`${horizonUrl}/accounts/${walletAddress}`, {
+        method: "GET",
+      });
+      if (!resp.ok) return null;
+      const json = await resp.json();
+      const balances: any[] = Array.isArray(json?.balances) ? json.balances : [];
+      const total = balances
+        .filter(
+          (b: any) =>
+            (b.asset_type === "credit_alphanum4" || b.asset_type === "credit_alphanum12") &&
+            b.asset_code === "USDC"
+        )
+        .reduce((sum: number, b: any) => sum + parseFloat(b.balance || "0"), 0);
+      if (json?.created_at) {
+        setOwnerCreatedAt(String(json.created_at));
+      }
+      const formatted = Number.isFinite(total)
+        ? Math.floor(total).toLocaleString(undefined, { maximumFractionDigits: 0 })
+        : null;
+      return formatted;
+    } catch {
+      return null;
+    }
+  }, [walletAddress, horizonUrl]);
+
   const readDashboard = useCallback(async () => {
     if (!walletAddress) {
       return {
         vaultExists: null as boolean | null,
         xlmBalance: null as string | null,
+        usdcBalance: null as string | null,
         vcIds: null as string[] | null,
         vcs: null as any[] | null,
         ownerCreatedAt: ownerCreatedAt as string | null,
@@ -184,7 +214,8 @@ export function useVault() {
     }
     try {
       const exists = await checkVaultExists();
-      const bal = await fetchXlmBalance();
+      const balXlm = await fetchXlmBalance();
+      const balUsdc = await fetchUsdcBalance();
       const ids = await fetchVcIdsDirect();
       const items = [] as any[];
       for (const id of ids) {
@@ -197,7 +228,8 @@ export function useVault() {
       }
       return {
         vaultExists: exists,
-        xlmBalance: bal,
+        xlmBalance: balXlm,
+        usdcBalance: balUsdc,
         vcIds: ids,
         vcs: items,
         ownerCreatedAt,
@@ -207,6 +239,7 @@ export function useVault() {
       return {
         vaultExists: false,
         xlmBalance: null,
+        usdcBalance: null,
         vcIds: [],
         vcs: [],
         ownerCreatedAt,
@@ -216,6 +249,7 @@ export function useVault() {
     walletAddress,
     checkVaultExists,
     fetchXlmBalance,
+    fetchUsdcBalance,
     fetchVcIdsDirect,
     fetchVcDirect,
     ownerCreatedAt,
@@ -224,6 +258,7 @@ export function useVault() {
   const dashboardQuery = useQuery<{
     vaultExists: boolean | null;
     xlmBalance: string | null;
+    usdcBalance: string | null;
     vcIds: string[] | null;
     vcs: any[] | null;
     ownerCreatedAt: string | null;
@@ -245,6 +280,7 @@ export function useVault() {
     }
     setVaultExists(data.vaultExists);
     setXlmBalance(data.xlmBalance);
+    setUsdcBalance(data.usdcBalance);
     setVcIds(data.vcIds);
     setVcs(data.vcs);
   }, [dashboardQuery.data]);
@@ -323,6 +359,45 @@ export function useVault() {
       setLoading(false);
     }
   }, [walletAddress, signTransaction, ensureConfig, ownerDid, queryClient]);
+
+  const checkSelfAuthorized = useCallback(async (): Promise<boolean> => {
+    if (!walletAddress) return false;
+    const { rpcUrl, networkPassphrase, vaultContractId } = await ensureConfig();
+    if (!vaultContractId) return false;
+    try {
+      const server = new StellarSdk.rpc.Server(rpcUrl);
+      const sourceAccount = await server.getAccount(walletAddress);
+      const account = new StellarSdk.Account(
+        walletAddress,
+        sourceAccount.sequenceNumber()
+      );
+      const contract = new StellarSdk.Contract(vaultContractId);
+
+      const tx = new StellarSdk.TransactionBuilder(account, {
+        fee: StellarSdk.BASE_FEE.toString(),
+        networkPassphrase,
+      })
+        .addOperation(
+          contract.call(
+            "authorize_issuer",
+            StellarSdk.Address.fromString(walletAddress).toScVal(),
+            StellarSdk.Address.fromString(walletAddress).toScVal()
+          )
+        )
+        .setTimeout(60)
+        .build();
+
+      const sim = await server.simulateTransaction(tx);
+      const err: any = (sim as any).error;
+      if (err && typeof err === "string") {
+        const friendly = mapContractErrorToMessage(err);
+        if (/already authorized/i.test(friendly)) return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  }, [walletAddress, ensureConfig]);
 
   const authorizeSelf = useCallback(async () => {
     if (!walletAddress) throw new Error("Connect your wallet first");
@@ -545,6 +620,7 @@ export function useVault() {
     dashboardStatus: dashboardQuery.status,
     loading,
     createVault,
+    checkSelfAuthorized,
     authorizeSelf,
     authorizeAddress,
     revokeAddress,
@@ -553,6 +629,7 @@ export function useVault() {
     vcIds,
     vcs,
     xlmBalance,
+    usdcBalance,
     ownerCreatedAt,
   };
 }

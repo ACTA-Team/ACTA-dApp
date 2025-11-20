@@ -13,7 +13,19 @@ type NetworkContextType = {
 const NetworkContext = createContext<NetworkContextType | undefined>(undefined);
 
 export function NetworkProvider({ children }: { children: React.ReactNode }) {
-  const [network, setNetwork] = useState<Network>("testnet");
+  const [network, setNetwork] = useState<Network>(() => {
+    if (typeof window === "undefined") return "testnet";
+    const stored = localStorage.getItem("network");
+    return (stored === "mainnet" || stored === "testnet") ? (stored as Network) : "testnet";
+  });
+
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("network", network);
+      }
+    } catch {}
+  }, [network]);
 
   const apiBaseUrl = useMemo(() => {
     const testnet = process.env.NEXT_PUBLIC_ACTA_API_URL_TESTNET || "https://api.testnet.acta.build";

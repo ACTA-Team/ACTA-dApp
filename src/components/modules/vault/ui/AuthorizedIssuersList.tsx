@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useVaultAuthorizedList } from "@/components/modules/vault/hooks/use-vault-authorized-list";
 import { toast } from "sonner";
@@ -21,7 +22,8 @@ export function AuthorizedIssuersList() {
     <div className="space-y-4">
       <h2 className="text-xl font-semibold">Authorized Wallets</h2>
       <p className="text-sm text-neutral-600 dark:text-neutral-400">
-        List derived from issued credentials. An authorized wallet may not appear until issuance.
+        List derived from issued credentials. An authorized wallet may not
+        appear until issuance.
       </p>
 
       <Card className="p-0 overflow-hidden">
@@ -32,11 +34,18 @@ export function AuthorizedIssuersList() {
         </div>
         <div>
           {issuers.length === 0 && (
-            <div className="px-4 py-6 text-sm text-neutral-500 dark:text-neutral-400">No authorized wallets detected.</div>
+            <div className="px-4 py-6 text-sm text-neutral-500 dark:text-neutral-400">
+              No authorized wallets detected.
+            </div>
           )}
           {issuers.map((it) => (
-            <div key={it.address} className="grid grid-cols-12 items-center px-4 py-3 border-t">
-              <div className="col-span-6 font-mono text-sm truncate">{it.address}</div>
+            <div
+              key={it.address}
+              className="grid grid-cols-12 items-center px-4 py-3 border-t"
+            >
+              <div className="col-span-6 font-mono text-sm truncate">
+                {it.address}
+              </div>
               <div className="col-span-5 text-xs text-neutral-600 dark:text-neutral-400 truncate">
                 {it.issuerDid || "-"}
               </div>
@@ -46,8 +55,15 @@ export function AuthorizedIssuersList() {
                   onClick={() => onRevoke(it.address)}
                   disabled={loading || revoking === it.address}
                   className="rounded-md"
+                  aria-label="Revoke"
                 >
-                  {revoking === it.address ? "Revoking..." : "Revoke"}
+                  {revoking === it.address ? (
+                    "Revoking..."
+                  ) : (
+                    <>
+                      <Trash2 className="h-4 w-4" />
+                    </>
+                  )}
                 </Button>
               </div>
             </div>

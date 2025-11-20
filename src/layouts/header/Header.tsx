@@ -2,12 +2,15 @@
 
 import { Wallet } from "@/components/auth/Wallet";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
+import { NetworkToggle } from "@/components/ui/network-toggle";
 import { useNetwork } from "@/providers/network.provider";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { useState } from "react";
+import { NetworkSwitchModal } from "@/components/ui/network-switch-modal";
 
 export function HeaderHome() {
   const { network, setNetwork } = useNetwork();
+  const [openConfirm, setOpenConfirm] = useState(false);
   return (
     <header className=" mt-2 mb-2 *:w-full bg-background border-b border-border">
       <div className="mx-auto max-w-7xl flex items-center justify-between px-4 py-2">
@@ -16,28 +19,24 @@ export function HeaderHome() {
         </div>
 
         <div className="flex items-center gap-3">
+          <NetworkToggle
+            checked={network === "testnet"}
+            onCheckedChange={(checked) =>
+              checked ? setNetwork("testnet") : setOpenConfirm(true)
+            }
+            className="scale-90"
+          />
           <div className="scale-75">
             <AnimatedThemeToggler />
-          </div>
-          <div className="flex items-center gap-1 rounded-md border px-1 py-1">
-            <Button
-              size="sm"
-              variant={network === "testnet" ? "default" : "ghost"}
-              onClick={() => setNetwork("testnet")}
-            >
-              Testnet
-            </Button>
-            <Button
-              size="sm"
-              variant={network === "mainnet" ? "default" : "ghost"}
-              onClick={() => setNetwork("mainnet")}
-            >
-              Mainnet
-            </Button>
           </div>
           <Wallet />
         </div>
       </div>
+      <NetworkSwitchModal
+        open={openConfirm}
+        onOpenChange={setOpenConfirm}
+        onConfirm={() => setNetwork("mainnet")}
+      />
     </header>
   );
 }

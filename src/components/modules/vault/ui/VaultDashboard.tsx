@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useVault } from "@/components/modules/vault/hooks/use-vault";
 
 export function VaultDashboard() {
-  const { ownerDid, xlmBalance, vcIds, ownerCreatedAt } = useVault();
+  const { ownerDid, usdcBalance, vcIds, ownerCreatedAt } = useVault();
 
   const createdAtLabel = ownerCreatedAt
     ? new Date(ownerCreatedAt).toLocaleString()
@@ -24,9 +24,11 @@ export function VaultDashboard() {
       <div className="grid gap-6 sm:grid-cols-3">
         <Card className="p-5">
           <div className="text-xs text-neutral-500 dark:text-neutral-400">
-            Balance XLM
+            Balance USDC
           </div>
-          <div className="mt-2 text-2xl font-semibold">{xlmBalance ?? "-"}</div>
+          <div className="mt-2 text-2xl font-semibold">
+            {usdcBalance ?? "-"}
+          </div>
         </Card>
         <Card className="p-5">
           <div className="text-xs text-neutral-500 dark:text-neutral-400">

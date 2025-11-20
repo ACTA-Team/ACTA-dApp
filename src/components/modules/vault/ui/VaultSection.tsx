@@ -36,7 +36,11 @@ export function VaultSection() {
           </p>
         )}
         <div className="mt-4">
-          <Button onClick={onCreateVault} disabled={loading || !ownerDid} className="w-full">
+          <Button
+            onClick={onCreateVault}
+            disabled={loading || !ownerDid}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+          >
             {loading ? "Processing..." : "Create Vault"}
           </Button>
         </div>

@@ -26,7 +26,7 @@ import {
 
 export function AppSidebar() {
   return (
-    <Sidebar>
+    <Sidebar variant="inset">
       <SidebarHeader>
         <div className="mt-2 flex items-center gap-2 px-2">
           <div className="size-8 rounded-mdtext-white grid place-items-center">

@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 
 export function VaultAuthorize() {
-  const { addressInput, setAddressInput, authorizeMe, authorizeWithInput, loading } = useVaultAuthorize();
+  const { addressInput, setAddressInput, authorizeMe, authorizeWithInput, loading, isSelfAuthorized } = useVaultAuthorize();
 
   const onAuthorizeMe = async () => {
     try {
@@ -36,8 +36,8 @@ export function VaultAuthorize() {
             Grants you permission as an authorized issuer in your vault.
           </p>
         </div>
-        <Button onClick={onAuthorizeMe} disabled={loading} className="w-full rounded-md">
-          {loading ? "Authorizing..." : "Authorize Me"}
+        <Button onClick={onAuthorizeMe} disabled={loading || isSelfAuthorized} className="w-full rounded-md">
+          {loading ? "Authorizing..." : isSelfAuthorized ? "Already authorized" : "Authorize Me"}
         </Button>
       </Card>
 
