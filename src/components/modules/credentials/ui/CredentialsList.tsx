@@ -1,115 +1,75 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { toast } from "sonner";
-import { useVault } from "@/components/modules/vault/hooks/use-vault";
-import ShareCredentialModal from "./ShareCredentialModal";
+import { useCredentialsList } from '@/components/modules/credentials/hooks/useCredentialsList';
+import ShareCredentialModal from './ShareCredentialModal';
 
-type Credential = {
-  id: string;
-  title: string;
-  issuer: string;
-  subject: string;
-  type: string;
-  issuedAt: string;
-  expirationDate?: string | null;
-  status: "valid" | "expired" | "revoked";
-};
-
-function adaptVcToCredential(vc: any): Credential {
-  let parsed: any = null;
+function adaptVcToCredential(vc: unknown) {
+  const obj = (vc ?? {}) as Record<string, unknown>;
+  let parsed: unknown = null;
   try {
-    parsed =
-      typeof vc?.data === "string" ? JSON.parse(vc.data) : vc?.data || null;
+    parsed = typeof obj.data === 'string' ? JSON.parse(obj.data as string) : (obj.data ?? null);
   } catch {
     parsed = null;
   }
 
-  const title =
-    parsed?.title ||
-    parsed?.name ||
-    parsed?.credentialSubject?.name ||
-    "Credential";
-  const issuer = vc?.issuer_did || parsed?.issuer || parsed?.issuerName || "-";
-  const subject =
-    parsed?.subject ||
-    parsed?.subjectDID ||
-    parsed?.credentialSubject?.id ||
-    "-";
-  const rawType = parsed?.type || parsed?.credentialType || "VC";
+  const p = (parsed ?? {}) as Record<string, unknown>;
+  const cs = (p.credentialSubject ?? {}) as Record<string, unknown>;
+  const title = (p.title as string) || (p.name as string) || (cs.name as string) || 'Credential';
+  const issuer =
+    (obj.issuer_did as string) || (p.issuer as string) || (p.issuerName as string) || '-';
+  const subject = (p.subject as string) || (p.subjectDID as string) || (cs.id as string) || '-';
+  const rawType = (p.type as unknown) ?? (p.credentialType as unknown) ?? 'VC';
   let type: string;
   if (Array.isArray(rawType)) {
     const filtered = rawType
-      .map((t: any) => String(t))
-      .filter((t: string) => t.toLowerCase() !== "verifiablecredential");
-    type = filtered.join(", ") || "Credential";
+      .map((t) => String(t))
+      .filter((t) => t.toLowerCase() !== 'verifiablecredential');
+    type = filtered.join(', ') || 'Credential';
   } else {
     const parts = String(rawType)
-      .split(",")
+      .split(',')
       .map((s) => s.trim())
-      .filter((s) => s && s.toLowerCase() !== "verifiablecredential");
-    type = parts.join(", ") || "Credential";
+      .filter((s) => s && s.toLowerCase() !== 'verifiablecredential');
+    type = parts.join(', ') || 'Credential';
   }
-  const issuedAt =
-    parsed?.issuedAt || parsed?.issuanceDate || new Date().toISOString();
+  const issuedAt = (p.issuedAt as string) || (p.issuanceDate as string) || new Date().toISOString();
   const expirationDate =
-    parsed?.expirationDate || parsed?.validUntil || parsed?.credentialSubject?.expirationDate || null;
+    (p.expirationDate as string) ||
+    (p.validUntil as string) ||
+    (cs.expirationDate as string) ||
+    null;
 
   return {
-    id: String(vc?.id ?? "unknown"),
+    id: String(obj.id ?? 'unknown'),
     title: String(title),
     issuer: String(issuer),
     subject: String(subject),
     type: String(type),
     issuedAt: String(issuedAt),
     expirationDate: expirationDate ? String(expirationDate) : null,
-    status: "valid",
+    status: 'valid',
   };
 }
+void adaptVcToCredential(undefined as unknown);
 
 export default function CredentialsList() {
-  const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<string>("all");
-  const { vcs } = useVault();
-
-  const [source, setSource] = useState<Credential[]>([]);
-  const [shareOpen, setShareOpen] = useState(false);
-  const [toShare, setToShare] = useState<Credential | null>(null);
-
-  useEffect(() => {
-    const mapped = Array.isArray(vcs)
-      ? vcs.map((vc: any) => adaptVcToCredential(vc))
-      : [];
-    setSource(mapped);
-  }, [vcs]);
-
-  const items = useMemo(() => {
-    return source.filter((c) => {
-      const matchesQuery =
-        !query ||
-        c.title.toLowerCase().includes(query.toLowerCase()) ||
-        c.type.toLowerCase().includes(query.toLowerCase()) ||
-        c.issuer.toLowerCase().includes(query.toLowerCase());
-      const matchesFilter = filter === "all" ? true : c.status === filter;
-      return matchesQuery && matchesFilter;
-    });
-  }, [query, filter, source]);
+  const { query, setQuery, filter, setFilter, items, shareOpen, toShare, openShare, closeShare } =
+    useCredentialsList();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-x-hidden">
       <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
         <input
           placeholder="Search by title, type, or issuer"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full md:w-2/3 rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2"
+          className="w-full mt-4 md:w-2/3 rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="w-full md:w-1/3 rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2"
+          className="w-full md:w-1/3 rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="all">All</option>
           <option value="valid">Valid</option>
@@ -118,81 +78,78 @@ export default function CredentialsList() {
         </select>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="space-y-4">
         {items.map((c) => (
           <div
             key={c.id}
-            className="rounded-xl border border-neutral-200 dark:border-neutral-800 p-4 bg-white dark:bg-neutral-900"
+            className="rounded-xl border-l-4 border-l-blue-500 bg-zinc-900/50 p-4 backdrop-blur-sm"
           >
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-lg font-semibold">{c.title}</h3>
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h3 className="text-base font-semibold text-white mb-1">{c.title}</h3>
+                <p className="text-xs text-zinc-400">{c.type}</p>
+              </div>
               <span
-                className="text-xs px-2 py-1 rounded-full"
+                className="text-[10px] px-2 py-0.5 rounded-full font-medium"
                 style={{
                   backgroundColor:
-                    c.status === "valid"
-                      ? "#DCFCE7"
-                      : c.status === "expired"
-                      ? "#FDE68A"
-                      : "#FECACA",
+                    c.status === 'valid'
+                      ? 'rgb(34 197 94 / 0.1)'
+                      : c.status === 'expired'
+                        ? 'rgb(234 179 8 / 0.1)'
+                        : 'rgb(239 68 68 / 0.1)',
                   color:
-                    c.status === "valid"
-                      ? "#065F46"
-                      : c.status === "expired"
-                      ? "#92400E"
-                      : "#7F1D1D",
+                    c.status === 'valid'
+                      ? 'rgb(34 197 94)'
+                      : c.status === 'expired'
+                        ? 'rgb(234 179 8)'
+                        : 'rgb(239 68 68)',
                 }}
               >
                 {c.status.toUpperCase()}
               </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div className="opacity-70">Type</div>
-              <div className="font-medium">{c.type}</div>
-              <div className="opacity-70">Issuer</div>
-              <div className="font-medium truncate">{c.issuer}</div>
-              <div className="opacity-70">Subject</div>
-              <div className="font-medium truncate">{c.subject}</div>
-              <div className="opacity-70">Issued At</div>
-              <div className="font-medium">
-                {new Date(c.issuedAt).toLocaleString()}
+            <div className="space-y-2 text-xs sm:text-sm">
+              <div className="flex items-center justify-between gap-3 min-w-0">
+                <span className="text-zinc-400 shrink-0">Issuer</span>
+                <span className="font-medium text-white break-all ml-4 min-w-0">{c.issuer}</span>
+              </div>
+              <div className="flex items-center justify-between gap-3 min-w-0">
+                <span className="text-zinc-400 shrink-0">Subject</span>
+                <span className="font-medium text-white break-all ml-4 min-w-0">{c.subject}</span>
+              </div>
+              <div className="flex items-center justify-between gap-3 min-w-0">
+                <span className="text-zinc-400 shrink-0">Issued At</span>
+                <span className="font-medium text-white">
+                  {new Date(c.issuedAt).toLocaleDateString()}
+                </span>
               </div>
               {c.expirationDate && (
-                <>
-                  <div className="opacity-70">Expires</div>
-                  <div className="font-medium">
-                    {new Date(c.expirationDate).toLocaleString()}
-                  </div>
-                </>
+                <div className="flex items-center justify-between gap-3 min-w-0">
+                  <span className="text-zinc-400 shrink-0">Expires</span>
+                  <span className="font-medium text-white">
+                    {new Date(c.expirationDate).toLocaleDateString()}
+                  </span>
+                </div>
               )}
             </div>
 
-            <div className="mt-4 flex gap-2">
+            <div className="mt-6 flex gap-3">
               <button
-                onClick={() => {
-                  setToShare(c);
-                  setShareOpen(true);
-                }}
-                className="rounded-full border border-neutral-300 dark:border-neutral-700 px-4 py-1 text-sm"
+                onClick={() => openShare(c)}
+                className="rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
               >
-                Share (ZK)
+                Share
               </button>
             </div>
           </div>
         ))}
         {items.length === 0 && (
-          <div className="text-sm text-neutral-500">No credentials found.</div>
+          <div className="text-sm text-zinc-500 text-center py-8">No credentials found.</div>
         )}
         {shareOpen && (
-          <ShareCredentialModal
-            open={shareOpen}
-            credential={toShare}
-            onClose={() => {
-              setShareOpen(false);
-              setToShare(null);
-            }}
-          />
+          <ShareCredentialModal open={shareOpen} credential={toShare} onClose={closeShare} />
         )}
       </div>
     </div>

@@ -1,184 +1,132 @@
-"use client";
+'use client';
 
-import { BorderBeam } from "@/components/ui/border-beam";
-import { MagicCard } from "@/components/ui/magic-card";
-import { Copy } from "lucide-react";
-import { toast } from "sonner";
+import { Copy, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
+import Image from 'next/image';
+import { useVerifyCard } from '@/components/modules/credentials/hooks/useVerifyCard';
 
 type Props = {
   vcId: string;
   status?: string | null;
   since?: string | null;
-  sharedStatus?: { ok: boolean; reason?: string; mode?: string } | null;
-  revealed?: Record<string, any> | null;
+  revealed?: Record<string, unknown> | null;
 };
 
-export function CredentialVerifyCard({
-  vcId,
-  status,
-  since,
-  sharedStatus,
-  revealed,
-}: Props) {
-  const shorten = (s: string) =>
-    s && s.length > 12 ? `${s.slice(0, 6)}…${s.slice(-6)}` : s;
+export function CredentialVerifyCard({ vcId, status, since, revealed }: Props) {
+  const { displayStatus, statusDisplay, formatRevealed, copy } = useVerifyCard(status);
+  const StatusIcon =
+    displayStatus === 'Revoked'
+      ? XCircle
+      : displayStatus === 'Expired'
+        ? AlertCircle
+        : CheckCircle2;
 
-  const formatRevealed = (key: string, value: any) => {
-    const raw = String(value ?? "");
-    const lower = key.toLowerCase();
-    let text = raw;
-    let isWallet = false;
-    if (lower === "issuer" || lower === "subject") {
-      const wallet = raw.startsWith("did:")
-        ? (raw.split(":").pop() as string)
-        : raw;
-      text = shorten(wallet);
-      isWallet = true;
-    }
-    if (lower === "status") {
-      text = raw ? raw.charAt(0).toUpperCase() + raw.slice(1) : raw;
-    }
-    return { text, raw, isWallet };
-  };
-  const normalized = (status || "").toLowerCase();
-  const displayStatus = !status
-    ? "Unknown"
-    : normalized === "valid" || normalized === "verified" || normalized === "ok"
-    ? "Verified"
-    : normalized === "revoked"
-    ? "Revoked"
-    : "Not Verified";
   return (
-    <div className="relative flex justify-center items-center w-full h-full pt-2 sm:pt-4 md:pt-6">
-      <MagicCard
-        className="relative rounded-xl sm:rounded-2xl ring-1 ring-neutral-800 w-full sm:w-[720px] max-w-[720px] aspect-[1.586/1] shadow-xl bg-black dark:bg-black text-white mx-auto"
-        overlayChildren={
-          <BorderBeam
-            size={160}
-            duration={6}
-            delay={0.3}
-            colorFrom="#9E7AFF"
-            colorTo="#FE8BBB"
-            borderWidth={2}
-            className="opacity-60"
-          />
-        }
-      >
-        <div className="relative z-10 h-full w-full flex flex-col pt-4 px-4 pb-0 sm:pt-6 sm:px-6 sm:pb-0 md:pt-6 md:px-8 md:pb-0">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm sm:text-base md:text-lg font-semibold">
-              Credential
-            </h2>
-            <span className="text-[10px] sm:text-xs md:text-sm opacity-70">
-              ACTA
-            </span>
-          </div>
-
-          <div className="border-t border-neutral-800 pt-3 sm:pt-4 flex-1 flex flex-col">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] sm:text-xs opacity-70">VC ID</span>
-                <span className="text-[9px] sm:text-[11px] md:text-xs font-mono truncate max-w-[50vw] sm:max-w-[60vw] md:max-w-[420px]">
-                  {vcId || "-"}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] sm:text-xs opacity-70">
-                  Verification On-chain
-                </span>
-                <span className="text-xs sm:text-sm font-medium">
-                  {displayStatus}
-                </span>
-              </div>
-
-              {displayStatus === "Revoked" && since ? (
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] sm:text-xs opacity-70">
-                    Revoked since
-                  </span>
-                  <span className="text-[9px] sm:text-[11px] md:text-xs font-mono truncate max-w-[50vw] sm:max-w-[60vw] md:max-w-[420px]">
-                    {since}
-                  </span>
-                </div>
-              ) : null}
-            </div>
-
-            {sharedStatus || revealed ? (
-              <div className="mt-4 border-t border-neutral-800 pt-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] sm:text-xs opacity-70">
-                    Verification ZK Proof
-                  </span>
-                  {sharedStatus && (
-                    <span>{sharedStatus.ok ? "Verified" : "Not verified"}</span>
-                  )}
-                </div>
-                {sharedStatus &&
-                  !sharedStatus.ok &&
-                  sharedStatus.reason &&
-                  sharedStatus.reason !== "snarkjs_cdn_load_failed" && (
-                    <div className="text-[10px] sm:text-xs opacity-70 mb-2">
-                      {sharedStatus.reason}
-                    </div>
-                  )}
-                {revealed && (
-                  <div>
-                    <div className="text-[10px] sm:text-xs font-medium mb-2">
-                      Revealed fields
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs sm:text-sm">
-                      {Object.entries(revealed).map(([k, v]) => {
-                        const { text, raw, isWallet } = formatRevealed(k, v);
-                        return (
-                          <div key={k} className="contents">
-                            <div className="opacity-70 capitalize">{k}</div>
-                            <div className="font-medium wrap-break-word">
-                              <div className="flex items-center justify-end gap-2">
-                                <span className="truncate">{text}</span>
-                                {isWallet && (
-                                  <button
-                                    onClick={async () => {
-                                      try {
-                                        await navigator.clipboard?.writeText(
-                                          raw
-                                        );
-                                        toast.success("Copied to clipboard");
-                                      } catch (e) {
-                                        toast.error("Failed to copy");
-                                      }
-                                    }}
-                                    className="rounded border p-1 text-[10px]"
-                                    title="Copy"
-                                    aria-label="Copy wallet"
-                                  >
-                                    <Copy size={12} />
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : null}
-
-            <div className="flex items-baseline justify-between sm:mt-2 md:mt-4 lg:mt-6 mb-6">
-              <div className="text-[7px] sm:text-[8px] md:text-[9px] lg:text-[10px] uppercase tracking-wide opacity-70">
-                ACTA • Verifiable Credential
-              </div>
-              <img
-                src="/dark.png"
-                alt="ACTA Logo"
-                className="pt-8 w-22 h-auto sm:w-22 sm:h-auto md:w-28 md:h-auto opacity-80"
-              />
-            </div>
-          </div>
+    <div className="relative w-full h-full flex items-center justify-center p-4">
+      <div className="relative rounded-2xl w-full max-w-4xl bg-linear-to-br from-gray-950 via-zinc-950 to-black shadow-2xl overflow-hidden border-2 border-blue-500/40">
+        <div className="absolute inset-0 opacity-20">
+          <svg className="absolute w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.2" />
+                <stop offset="100%" stopColor="#2563eb" stopOpacity="0.1" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M0,100 Q150,120 300,100 T600,100 L600,200 L0,200 Z"
+              fill="url(#waveGradient)"
+              transform="translate(0, 80)"
+            />
+            <path
+              d="M0,120 Q200,140 400,120 T800,120 L800,250 L0,250 Z"
+              fill="url(#waveGradient)"
+              transform="translate(0, 120)"
+            />
+          </svg>
         </div>
-      </MagicCard>
+
+        <div className="absolute right-8 top-1/2 -translate-y-1/2 opacity-10">
+          <Image
+            src="/logo.png"
+            alt=""
+            width={320}
+            height={320}
+            className="w-80 h-80 object-contain"
+          />
+        </div>
+
+        <div className="relative z-10 p-8 space-y-6 text-white">
+          <div className="flex items-start justify-between pb-6 border-b border-blue-500/30">
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2">Credential</h2>
+              <p className="text-sm text-gray-400/70">
+                {(revealed?.type as string) || 'UniversityDegreeCredential'}
+              </p>
+            </div>
+            <div className="text-right">
+              <div className="text-5xl font-bold text-blue-400 tracking-tight mb-3">ACTA</div>
+              <div
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold ${statusDisplay.bg} ${statusDisplay.color} backdrop-blur-sm`}
+              >
+                <StatusIcon className="w-4 h-4" />
+                {displayStatus}
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3 bg-zinc-900/40 backdrop-blur-sm rounded-xl p-5 border border-blue-500/20">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-blue-300">VC ID</span>
+              <span className="text-xs text-gray-400/60">Verification On-chain</span>
+            </div>
+            <div className="font-mono text-sm text-gray-200/90 break-all leading-relaxed">
+              {vcId || '-'}
+            </div>
+          </div>
+
+          {revealed && (
+            <div className="space-y-4 pt-2">
+              <h3 className="text-base font-semibold text-blue-300">Revealed fields</h3>
+              <div className="space-y-3">
+                {Object.entries(revealed).map(([k, v]) => {
+                  const { text, raw, isWallet } = formatRevealed(k, v);
+
+                  return (
+                    <div
+                      key={k}
+                      className="flex items-start justify-between gap-6 py-3 border-b border-zinc-800/50 last:border-0"
+                    >
+                      <span className="text-sm font-medium text-blue-300 capitalize min-w-[120px]">
+                        {k}
+                      </span>
+                      <div className="flex items-center gap-3 flex-1 justify-end">
+                        <span className="text-sm text-gray-200/90 text-right break-all font-mono">
+                          {text}
+                        </span>
+                        {isWallet && (
+                          <button
+                            onClick={() => copy(raw)}
+                            className="p-2 rounded-lg hover:bg-zinc-800/50 transition-colors shrink-0"
+                            title="Copy"
+                            aria-label="Copy wallet"
+                          >
+                            <Copy className="w-4 h-4 text-blue-400" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {displayStatus === 'Revoked' && since && (
+            <div className="pt-4 border-t border-blue-500/30">
+              <div className="text-sm text-red-400 font-medium">Revoked: {since}</div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
