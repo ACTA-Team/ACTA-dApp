@@ -1,33 +1,31 @@
-"use client";
+'use client';
 
-import { motion } from "motion/react";
-import Link from "next/link";
-import { CredentialCard } from "../modules/credentials/ui/CredentialCard";
-import { HoverBorderGradient } from "./hover-border-gradient";
+import { motion } from 'motion/react';
+import Link from 'next/link';
+import { HoverBorderGradient } from './hover-border-gradient';
 
 export default function HeroSection() {
   return (
-    <div className="relative mx-auto my-10 flex max-w-7xl flex-col items-center justify-center">
-      <div className="absolute inset-y-0 left-0 h-full w-px bg-neutral-200/80 dark:bg-neutral-800/80">
-        <div className="absolute top-0 h-40 w-px bg-linear-to-b from-transparent via-pink-500 to-transparent" />
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center">
+      <div className="absolute inset-y-0 left-0 h-full w-px ">
+        <div className="absolute top-0 h-40 w-px bg-linear-to-b from-transparent via-blue-500 to-transparent" />
       </div>
-      <div className="absolute inset-y-0 right-0 h-full w-px bg-neutral-200/80 dark:bg-neutral-800/80">
-        <div className="absolute h-40 w-px bg-linear-to-b from-transparent via-purple-500 to-transparent" />
+
+      <div className="absolute inset-y-0 right-0 h-full w-px ">
+        <div className="absolute h-40 w-px bg-linear-to-b from-transparent via-blue-600 to-transparent" />
       </div>
-      <div className="absolute inset-x-0 bottom-0 h-px w-full bg-neutral-200/80 dark:bg-neutral-800/80">
-        <div className="absolute mx-auto h-px w-40 bg-linear-to-r from-transparent via-green-500 to-transparent" />
-      </div>
+
       <div className="px-4 py-10 md:py-20">
-        <h1 className="relative z-10 mx-auto max-w-4xl text-center text-2xl font-bold text-gray-700 md:text-4xl lg:text-7xl dark:text-neutral-300">
-          {"Welcome to ACTA".split(" ").map((word, index) => (
+        <h1 className="relative z-10 mx-auto max-w-4xl text-center text-2xl font-bold text-white md:text-4xl lg:text-7xl">
+          {'Welcome to ACTA'.split(' ').map((word, index) => (
             <motion.span
               key={index}
-              initial={{ opacity: 0, filter: "blur(4px)", y: 10 }}
-              animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+              initial={{ opacity: 0, filter: 'blur(4px)', y: 10 }}
+              animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
               transition={{
                 duration: 0.3,
                 delay: index * 0.1,
-                ease: "easeInOut",
+                ease: 'easeInOut',
               }}
               className="mr-2 inline-block"
             >
@@ -35,6 +33,7 @@ export default function HeroSection() {
             </motion.span>
           ))}
         </h1>
+
         <motion.p
           initial={{
             opacity: 0,
@@ -46,12 +45,12 @@ export default function HeroSection() {
             duration: 0.3,
             delay: 0.8,
           }}
-          className="relative z-10 mx-auto max-w-xl py-4 text-center text-lg font-normal text-neutral-600 dark:text-neutral-400"
+          className="relative z-10 mx-auto max-w-xl py-4 text-center text-lg font-normal text-zinc-400"
         >
-          On this page, you can issue credentials, share them, authorize
-          issuers, verify them, and much more <br /> All without needing a third
-          party or any programming knowledge.
+          On this page, you can issue credentials, share them, authorize issuers, verify them, and
+          much more <br /> All without needing a third party or any programming knowledge.
         </motion.p>
+
         <motion.div
           initial={{
             opacity: 0,
@@ -66,9 +65,9 @@ export default function HeroSection() {
           className="relative z-10 mt-8 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4"
         >
           <HoverBorderGradient
-            containerClassName="rounded-full border border-black"
+            containerClassName="rounded-full"
             as="button"
-            className=" text-white flex items-center space-x-2 transition-all duration-300 hover:-translate-y-0.5 "
+            className="flex items-center space-x-2 bg-blue-600 text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-700"
           >
             <Link
               href="/dashboard"
@@ -79,33 +78,17 @@ export default function HeroSection() {
           </HoverBorderGradient>
 
           <HoverBorderGradient
-            containerClassName="rounded-full border border-black"
+            containerClassName="rounded-full"
             as="button"
-            className=" text-black flex items-center bg-white space-x-2 transition-all duration-300 hover:-translate-y-0.5 "
+            className="flex items-center space-x-2 bg-zinc-800/50 text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-zinc-800/70 backdrop-blur-sm"
           >
             <Link
               href="/dashboard/credentials"
-              className="w-full sm:w-60 rounded-full px-6 py-2 font-medium text-black text-center"
+              className="w-full sm:w-60 rounded-full px-6 py-2 font-medium text-white text-center"
             >
               My Credentials
             </Link>
           </HoverBorderGradient>
-        </motion.div>
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 10,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 0.3,
-            delay: 1.2,
-          }}
-        >
-          <CredentialCard />
         </motion.div>
       </div>
     </div>

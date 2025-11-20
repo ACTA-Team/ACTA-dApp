@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { useCallback, useEffect } from "react";
-import { motion, useMotionTemplate, useMotionValue } from "motion/react";
-import { cn } from "@/lib/utils";
+import React, { useCallback, useEffect } from 'react';
+import { motion, useMotionTemplate, useMotionValue } from 'motion/react';
+import { cn } from '@/lib/utils';
 
 interface MagicCardProps {
   children?: React.ReactNode;
@@ -19,10 +19,10 @@ export function MagicCard({
   children,
   className,
   gradientSize = 200,
-  gradientColor = "#262626", // keep the original dark gray glow
+  gradientColor = '#262626', // keep the original dark gray glow
   gradientOpacity = 0.8,
-  gradientFrom = "#9E7AFF",
-  gradientTo = "#FE8BBB",
+  gradientFrom = '#9E7AFF',
+  gradientTo = '#FE8BBB',
   overlayChildren,
 }: MagicCardProps) {
   const mouseX = useMotionValue(-gradientSize);
@@ -51,29 +51,29 @@ export function MagicCard({
       if (!e.relatedTarget) reset();
     };
     const handleVisibility = () => {
-      if (document.visibilityState !== "visible") reset();
+      if (document.visibilityState !== 'visible') reset();
     };
-    window.addEventListener("pointerout", handleGlobalPointerOut);
-    window.addEventListener("blur", reset);
-    document.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener('pointerout', handleGlobalPointerOut);
+    window.addEventListener('blur', reset);
+    document.addEventListener('visibilitychange', handleVisibility);
     return () => {
-      window.removeEventListener("pointerout", handleGlobalPointerOut);
-      window.removeEventListener("blur", reset);
-      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener('pointerout', handleGlobalPointerOut);
+      window.removeEventListener('blur', reset);
+      document.removeEventListener('visibilitychange', handleVisibility);
     };
   }, [reset]);
 
   return (
     <div
-      className={cn("group relative rounded-[inherit]", className)}
+      className={cn('group relative rounded-[inherit]', className)}
       onPointerMove={handlePointerMove}
       onPointerLeave={reset}
       onPointerEnter={reset}
       // force constant dark mode
       style={{
-        backgroundColor: "#0A0A0A",
-        color: "#E5E5E5",
-        border: "1px solid rgba(255,255,255,0.08)",
+        backgroundColor: '#0A0A0A',
+        color: '#E5E5E5',
+        border: '1px solid rgba(255,255,255,0.08)',
       }}
     >
       {/* Dynamic border gradient */}
@@ -93,7 +93,7 @@ export function MagicCard({
       <div
         className="absolute inset-px rounded-[inherit]"
         style={{
-          background: "#0A0A0A", // fixed dark
+          background: '#0A0A0A', // fixed dark
         }}
       />
 
