@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useNetwork } from "@/providers/network.provider";
-import { useWalletContext } from "@/providers/wallet.provider";
-import { useWalletKit } from "@/hooks/wallet/use-wallet-kit";
+import { useEffect, useState } from 'react';
+import { useNetwork } from '@/providers/network.provider';
+import { useWalletContext } from '@/providers/wallet.provider';
+import { useWalletKit } from '@/components/modules/auth/hooks/useWalletKit';
 
 export function useSettings() {
   const { network, setNetwork, apiBaseUrl } = useNetwork();
@@ -11,21 +11,21 @@ export function useSettings() {
   const { connectWithWalletKit, disconnectWalletKit } = useWalletKit();
 
   const [theme, setTheme] = useState<string>(() => {
-    if (typeof window === "undefined") return "dark";
-    return localStorage.getItem("theme") || "dark";
+    if (typeof window === 'undefined') return 'dark';
+    return localStorage.getItem('theme') || 'dark';
   });
 
   useEffect(() => {
     try {
-      document.documentElement.classList.toggle("dark", theme === "dark");
+      document.documentElement.classList.toggle('dark', theme === 'dark');
     } catch {}
   }, [theme]);
 
-  const applyTheme = (next: "light" | "dark") => {
+  const applyTheme = (next: 'light' | 'dark') => {
     setTheme(next);
     try {
-      localStorage.setItem("theme", next);
-      document.documentElement.classList.toggle("dark", next === "dark");
+      localStorage.setItem('theme', next);
+      document.documentElement.classList.toggle('dark', next === 'dark');
     } catch {}
   };
 

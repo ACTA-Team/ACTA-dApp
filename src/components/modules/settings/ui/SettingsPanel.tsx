@@ -1,159 +1,109 @@
-"use client";
+'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { useSettings } from "@/components/modules/settings/hooks/use-settings";
-import { useState } from "react";
-import { NetworkSwitchModal } from "@/components/ui/network-switch-modal";
-import { toast } from "sonner";
+import { Wallet, LogOut } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 
-export function SettingsPanel() {
-  const {
-    theme,
-    applyTheme,
-    network,
-    setNetwork,
-    apiBaseUrl,
-    walletAddress,
-    walletName,
-    connect,
-    disconnect,
-  } = useSettings();
-  const [openConfirm, setOpenConfirm] = useState(false);
+interface ProfilePanelProps {
+  theme?: 'light' | 'dark';
+  onThemeChange?: (theme: 'light' | 'dark') => void;
 
-  const onConnect = async () => {
-    try {
-      await connect();
-      toast.success("Wallet connected");
-    } catch (e: any) {
-      toast.error(e?.message || "Could not connect wallet");
-    }
-  };
+  network?: 'testnet' | 'mainnet';
+  onNetworkChange?: (network: 'testnet' | 'mainnet') => void;
+  apiBaseUrl?: string;
 
-  const onDisconnect = async () => {
-    try {
-      await disconnect();
-      toast.success("Wallet disconnected");
-    } catch (e: any) {
-      toast.error(e?.message || "Could not disconnect wallet");
-    }
-  };
+  walletAddress?: string;
+  walletName?: string;
+  onConnect?: () => void;
+  onDisconnect?: () => void;
 
+  appName?: string;
+  appVersion?: string;
+}
+
+export function ProfilePanel({
+  network = 'testnet',
+  onNetworkChange,
+  walletAddress,
+  onConnect,
+  onDisconnect,
+  appName = 'ACTA dApp',
+  appVersion = '1.0.0',
+}: ProfilePanelProps) {
   return (
-    <>
-      <Card className="p-0 overflow-hidden">
-        <CardContent className="px-6 py-5">
-          <div className="grid grid-cols-12 items-center gap-3">
-            <div className="col-span-12 md:col-span-4">
-              <div className="text-sm font-medium">Theme</div>
-              <div className="text-xs text-neutral-600 dark:text-neutral-400">
-                Light or dark
-              </div>
+    <div className="flex h-full flex-col">
+      <div className="mb-8 flex items-center justify-between">
+        <h1 className="text-3xl font-bold text-white">Profile</h1>
+      </div>
+
+      {walletAddress && (
+        <div className="mb-6 rounded-2xl bg-zinc-800/50 p-6 backdrop-blur-sm">
+          <div className="flex items-center gap-4">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-blue-600">
+              <Wallet className="h-8 w-8 text-white" />
             </div>
-            <div className="col-span-12 md:col-span-8">
-              <div className="inline-flex rounded-md border overflow-hidden">
-                <Button
-                  size="sm"
-                  variant={theme === "light" ? "default" : "ghost"}
-                  className="rounded-none"
-                  onClick={() => applyTheme("light")}
-                >
-                  Light
-                </Button>
-                <Separator orientation="vertical" />
-                <Button
-                  size="sm"
-                  variant={theme === "dark" ? "default" : "ghost"}
-                  className="rounded-none"
-                  onClick={() => applyTheme("dark")}
-                >
-                  Dark
-                </Button>
-              </div>
+            <div className="flex-1 overflow-hidden">
+              <h3 className="mb-2 text-base font-medium text-zinc-300">Wallet Address</h3>
+              <p className="break-all font-mono text-sm text-white">{walletAddress}</p>
             </div>
           </div>
+        </div>
+      )}
 
-          <Separator className="my-5" />
+      <div className="mb-4 rounded-2xl bg-zinc-800/50 p-6 backdrop-blur-sm">
+        <div className="mb-3">
+          <h3 className="text-sm font-medium text-white">Network</h3>
+          <p className="text-xs text-zinc-400">Select environment</p>
+        </div>
+        <div className="inline-flex rounded-lg border border-zinc-700 overflow-hidden">
+          <Button
+            size="sm"
+            variant={network === 'testnet' ? 'default' : 'ghost'}
+            className="rounded-none bg-transparent hover:bg-zinc-700 text-white"
+            onClick={() => onNetworkChange?.('testnet')}
+          >
+            Testnet
+          </Button>
+          <Separator orientation="vertical" className="bg-zinc-700" />
+          <Button
+            size="sm"
+            variant={network === 'mainnet' ? 'default' : 'ghost'}
+            className="rounded-none bg-transparent hover:bg-zinc-700 text-white"
+            onClick={() => onNetworkChange?.('mainnet')}
+          >
+            Mainnet
+          </Button>
+        </div>
+      </div>
 
-          <div className="grid grid-cols-12 items-center gap-3">
-            <div className="col-span-12 md:col-span-4">
-              <div className="text-sm font-medium">Network</div>
-              <div className="text-xs text-neutral-600 dark:text-neutral-400">
-                Select environment
-              </div>
-            </div>
-            <div className="col-span-12 md:col-span-8">
-              <div className="inline-flex rounded-md border overflow-hidden">
-                <Button
-                  size="sm"
-                  variant={network === "testnet" ? "default" : "ghost"}
-                  className="rounded-none"
-                  onClick={() => setNetwork("testnet")}
-                >
-                  Testnet
-                </Button>
-                <Separator orientation="vertical" />
-                <Button
-                  size="sm"
-                  variant={network === "mainnet" ? "default" : "ghost"}
-                  className="rounded-none"
-                  onClick={() => setOpenConfirm(true)}
-                >
-                  Mainnet
-                </Button>
-              </div>
-              <div className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
-                Current API:{" "}
-                <span className="font-mono break-all">{apiBaseUrl}</span>
-              </div>
-            </div>
-          </div>
+      <div>
+        <h2 className="mb-4 text-2xl font-bold text-white">Wallet</h2>
+        {walletAddress ? (
+          <Button
+            variant="outline"
+            className="w-full justify-start rounded-2xl border-zinc-700/50 bg-zinc-800/50 px-6 py-7 text-red-500 transition-colors hover:bg-zinc-800/70 hover:text-red-400"
+            onClick={onDisconnect}
+          >
+            <LogOut className="mr-3 h-5 w-5" />
+            <span className="text-base font-medium">Disconnect Wallet</span>
+          </Button>
+        ) : (
+          <Button
+            className="w-full rounded-2xl text-white bg-blue-600 py-7 text-base font-medium hover:bg-blue-700"
+            onClick={onConnect}
+          >
+            Connect wallet
+          </Button>
+        )}
+      </div>
 
-          <Separator className="my-5" />
-
-          <div className="grid grid-cols-12 items-center gap-3">
-            <div className="col-span-12 md:col-span-4">
-              <div className="text-sm font-medium">Wallet</div>
-              <div className="text-xs text-neutral-600 dark:text-neutral-400">
-                Connect your wallet
-              </div>
-            </div>
-            <div className="col-span-12 md:col-span-8">
-              {walletAddress ? (
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="px-2 py-1 rounded-md border font-mono text-xs">
-                    {walletName || "Wallet"}
-                  </span>
-                  <span className="font-mono break-all text-xs text-neutral-600 dark:text-neutral-400">
-                    {walletAddress}
-                  </span>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={onDisconnect}
-                  >
-                    Disconnect
-                  </Button>
-                </div>
-              ) : (
-                <Button
-                  size="sm"
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
-                  onClick={onConnect}
-                >
-                  Connect wallet
-                </Button>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-      <NetworkSwitchModal
-        open={openConfirm}
-        onOpenChange={setOpenConfirm}
-        onConfirm={() => setNetwork("mainnet")}
-      />
-    </>
+      <div className="mt-4">
+        <h2 className="mb-3 text-xl font-semibold text-white">About</h2>
+        <div className="rounded-2xl bg-zinc-800/50 mb-4 p-6 backdrop-blur-sm">
+          <h3 className="mb-1 text-lg font-semibold text-white">{appName}</h3>
+          <p className="text-sm text-zinc-400">Version {appVersion}</p>
+        </div>
+      </div>
+    </div>
   );
 }
