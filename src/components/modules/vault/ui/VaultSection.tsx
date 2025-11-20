@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { useVault } from "@/components/modules/vault/hooks/use-vault";
-import { toast } from "sonner";
-import { VaultDashboard } from "./VaultDashboard";
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { useVault } from '@/components/modules/vault/hooks/use-vault';
+import { toast } from 'sonner';
+import { VaultDashboard } from './VaultDashboard';
 
 export function VaultSection() {
   const { loading, createVault, ownerDid, vaultExists } = useVault();
 
   const onCreateVault = async () => {
     try {
-      const res = await createVault();
-      toast.success("Vault created");
-    } catch (e: any) {
-      const msg = e?.message || String(e);
+      await createVault();
+      toast.success('Vault created');
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
       toast.error(msg);
     }
   };
@@ -41,7 +41,7 @@ export function VaultSection() {
             disabled={loading || !ownerDid}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white"
           >
-            {loading ? "Processing..." : "Create Vault"}
+            {loading ? 'Processing...' : 'Create Vault'}
           </Button>
         </div>
       </Card>

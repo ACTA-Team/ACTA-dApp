@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useMemo, useCallback, useState } from "react";
-import { useVault } from "@/components/modules/vault/hooks/use-vault";
+import { useMemo, useCallback, useState } from 'react';
+import { useVault } from '@/components/modules/vault/hooks/use-vault';
 
 function extractGFromDid(did?: string): string | null {
   if (!did) return null;
@@ -15,10 +15,11 @@ export function useVaultAuthorizedList() {
 
   const issuers = useMemo(() => {
     const map = new Map<string, { address: string; issuerDid?: string }>();
-    (vcs || []).forEach((vc: any) => {
-      const addr = extractGFromDid(vc?.issuer_did);
+    (vcs || []).forEach((vc) => {
+      const issuerDid = (vc as Record<string, unknown>)?.issuer_did as string | undefined;
+      const addr = extractGFromDid(issuerDid);
       if (addr && !map.has(addr)) {
-        map.set(addr, { address: addr, issuerDid: vc?.issuer_did });
+        map.set(addr, { address: addr, issuerDid });
       }
     });
     return Array.from(map.values());

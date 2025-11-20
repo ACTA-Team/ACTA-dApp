@@ -1,29 +1,38 @@
-"use client";
+'use client';
 
-import { useVaultAuthorize } from "@/components/modules/vault/hooks/use-vault-authorize";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import { toast } from "sonner";
+import { useVaultAuthorize } from '@/components/modules/vault/hooks/use-vault-authorize';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card } from '@/components/ui/card';
+import { toast } from 'sonner';
 
 export function VaultAuthorize() {
-  const { addressInput, setAddressInput, authorizeMe, authorizeWithInput, loading, isSelfAuthorized } = useVaultAuthorize();
+  const {
+    addressInput,
+    setAddressInput,
+    authorizeMe,
+    authorizeWithInput,
+    loading,
+    isSelfAuthorized,
+  } = useVaultAuthorize();
 
   const onAuthorizeMe = async () => {
     try {
-      const res = await authorizeMe();
-      toast.success("Authorized");
-    } catch (e: any) {
-      toast.error(e?.message || "Error authorizing myself");
+      await authorizeMe();
+      toast.success('Authorized');
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Error authorizing myself';
+      toast.error(msg);
     }
   };
 
   const onAuthorizeAddress = async () => {
     try {
-      const res = await authorizeWithInput();
-      toast.success("Address authorized");
-    } catch (e: any) {
-      toast.error(e?.message || "Error authorizing address");
+      await authorizeWithInput();
+      toast.success('Address authorized');
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Error authorizing address';
+      toast.error(msg);
     }
   };
 
@@ -36,8 +45,12 @@ export function VaultAuthorize() {
             Grants you permission as an authorized issuer in your vault.
           </p>
         </div>
-        <Button onClick={onAuthorizeMe} disabled={loading || isSelfAuthorized} className="w-full rounded-md">
-          {loading ? "Authorizing..." : isSelfAuthorized ? "Already authorized" : "Authorize Me"}
+        <Button
+          onClick={onAuthorizeMe}
+          disabled={loading || isSelfAuthorized}
+          className="w-full rounded-md"
+        >
+          {loading ? 'Authorizing...' : isSelfAuthorized ? 'Already authorized' : 'Authorize Me'}
         </Button>
       </Card>
 
@@ -56,7 +69,7 @@ export function VaultAuthorize() {
             className="flex-1 min-w-0"
           />
           <Button onClick={onAuthorizeAddress} disabled={loading} className="rounded-md">
-            {loading ? "Authorizing..." : "Authorize"}
+            {loading ? 'Authorizing...' : 'Authorize'}
           </Button>
         </div>
       </Card>

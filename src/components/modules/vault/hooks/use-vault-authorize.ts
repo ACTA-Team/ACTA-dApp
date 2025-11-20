@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState, useCallback, useEffect } from "react";
-import { useVault } from "@/components/modules/vault/hooks/use-vault";
+import { useState, useCallback, useEffect } from 'react';
+import { useVault } from '@/components/modules/vault/hooks/use-vault';
 
 export function useVaultAuthorize() {
   const { authorizeSelf, authorizeAddress, loading, checkSelfAuthorized } = useVault();
-  const [addressInput, setAddressInput] = useState<string>("");
+  const [addressInput, setAddressInput] = useState<string>('');
   const [isSelfAuthorized, setIsSelfAuthorized] = useState<boolean>(false);
 
   const authorizeMe = useCallback(async () => {
@@ -16,7 +16,7 @@ export function useVaultAuthorize() {
 
   const authorizeWithInput = useCallback(async () => {
     const addr = addressInput.trim();
-    if (!addr) throw new Error("Address required");
+    if (!addr) throw new Error('Address required');
     return authorizeAddress(addr);
   }, [authorizeAddress, addressInput]);
 
