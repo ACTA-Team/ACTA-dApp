@@ -61,7 +61,7 @@ export function useVault() {
     };
     setConfig(picked);
     return picked;
-  }, [config, client, network]);
+  }, [config, client]);
 
   const ownerDid = walletAddress
     ? `did:pkh:stellar:${network === 'mainnet' ? 'public' : 'testnet'}:${walletAddress}`
@@ -202,7 +202,7 @@ export function useVault() {
       try {
         ids = await fetchVcIdsDirect();
       } catch (e) {
-        console.warn('list_vc_ids_direct failed', e);
+        void e;
         listError = true;
       }
       const items: unknown[] = [];
@@ -211,7 +211,7 @@ export function useVault() {
           const vc = await fetchVcDirect(id);
           if (vc) items.push({ id, ...vc });
         } catch (e) {
-          console.warn('get_vc_direct failed', e);
+          void e;
         }
       }
       return {
@@ -224,7 +224,7 @@ export function useVault() {
         vcReadError: listError,
       };
     } catch (e) {
-      console.warn('vault dashboard load failed', e);
+      void e;
       return {
         vaultExists: false,
         xlmBalance: null,
