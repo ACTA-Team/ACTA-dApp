@@ -25,8 +25,8 @@ export function AuthorizedIssuersList() {
         List derived from issued credentials. An authorized wallet may not appear until issuance.
       </p>
 
-      <div className="overflow-hidden rounded-2xl bg-zinc-900/50 backdrop-blur-sm border border-zinc-800">
-        <div className="grid grid-cols-12 gap-4 px-6 py-4 text-xs font-medium text-zinc-400 border-b border-zinc-800">
+      <div className="overflow-hidden rounded-2xl bg-zinc-900/50 backdrop-blur-sm border border-[#edeed1]/20">
+        <div className="grid grid-cols-12 gap-4 px-6 py-4 text-xs font-medium text-zinc-400 border-b border-[#edeed1]/20">
           <div className="col-span-6">Address</div>
           <div className="col-span-5">DID</div>
           <div className="col-span-1 text-right">Action</div>
@@ -40,7 +40,7 @@ export function AuthorizedIssuersList() {
           {issuers.map((it) => (
             <div
               key={it.address}
-              className="grid grid-cols-12 gap-4 items-center px-6 py-4 border-t border-zinc-800 hover:bg-zinc-800/30 transition-colors"
+              className="grid grid-cols-12 gap-4 items-center px-6 py-4 border-t border-[#edeed1]/20 hover:bg-zinc-800/30 transition-colors"
             >
               <div className="col-span-6 font-mono text-sm text-white truncate">{it.address}</div>
               <div className="col-span-5 text-xs text-zinc-400 truncate">{it.issuerDid || '-'}</div>

@@ -35,10 +35,10 @@ export function ProfilePanel({
       </div>
 
       {walletAddress && (
-        <div className="mb-5 rounded-2xl bg-zinc-900/80 border border-zinc-800/50 p-4 backdrop-blur-sm">
+        <div className="mb-5 rounded-2xl bg-zinc-900/80 border border-[#edeed1]/30 p-4 backdrop-blur-sm">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-600">
-              <Wallet className="h-6 w-6 text-white" />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#edeed1]/10">
+              <Wallet className="h-6 w-6 text-[#edeed1]" />
             </div>
             <div className="flex-1 overflow-hidden">
               <h3 className="mb-1 text-xs font-medium text-zinc-400">Wallet Address</h3>
@@ -48,10 +48,10 @@ export function ProfilePanel({
         </div>
       )}
 
-      <div className="mb-4 rounded-2xl bg-zinc-900/80 border border-zinc-800/50 p-4 backdrop-blur-sm">
+      <div className="mb-4 rounded-2xl bg-zinc-900/80 border border-[#edeed1]/30 p-4 backdrop-blur-sm">
         <div className="mb-4">
-          <h3 className="text-sm font-semibold text-white">Network</h3>
-          <p className="text-xs text-zinc-400">Select environment</p>
+          <h3 className="text-sm font-semibold text-[#edeed1]">Network</h3>
+          <p className="text-xs text-[#edeed1]">Select environment</p>
         </div>
         <div className="inline-flex rounded-full bg-zinc-800 p-0.5">
           <Button
@@ -104,7 +104,7 @@ export function ProfilePanel({
 
       <div className="mt-3">
         <h2 className="mb-3 text-xl font-bold text-white">About</h2>
-        <div className="rounded-2xl bg-zinc-900/80 border border-zinc-800/50 p-4 backdrop-blur-sm">
+        <div className="rounded-2xl bg-zinc-900/80 border border-[#edeed1]/30 p-4 backdrop-blur-sm">
           <h3 className="mb-1 text-base font-semibold text-white">{appName}</h3>
           <p className="text-xs text-zinc-400">Version {appVersion}</p>
         </div>

@@ -44,12 +44,12 @@ export function CredentialVerifyCard({
           <div className="flex items-start justify-between pb-6 border-b border-[#edeed1]/20">
             <div>
               <h2 className="text-2xl font-bold text-white mb-2">Credential</h2>
-              <p className="text-sm text-[#edeed1]">
+              <p className="text-sm text-zinc-400">
                 {(revealed?.type as string) || 'UniversityDegreeCredential'}
               </p>
             </div>
             <div className="text-right">
-              <div className="text-5xl font-bold text-[#edeed1] tracking-tight mb-3">ACTA</div>
+              <div className="text-5xl font-bold text-white tracking-tight mb-3">ACTA</div>
               <div
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border ${
                   displayStatus === 'Revoked'
@@ -68,7 +68,7 @@ export function CredentialVerifyCard({
           <div className="space-y-3 bg-zinc-900/40 backdrop-blur-sm rounded-xl p-5 border border-[#edeed1]/20">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-white">VC ID</span>
-              <span className="text-xs text-[#edeed1]">Verification On-chain</span>
+              <span className="text-xs text-zinc-500">Verification On-chain</span>
             </div>
             <div className="font-mono text-sm text-zinc-300 break-all leading-relaxed">
               {vcId || '-'}

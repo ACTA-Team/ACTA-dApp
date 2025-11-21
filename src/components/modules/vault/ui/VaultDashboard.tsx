@@ -69,36 +69,36 @@ export default function VaultPage() {
         </div>
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card className="p-6 bg-card border-border">
+          <Card className="p-6 bg-card border-[#edeed1]/30">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-lg bg-secondary">
-                <Key className="w-5 h-5 text-secondary-foreground" />
+              <div className="p-3 rounded-lg bg-[#edeed1]/10">
+                <Key className="w-5 h-5 text-[#edeed1]" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Total credentials</p>
-                <p className="text-2xl font-bold">{actaById.size}</p>
+                <p className="text-2xl font-bold text-white">{actaById.size}</p>
               </div>
             </div>
           </Card>
-          <Card className="p-6 bg-card border-border">
+          <Card className="p-6 bg-card border-[#edeed1]/30">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-lg bg-secondary">
-                <Shield className="w-5 h-5 text-secondary-foreground" />
+              <div className="p-3 rounded-lg bg-[#edeed1]/10">
+                <Shield className="w-5 h-5 text-[#edeed1]" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Security</p>
-                <p className="text-2xl font-bold">High</p>
+                <p className="text-2xl font-bold text-white">High</p>
               </div>
             </div>
           </Card>
-          <Card className="p-6 bg-card border-border">
+          <Card className="p-6 bg-card border-[#edeed1]/30">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-lg bg-secondary">
-                <Lock className="w-5 h-5 text-secondary-foreground" />
+              <div className="p-3 rounded-lg bg-[#edeed1]/10">
+                <Lock className="w-5 h-5 text-[#edeed1]" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Encryption</p>
-                <p className="text-2xl font-bold">AES-256</p>
+                <p className="text-2xl font-bold text-white">AES-256</p>
               </div>
             </div>
           </Card>

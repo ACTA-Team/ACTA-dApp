@@ -25,7 +25,7 @@ export function CredentialCard({
             height={40}
             className="w-10 h-10 object-contain flex-shrink-0"
           />
-          <span className="px-3 py-1 rounded-full bg-[#edeed1]/10 backdrop-blur-sm border border-[#edeed1]/30 text-xs font-medium whitespace-nowrap text-[#edeed1]">
+          <span className="px-3 py-1 rounded-full bg-[#edeed1]/10 backdrop-blur-sm border border-[#edeed1]/30 text-xs font-medium whitespace-nowrap text-white">
             {category}
           </span>
         </div>
@@ -41,7 +41,7 @@ export function CredentialCard({
                 variant="ghost"
                 size="sm"
                 onClick={() => onCopy(wallet, 'Wallet')}
-                className="h-8 w-8 p-0 hover:bg-[#edeed1]/10 text-[#edeed1] flex-shrink-0 border border-[#edeed1]/30 rounded-lg"
+                className="h-8 w-8 p-0 hover:bg-[#edeed1]/10 text-white flex-shrink-0 border border-[#edeed1]/30 rounded-lg"
               >
                 <Copy className="w-4 h-4" />
               </Button>
@@ -71,7 +71,7 @@ export function CredentialCard({
               onClick={onShare}
               title="Share"
               aria-label="Share"
-              className="h-11 w-11 rounded-xl bg-[#edeed1]/10 border border-[#edeed1]/30 hover:bg-[#edeed1]/20 text-[#edeed1] flex-shrink-0"
+              className="h-11 w-11 rounded-xl bg-[#edeed1]/10 border border-[#edeed1]/30 hover:bg-[#edeed1]/20 text-white flex-shrink-0"
             >
               <Share2 className="w-4 h-4" />
             </Button>

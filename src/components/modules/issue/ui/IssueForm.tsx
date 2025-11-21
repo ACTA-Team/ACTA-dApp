@@ -37,7 +37,7 @@ export default function IssueForm() {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Form */}
       <form onSubmit={onSubmit} className="space-y-4">
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 backdrop-blur-sm">
+        <div className="rounded-2xl border border-[#edeed1]/20 bg-zinc-900/50 p-6 backdrop-blur-sm">
           <h3 className="text-xl font-semibold text-white mb-2">Create Credential</h3>
           <div className="mb-4 flex items-center gap-3">
             <input
@@ -63,7 +63,7 @@ export default function IssueForm() {
                 value={issuer}
                 onChange={(e) => setIssuer(e.target.value)}
                 placeholder="did:example:issuer123 or an address"
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-950/50 text-white placeholder:text-zinc-500 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                className="w-full rounded-xl border border-[#edeed1]/20 bg-zinc-950/50 text-white placeholder:text-zinc-500 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                 required
               />
             </div>
@@ -75,7 +75,7 @@ export default function IssueForm() {
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 placeholder="did:example:user456 or email"
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-950/50 text-white placeholder:text-zinc-500 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                className="w-full rounded-xl border border-[#edeed1]/20 bg-zinc-950/50 text-white placeholder:text-zinc-500 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                 required
               />
             </div>
@@ -85,7 +85,7 @@ export default function IssueForm() {
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value)}
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-950/50 text-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                className="w-full rounded-xl border border-[#edeed1]/20 bg-zinc-950/50 text-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               >
                 <option value="UniversityDegree">UniversityDegree</option>
                 <option value="KYC">KYC</option>
@@ -99,7 +99,7 @@ export default function IssueForm() {
                 value={attributes}
                 onChange={(e) => setAttributes(e.target.value)}
                 rows={6}
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-950/50 text-white placeholder:text-zinc-500 px-4 py-3 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                className="w-full rounded-xl border border-[#edeed1]/20 bg-zinc-950/50 text-white placeholder:text-zinc-500 px-4 py-3 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               />
             </div>
             {hasExpiration && (
@@ -109,7 +109,7 @@ export default function IssueForm() {
                   type="date"
                   value={expires}
                   onChange={(e) => setExpires(e.target.value)}
-                  className="w-full rounded-xl border border-zinc-800 bg-zinc-950/50 text-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                className="w-full rounded-xl border border-[#edeed1]/20 bg-zinc-950/50 text-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                 />
               </div>
             )}
@@ -125,7 +125,7 @@ export default function IssueForm() {
       </form>
 
       {/* Preview */}
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 backdrop-blur-sm">
+      <div className="rounded-2xl border border-[#edeed1]/20 bg-zinc-900/50 p-6 backdrop-blur-sm">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-semibold text-white">Preview</h3>
           <span className="text-xs text-zinc-500 font-mono">ACTA</span>
@@ -138,12 +138,12 @@ export default function IssueForm() {
         )}
         {preview && (
           <div className="space-y-4">
-            <div className="rounded-xl bg-zinc-950/80 p-4 border border-zinc-800">
+            <div className="rounded-xl bg-zinc-950/80 p-4 border border-[#edeed1]/20">
               <pre className="text-xs text-zinc-300 overflow-auto">
                 {JSON.stringify(preview, null, 2)}
               </pre>
             </div>
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-4">
+            <div className="rounded-xl border border-[#edeed1]/20 bg-zinc-950/50 p-4">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-semibold text-white">Credential</span>
                 <span className="text-xs text-zinc-500 font-mono">ACTA</span>
