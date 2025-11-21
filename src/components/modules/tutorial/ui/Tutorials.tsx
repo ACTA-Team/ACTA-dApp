@@ -137,8 +137,6 @@ export default function Tutorials() {
                   </div>
                 </button>
               ))}
-
-              
             </div>
           </div>
         </div>
