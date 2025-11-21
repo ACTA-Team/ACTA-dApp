@@ -13,12 +13,8 @@ export function HeaderHome() {
   const inDashboard = pathname?.startsWith('/dashboard');
   return (
     <header className="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800 ">
-      <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-3">
-          {inDashboard && (
-            <SidebarTrigger className="text-zinc-400 hover:text-white transition-colors" />
-          )}
-        </div>
+      <div className="flex items-center justify-between px-4 md:px-6 py-4">
+        <div className="flex items-center gap-3" />
 
         <div className="flex items-center gap-4">
           <NetworkToggle

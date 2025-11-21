@@ -6,17 +6,9 @@ import { HoverBorderGradient } from './hover-border-gradient';
 
 export default function HeroSection() {
   return (
-    <div className="relative min-h-screen w-full flex flex-col items-center justify-center">
-      <div className="absolute inset-y-0 left-0 h-full w-px ">
-        <div className="absolute top-0 h-40 w-px bg-linear-to-b from-transparent via-blue-500 to-transparent" />
-      </div>
-
-      <div className="absolute inset-y-0 right-0 h-full w-px ">
-        <div className="absolute h-40 w-px bg-linear-to-b from-transparent via-blue-600 to-transparent" />
-      </div>
-
-      <div className="px-4 py-10 md:py-20">
-        <h1 className="relative z-10 mx-auto max-w-4xl text-center text-2xl font-bold text-white md:text-4xl lg:text-7xl">
+    <div className="relative min-h-screen w-full flex flex-col items-start justify-center px-6 md:px-16">
+      <div className="py-10 md:py-20">
+        <h1 className="relative z-10 max-w-4xl text-left text-2xl font-bold text-white md:text-4xl lg:text-7xl">
           {'Welcome to ACTA'.split(' ').map((word, index) => (
             <motion.span
               key={index}
@@ -45,7 +37,7 @@ export default function HeroSection() {
             duration: 0.3,
             delay: 0.8,
           }}
-          className="relative z-10 mx-auto max-w-xl py-4 text-center text-lg font-normal text-zinc-400"
+          className="relative z-10 max-w-xl py-4 text-left text-lg font-normal text-zinc-400"
         >
           On this page, you can issue credentials, share them, authorize issuers, verify them, and
           much more <br /> All without needing a third party or any programming knowledge.
@@ -62,16 +54,16 @@ export default function HeroSection() {
             duration: 0.3,
             delay: 1,
           }}
-          className="relative z-10 mt-8 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4"
+          className="relative z-10 mt-8 flex flex-col sm:flex-row flex-wrap items-start justify-start gap-4"
         >
           <HoverBorderGradient
             containerClassName="rounded-full"
             as="button"
-            className="flex items-center space-x-2 bg-blue-600 text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-700"
+            className="flex items-center space-x-2 bg-white text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-zinc-200"
           >
             <Link
               href="/dashboard"
-              className="w-full sm:w-60 rounded-full px-6 py-2 font-medium text-white text-center"
+              className="w-full sm:w-60 rounded-full px-6 py-2 font-medium text-black text-center"
             >
               Dashboard
             </Link>

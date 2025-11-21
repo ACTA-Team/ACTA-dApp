@@ -49,6 +49,7 @@ export function useCredentialTemplates() {
         },
         { key: 'fullName', label: 'Full Name', type: 'text', required: true },
         { key: 'country', label: 'Country', type: 'text', required: true },
+        { key: 'birthDate', label: 'Birth Date', type: 'date', required: false },
         {
           key: 'documentType',
           label: 'Document Type',

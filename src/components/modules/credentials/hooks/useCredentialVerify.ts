@@ -5,6 +5,7 @@ import { useNetwork } from '@/providers/network.provider';
 import { useVaultApi, useActaClient } from '@acta-team/acta-sdk';
 import { verifyOnChain } from '@/lib/actaOnChain';
 import { useWalletContext } from '@/providers/wallet.provider';
+import { verifyZkProof } from '@/lib/zk';
 
 type VerifyResult = {
   vc_id: string;
@@ -17,13 +18,25 @@ export function useCredentialVerify(vcId: string) {
   const { walletAddress } = useWalletContext();
   const [verify, setVerify] = useState<VerifyResult | null>(null);
   const [revealed, setRevealed] = useState<Record<string, unknown> | null>(null);
+  const [zkValid, setZkValid] = useState<boolean | null>(null);
+  const [zkStatement, setZkStatement] = useState<any | null>(null);
   const { verifyInVault } = useVaultApi();
   const client = useActaClient();
   const shareParam = useMemo(() => {
     if (typeof window === 'undefined') return null;
     try {
-      const sp = new URLSearchParams(window.location.search);
-      const raw = sp.get('share');
+      let raw: string | null = null;
+      const hs = String(window.location.hash || '');
+      if (hs.startsWith('#share=')) {
+        raw = hs.slice('#share='.length);
+      } else if (hs.includes('share=')) {
+        const idx = hs.indexOf('share=');
+        raw = hs.slice(idx + 6);
+      }
+      if (!raw) {
+        const sp = new URLSearchParams(window.location.search);
+        raw = sp.get('share');
+      }
       if (!raw) return null;
       const json = decodeURIComponent(escape(atob(decodeURIComponent(raw))));
       return JSON.parse(json);
@@ -39,6 +52,11 @@ export function useCredentialVerify(vcId: string) {
         const vaultIdOverride = cfg.vaultContractId || '';
         if (shareParam) {
           setRevealed(shareParam.revealedFields || null);
+          try {
+            const ok = await verifyZkProof(shareParam);
+            setZkValid(ok);
+            setZkStatement(shareParam.statement || null);
+          } catch {}
         }
 
         if (vcId && walletAddress) {
@@ -81,5 +99,5 @@ export function useCredentialVerify(vcId: string) {
     run();
   }, [vcId, network, walletAddress, shareParam, verifyInVault, client]);
 
-  return { verify, revealed };
+  return { verify, revealed, zkValid, zkStatement };
 }

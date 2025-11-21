@@ -16,4 +16,14 @@ export type Credential = {
   issuedAt: string;
   expirationDate: string | null;
   status: 'valid' | 'expired' | 'revoked';
+  birthDate?: string;
+};
+
+export type CredentialVerifyProps = {
+  vcId: string;
+  status?: string | null;
+  since?: string | null;
+  revealed?: Record<string, unknown> | null;
+  zkValid?: boolean | null;
+  zkStatement?: any | null;
 };

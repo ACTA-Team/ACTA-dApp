@@ -1,102 +1,138 @@
-import type React from 'react';
 import Link from 'next/link';
-import { Card } from '@/components/ui/card';
-import { FileText, PenTool } from 'lucide-react';
+import { FileCheck2, Shield, Sparkles, ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export const metadata = {
   title: 'Dashboard',
 };
 
-export default function DashboardHomePage() {
+export default function DashboardPage() {
   return (
-    <div className="p-4 md:p-6">
-      <div className="border-b border-gray-800/50 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-6 py-6">
+    <div className="min-h-screen">
+      <div className="border-b border-white/10 ">
+        <div className="mx-auto max-w-7xl px-6 py-8">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-              <p className="text-sm text-gray-500">Manage your credentials and vault</p>
+            <div className="flex items-center gap-4">
+              <div>
+                <h1 className="text-4xl font-bold text-white tracking-tight">Dashboard</h1>
+                <p className="text-base text-white/50 mt-1">Manage your credentials and vault</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-6 py-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-stretch">
-          <Card className="w-full sm:w-1/2 border-zinc-800 bg-zinc-900/50 p-4 backdrop-blur-sm">
-            <h3 className="mb-4 text-2xl font-semibold text-white">Quick Start</h3>
-            <ol className="space-y-2 text-1xl text-zinc-300">
-              <li className="flex gap-2">
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-medium text-white">
-                  1
-                </span>
-                <span>Connect your wallet and choose a network</span>
-              </li>
-              <li className="flex gap-2">
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-medium text-white">
-                  2
-                </span>
-                <span>Create your personal vault</span>
-              </li>
-              <li className="flex gap-2">
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-medium text-white">
-                  3
-                </span>
-                <span>Authorize wallets to issue credentials</span>
-              </li>
-              <li className="flex gap-2">
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-medium text-white">
-                  4
-                </span>
-                <span>Start issuing and managing credentials</span>
-              </li>
-            </ol>
-          </Card>
+      <div className="mx-auto max-w-7xl px-6 py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="lg:col-span-2">
+            <div className="relative h-full">
+              <div className="relative glass-card rounded-2xl p-8 lg:p-10 h-full shadow-2xl border-border/50">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="p-2.5 rounded-xl bg-white/10 shadow-lg shadow-white/5">
+                    <Sparkles className="w-5 h-5 text-white" />
+                  </div>
+                  <h2 className="text-2xl lg:text-3xl font-bold tracking-tight text-white">
+                    Quick Start
+                  </h2>
+                </div>
 
-          <div className="w-full sm:w-1/2 flex flex-col gap-4">
-            <div className="flex-1">
-              <ActionCard
-                title="Issue"
-                description="Create new credentials"
-                href="/dashboard/issue"
-                icon={<PenTool className="h-6 w-6" />}
-              />
+                <div className="space-y-5">
+                  {[
+                    {
+                      number: '01',
+                      title: 'Connect your wallet and choose a network',
+                      description: 'Link your Web3 wallet to get started',
+                    },
+                    {
+                      number: '02',
+                      title: 'Create your personal vault',
+                      description: 'Secure storage for your credentials',
+                    },
+                    {
+                      number: '03',
+                      title: 'Authorize wallets to issue credentials',
+                      description: 'Grant permissions to trusted wallets',
+                    },
+                    {
+                      number: '04',
+                      title: 'Start issuing and managing credentials',
+                      description: 'Full control over your digital identity',
+                    },
+                  ].map((step, index) => (
+                    <div
+                      key={index}
+                      className="group/item flex items-start gap-5 p-5 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 cursor-pointer"
+                    >
+                      <div className="flex-shrink-0">
+                        <div className="w-12 h-12 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center">
+                          <span className="text-lg font-bold text-white">{step.number}</span>
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0 pt-1">
+                        <h3 className="text-base lg:text-lg font-semibold text-white mb-1 text-pretty">
+                          {step.title}
+                        </h3>
+                        <p className="text-sm text-gray-400 text-pretty">{step.description}</p>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-gray-500 group-hover/item:text-white transition-colors flex-shrink-0 mt-2" />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="flex-1">
-              <ActionCard
-                title="My Credentials"
-                description="View your credentials"
-                href="/dashboard/credentials"
-                icon={<FileText className="h-6 w-6" />}
-              />
+          </div>
+          <div className="lg:col-span-1 space-y-6 lg:space-y-8">
+            <div className="relative group">
+              <div className="relative glass-card rounded-2xl p-8 shadow-2xl border-border/50 hover:border-white/30 transition-all duration-300 bg-black/40">
+                <div className="mb-6">
+                  <div className="w-14 h-14 rounded-xl bg-white/10 flex items-center justify-center mb-6 shadow-lg shadow-white/5">
+                    <Shield className="w-7 h-7 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">Issue</h3>
+                  <p className="text-gray-400 text-sm text-pretty leading-relaxed">
+                    Create new credentials
+                  </p>
+                </div>
+
+                <Button
+                  asChild
+                  className="w-full h-12 bg-white hover:bg-white/90 text-black font-semibold shadow-lg shadow-white/10 hover:shadow-xl hover:shadow-white/20 transition-all duration-300 rounded-xl group/btn"
+                >
+                  <Link href="/dashboard/issue">
+                    <span>Get Started</span>
+                    <ChevronRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+
+            <div className="relative group">
+              <div className="relative glass-card rounded-2xl p-8 shadow-2xl border-border/50 hover:border-white/30 transition-all duration-300 bg-black/40">
+                <div className="mb-6">
+                  <div className="w-14 h-14 rounded-xl bg-white/10 flex items-center justify-center mb-6 shadow-lg shadow-white/5">
+                    <FileCheck2 className="w-7 h-7 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">My Vault</h3>
+                  <p className="text-gray-400 text-sm text-pretty leading-relaxed">
+                    View your vault
+                  </p>
+                </div>
+
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full h-12 border-2 border-white/30 hover:border-white hover:bg-white/10 text-white font-semibold transition-all duration-300 rounded-xl group/btn bg-transparent"
+                >
+                  <Link href="/dashboard/credentials">
+                    <span>View All</span>
+                    <ChevronRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
-}
-
-function ActionCard({
-  title,
-  description,
-  href,
-  icon,
-}: {
-  title: string;
-  description: string;
-  href: string;
-  icon: React.ReactNode;
-}) {
-  return (
-    <Link href={href}>
-      <Card className="group h-full border-zinc-800 bg-zinc-900/50 p-4 backdrop-blur-sm transition-all hover:border-zinc-700 hover:bg-zinc-900/70">
-        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-600/10 text-blue-600 transition-colors group-hover:bg-blue-600 group-hover:text-white">
-          {icon}
-        </div>
-        <h3 className="mb-1 text-lg font-semibold text-white">{title}</h3>
-        <p className="text-sm text-zinc-400">{description}</p>
-      </Card>
-    </Link>
   );
 }

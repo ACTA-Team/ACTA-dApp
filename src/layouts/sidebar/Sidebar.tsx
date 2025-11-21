@@ -1,160 +1,84 @@
-'use client';
-
-import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarSeparator,
-} from '@/components/ui/sidebar';
-import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { useRouter } from 'next/navigation';
+import { Sidebar, SidebarBody, SidebarLink } from '@/components/ui/aceternity-sidebar';
 import {
   IconHome,
   IconId,
   IconUpload,
   IconArrowLeft,
   IconUser,
-  IconChevronLeft,
-  IconChevronRight,
   IconPlayerPlay,
+  IconLock,
 } from '@tabler/icons-react';
 
 export function AppSidebar() {
   const router = useRouter();
-  const pathname = usePathname();
-  const [vaultOpen, setVaultOpen] = useState<boolean>(
-    pathname !== '/dashboard' && pathname !== '/dashboard/tutorials'
-  );
-
-  useEffect(() => {
-    const handler = (e: Event) => {
-      const detail = (e as CustomEvent).detail as { open?: boolean } | undefined;
-      if (detail && typeof detail.open === 'boolean') {
-        setVaultOpen(detail.open);
-      }
-    };
-    window.addEventListener('vault-panel-state', handler as EventListener);
-    return () => window.removeEventListener('vault-panel-state', handler as EventListener);
-  }, []);
-
-  useEffect(() => {
-    setVaultOpen(pathname !== '/dashboard' && pathname !== '/dashboard/tutorials');
-  }, [pathname]);
+  const links = [
+    {
+      label: 'ACTA',
+      href: '/dashboard',
+      icon: (
+        <img
+          src="/logo.png"
+          alt="ACTA"
+          className="h-6 w-6 shrink-0 rounded"
+          width={24}
+          height={24}
+        />
+      ),
+    },
+    {
+      label: 'Home',
+      href: '/dashboard',
+      icon: <IconHome className="h-5 w-5 shrink-0 text-neutral-200" />,
+    },
+    {
+      label: 'Issue',
+      href: '/dashboard/issue',
+      icon: <IconUpload className="h-5 w-5 shrink-0 text-neutral-200" />,
+    },
+    {
+      label: 'Authorize',
+      href: '/dashboard/authorize',
+      icon: <IconId className="h-5 w-5 shrink-0 text-neutral-200" />,
+    },
+    {
+      label: 'Vault',
+      href: '/dashboard/credentials',
+      icon: <IconLock className="h-5 w-5 shrink-0 text-neutral-200" />,
+    },
+    {
+      label: 'Tutorials',
+      href: '/dashboard/tutorials',
+      icon: <IconPlayerPlay className="h-5 w-5 shrink-0 text-neutral-200" />,
+    },
+  ];
   return (
-    <Sidebar variant="inset">
-      <SidebarHeader>
-        <div className="px-2 pt-2">
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
-            aria-label="Volver"
-          >
-            <IconArrowLeft className="size-5" />
-          </button>
-          <div className="mt-3">
-            <button
-              type="button"
-              onClick={() => {
-                try {
-                  window.dispatchEvent(new CustomEvent('toggle-vault-panel'));
-                } catch {}
-              }}
-              className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
-              aria-label="Toggle vault panel"
-            >
-              {vaultOpen ? (
-                <IconChevronLeft className="size-5" />
-              ) : (
-                <IconChevronRight className="size-5" />
-              )}
-            </button>
+    <Sidebar animate={true}>
+      <SidebarBody className="justify-between gap-10">
+        <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
+          <div className="mt-2 flex flex-col gap-2">
+            {links.map((link, idx) => (
+              <SidebarLink key={idx} link={link} />
+            ))}
           </div>
         </div>
-        <SidebarSeparator className="my-3" />
-      </SidebarHeader>
-
-      <SidebarContent className="px-2">
-        <div className="flex flex-col items-center gap-5 pt-2">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                aria-label="Inicio"
-                href="/dashboard"
-                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
-              >
-                <IconHome className="size-5" />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Home</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                aria-label="Issue"
-                href="/dashboard/issue"
-                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
-              >
-                <IconUpload className="size-5" />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Issue</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                aria-label="Credenciales"
-                href="/dashboard/credentials"
-                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
-              >
-                <IconId className="size-5" />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Credentials</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                aria-label="Tutorials"
-                href="/dashboard/tutorials"
-                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
-              >
-                <IconPlayerPlay className="size-5" />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Tutorials</TooltipContent>
-          </Tooltip>
+        <div>
+          <SidebarLink
+            link={{
+              label: 'Settings',
+              href: '#',
+              icon: <IconUser className="h-5 w-5 shrink-0 text-neutral-200" />,
+              onClick: () => {
+                try {
+                  window.dispatchEvent(new CustomEvent('open-settings'));
+                } catch {
+                  router.push('/settings');
+                }
+              },
+            }}
+          />
         </div>
-      </SidebarContent>
-
-      <SidebarFooter>
-        <div className="px-2 pb-2 mt-auto">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                aria-label="Settings"
-                onClick={() => {
-                  try {
-                    window.dispatchEvent(new CustomEvent('open-settings'));
-                  } catch {
-                    router.push('/settings');
-                  }
-                }}
-                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
-              >
-                <IconUser className="size-5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="right">Settings</TooltipContent>
-          </Tooltip>
-        </div>
-      </SidebarFooter>
+      </SidebarBody>
     </Sidebar>
   );
 }

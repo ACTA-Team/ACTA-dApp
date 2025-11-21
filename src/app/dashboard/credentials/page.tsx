@@ -1,4 +1,4 @@
-import CredentialsList from '@/components/modules/credentials/ui/CredentialsList';
+import VaultPage from '@/components/modules/vault/ui/VaultDashboard';
 
 export const metadata = {
   title: 'My Credentials',
@@ -7,7 +7,7 @@ export const metadata = {
 export default function CredentialsPage() {
   return (
     <div className="space-y-6">
-      <CredentialsList />
+      <VaultPage />
     </div>
   );
 }

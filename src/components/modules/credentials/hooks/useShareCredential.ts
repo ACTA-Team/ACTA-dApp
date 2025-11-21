@@ -18,6 +18,15 @@ export function useShareCredential(credential: Credential | null) {
 
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [copied, setCopied] = useState(false);
+  const [predicate, setPredicate] = useState<{
+    kind: 'none' | 'typeEq' | 'isAdult';
+    value?: string;
+  }>({ kind: 'none' });
+  const [proof, setProof] = useState<{ statement: any; publicSignals: any[]; proof: any } | null>(
+    null
+  );
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const onSelectAll = () => {
     if (!credential) return;
@@ -52,13 +61,18 @@ export function useShareCredential(credential: Credential | null) {
     try {
       const payload: Record<string, unknown> = { revealedFields };
       if (credential?.id) payload.vc_id = credential.id;
+      if (proof) {
+        (payload as any).statement = proof.statement;
+        (payload as any).publicSignals = proof.publicSignals;
+        (payload as any).proof = proof.proof;
+      }
       const json = JSON.stringify(payload);
       const encoded = encodeURIComponent(btoa(unescape(encodeURIComponent(json))));
       return encoded;
     } catch {
       return '';
     }
-  }, [revealedFields, credential]);
+  }, [revealedFields, credential, proof]);
 
   const onToggle = (key: string) => {
     setSelected((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -68,11 +82,42 @@ export function useShareCredential(credential: Credential | null) {
   const onCopy = async () => {
     try {
       const vcId = credential?.id || '';
-      const url = `${window.location.origin}/credential/${vcId}?share=${shareParam}`;
+      const url = `${window.location.origin}/credential/${vcId}#share=${shareParam}`;
       await navigator.clipboard.writeText(url);
       setCopied(true);
     } catch {}
   };
+
+  async function onGenerateProof() {
+    setLoading(true);
+    setError(null);
+    setProof(null);
+    try {
+      const kind = predicate.kind;
+      if (kind === 'none') {
+        setProof({ statement: 'none', publicSignals: [], proof: null });
+      } else {
+        if (!credential) {
+          setProof({ statement: 'none', publicSignals: [], proof: null });
+          return;
+        }
+        if (kind === 'isAdult' && !(credential as any).birthDate) {
+          throw new Error('birth_date_missing');
+        }
+        const { generateZkProof } = await import('@/lib/zk');
+        const res = await generateZkProof({
+          credential: credential as unknown as Record<string, unknown>,
+          revealFields: selected,
+          predicate,
+        });
+        setProof(res);
+      }
+    } catch (e: any) {
+      setError(e?.message || 'proof_error');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return {
     fields,
@@ -84,5 +129,10 @@ export function useShareCredential(credential: Credential | null) {
     onUnselectAll,
     onToggle,
     onCopy,
+    predicate,
+    setPredicate,
+    loading,
+    error,
+    onGenerateProof,
   };
 }

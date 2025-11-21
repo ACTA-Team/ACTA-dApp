@@ -31,16 +31,16 @@ export function NetworkSwitchModal({ open, onOpenChange, onConfirm }: Props) {
         <Dialog.Content
           className={cn(
             'fixed left-1/2 top-1/2 z-50 w-[92vw] max-w-[440px] max-h-[85vh] -translate-x-1/2 -translate-y-1/2 overflow-y-auto pretty-scrollbar',
-            'rounded-2xl border border-zinc-800 shadow-2xl',
-            'bg-zinc-900/95 backdrop-blur-md text-white'
+            'rounded-2xl border border-white/10 shadow-2xl',
+            'bg-black text-white'
           )}
         >
-          <div className="flex items-center justify-between border-b border-zinc-800 px-5 py-3">
+          <div className="flex items-center justify-between border-b border-white/10 px-5 py-3">
             <Dialog.Title className="text-lg font-semibold text-white">
               Switch to Mainnet
             </Dialog.Title>
             <Dialog.Close asChild>
-              <button className="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white">
+              <button className="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-white/5 hover:text-white">
                 <X className="h-5 w-5" />
                 <span className="sr-only">Close</span>
               </button>
@@ -48,9 +48,9 @@ export function NetworkSwitchModal({ open, onOpenChange, onConfirm }: Props) {
           </div>
 
           <div className="space-y-3 px-5 py-4">
-            <div className="rounded-xl border border-orange-900/50 bg-orange-950/30 p-3">
-              <div className="text-sm font-semibold text-orange-400">Important Notice</div>
-              <ul className="mt-2 space-y-1.5 pl-5 text-xs text-orange-200/90 list-disc">
+            <div className="rounded-xl border border-white/20 bg-white/5 p-3">
+              <div className="text-sm font-semibold text-white">Important Notice</div>
+              <ul className="mt-2 space-y-1.5 pl-5 text-xs text-zinc-300 list-disc">
                 <li>Mainnet uses real XLM and assets with financial implications.</li>
                 <li>All transactions are permanent and irreversible.</li>
                 <li>You are using real funds, not test tokens.</li>
@@ -60,7 +60,7 @@ export function NetworkSwitchModal({ open, onOpenChange, onConfirm }: Props) {
               </ul>
             </div>
 
-            <div className="rounded-xl border border-zinc-800 bg-zinc-800/50 p-3">
+            <div className="rounded-xl border border-white/10 bg-white/5 p-3">
               <div className="text-sm font-semibold text-white">What is Mainnet?</div>
               <p className="mt-2 text-xs leading-relaxed text-zinc-300">
                 Mainnet is Stellar's production network where real transactions occur. Unlike
@@ -70,9 +70,9 @@ export function NetworkSwitchModal({ open, onOpenChange, onConfirm }: Props) {
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 border-t border-zinc-800 px-5 py-3">
+          <div className="flex justify-end gap-3 border-t border-white/10 px-5 py-3">
             <Dialog.Close asChild>
-              <button className="rounded-lg border border-zinc-700 bg-zinc-800/50 px-5 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white">
+              <button className="rounded-lg border border-white/20 bg-transparent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/5">
                 Cancel
               </button>
             </Dialog.Close>
@@ -81,7 +81,7 @@ export function NetworkSwitchModal({ open, onOpenChange, onConfirm }: Props) {
                 onConfirm();
                 onOpenChange(false);
               }}
-              className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+              className="rounded-lg border border-white bg-white px-5 py-2.5 text-sm font-medium text-black transition-colors hover:bg-white/90"
             >
               Switch to Mainnet
             </button>

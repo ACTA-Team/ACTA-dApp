@@ -1,0 +1,6 @@
+[package]
+name = "noir_workshop"
+type = "bin"
+authors = [""]
+
+[dependencies]
