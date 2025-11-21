@@ -33,7 +33,7 @@ export async function GET() {
         description: 'Tutorial',
         category: 'General',
         duration: '—',
-        videoPath: `/videos/tutorials/${file}`,
+        videoPath: `/videos/tutorials/${encodeURIComponent(file)}`,
       };
     });
     return NextResponse.json(items);

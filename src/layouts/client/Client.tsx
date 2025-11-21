@@ -3,7 +3,7 @@ import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/layouts/sidebar/Sidebar';
 import { HeaderHome } from '@/layouts/header/Header';
 import { SettingsOverlayHost } from '@/components/modules/settings/ui/SettingsOverlayHost';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import TutorialModal from '@/components/modules/tutorial/ui/TutorialModal';
 import { useWalletContext } from '@/providers/wallet.provider';
@@ -19,16 +19,14 @@ export default function DashboardLayoutClient({
   const pathname = usePathname();
   const isMobile = useIsMobile();
   const [tutorialClosed, setTutorialClosed] = useState(false);
-  const [tutorialOpen, setTutorialOpen] = useState(() => {
+  const [tutorialOpen, setTutorialOpen] = useState(false);
+  useEffect(() => {
     try {
-      if (typeof window === 'undefined') return false;
       const key = 'tutorial_shown_global';
       const seen = localStorage.getItem(key) === 'true';
-      return !seen;
-    } catch {
-      return false;
-    }
-  });
+      setTutorialOpen(!seen);
+    } catch {}
+  }, []);
 
   return (
     <SidebarProvider>

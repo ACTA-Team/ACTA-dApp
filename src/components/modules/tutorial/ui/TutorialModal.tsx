@@ -3,9 +3,13 @@
 import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
+import { useTutorials } from '../hooks/useTutorials';
 
 export default function TutorialModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const { tutorials } = useTutorials();
+  const first = tutorials[0];
+  const src = first?.videoPath || '/videos/tutorials/Web\ACTA-dApp\public\videos\tutorials\Connect Wallet.mp4';
 
   if (!open) return null;
 
@@ -16,9 +20,7 @@ export default function TutorialModal({ open, onClose }: { open: boolean; onClos
         <div className="flex items-center justify-between mb-4">
           <div>
             <div className="text-white font-semibold text-lg">Welcome</div>
-            <div className="text-sm text-zinc-400">
-              Watch this short tutorial. How to connect your wallet:
-            </div>
+            <div className="text-sm text-zinc-400">{first?.title || 'Connect your wallet'}</div>
           </div>
           <Button
             variant="ghost"
@@ -33,8 +35,9 @@ export default function TutorialModal({ open, onClose }: { open: boolean; onClos
 
         <div className="rounded-2xl overflow-hidden border border-zinc-800/50 bg-zinc-900/30">
           <video
+            key={src}
             ref={videoRef}
-            src="/videos/tutorials/wallet.mp4"
+            src={src}
             controls
             muted
             playsInline
