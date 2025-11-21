@@ -37,7 +37,7 @@ export function ProfilePanel({
       {walletAddress && (
         <div className="mb-5 rounded-2xl bg-zinc-900/80 border border-zinc-800/50 p-4 backdrop-blur-sm">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-600">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-600">
               <Wallet className="h-6 w-6 text-white" />
             </div>
             <div className="flex-1 overflow-hidden">
