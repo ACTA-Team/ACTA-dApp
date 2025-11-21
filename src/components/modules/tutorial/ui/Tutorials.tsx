@@ -9,8 +9,8 @@ export default function Tutorials() {
     useTutorials();
 
   return (
-    <div className="min-h-screen bg-black">
-      <div className="border-b border-white/10 backdrop-blur-xl bg-black/40">
+    <div className="min-h-screen">
+      <div className="border-b border-white/10 backdrop-blur-xl">
         <div className="mx-auto max-w-7xl px-6 py-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
