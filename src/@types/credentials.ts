@@ -25,5 +25,22 @@ export type CredentialVerifyProps = {
   since?: string | null;
   revealed?: Record<string, unknown> | null;
   zkValid?: boolean | null;
-  zkStatement?: any | null;
+  zkStatement?: ZkStatement | null;
 };
+
+export type ZkTypeEqStatement = {
+  kind: 'typeEq';
+  selectedKeys: string[];
+  isValid: boolean;
+  typeHash: string;
+  expectedHash: string;
+  valid: string;
+};
+
+export type ZkIsAdultStatement = {
+  kind: 'isAdult';
+  selectedKeys: string[];
+  isAdult: boolean;
+};
+
+export type ZkStatement = 'none' | ZkTypeEqStatement | ZkIsAdultStatement;

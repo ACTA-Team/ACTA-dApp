@@ -52,10 +52,25 @@ export function useCredentialVerify(vcId: string) {
         const cfg = client.getDefaults();
         const vaultIdOverride = cfg.vaultContractId || '';
         if (shareParam && typeof shareParam === 'object') {
-          const sp = shareParam as { revealedFields?: Record<string, unknown>; statement?: unknown; proof?: string };
+          const sp = shareParam as {
+            revealedFields?: Record<string, unknown>;
+            statement?: unknown;
+            proof?: string;
+          };
           setRevealed(sp.revealedFields || null);
           try {
-            const ok = await verifyZkProof(sp as unknown as { statement?: { kind?: string; typeHash?: string; expectedHash?: string; valid?: string }; publicSignals?: string[]; proof?: string } | null);
+            const ok = await verifyZkProof(
+              sp as unknown as {
+                statement?: {
+                  kind?: string;
+                  typeHash?: string;
+                  expectedHash?: string;
+                  valid?: string;
+                };
+                publicSignals?: string[];
+                proof?: string;
+              } | null
+            );
             setZkValid(ok);
             const st = sp.statement;
             if (st === 'none' || (typeof st === 'object' && st && 'kind' in st)) {
