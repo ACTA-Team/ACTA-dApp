@@ -8,17 +8,15 @@ export const metadata = {
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screendark">
-      <div className="border-b border-white/10 backdrop-blur-xl">
-        <div className="mx-auto max-w-7xl px-6 py-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div>
-                <h1 className="text-4xl font-bold text-white tracking-tight">Dashboard</h1>
-                <p className="text-base text-white/50 mt-1">Manage your credentials and vault</p>
-              </div>
-            </div>
-          </div>
+    <div className="min-h-screen">
+      <div className="container mx-auto px-6 py-12 lg:py-16">
+        <div className="mb-16">
+          <h1 className="text-5xl lg:text-6xl font-bold tracking-tight text-balance mb-4 bg-gradient-to-br from-white via-white to-white/80 bg-clip-text text-transparent">
+            Dashboard
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-2xl text-pretty">
+            Manage your credentials and vault
+          </p>
         </div>
       </div>
 
