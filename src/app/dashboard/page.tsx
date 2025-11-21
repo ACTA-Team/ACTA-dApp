@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { FileCheck2, Shield, Sparkles, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import QuickStart from '@/components/modules/dashboard/ui/QuickStart';
 
 export const metadata = {
   title: 'Dashboard',
@@ -36,48 +37,7 @@ export default function DashboardPage() {
                   </h2>
                 </div>
 
-                <div className="space-y-5">
-                  {[
-                    {
-                      number: '01',
-                      title: 'Connect your wallet and choose a network',
-                      description: 'Link your Web3 wallet to get started',
-                    },
-                    {
-                      number: '02',
-                      title: 'Create your personal vault',
-                      description: 'Secure storage for your credentials',
-                    },
-                    {
-                      number: '03',
-                      title: 'Authorize wallets to issue credentials',
-                      description: 'Grant permissions to trusted wallets',
-                    },
-                    {
-                      number: '04',
-                      title: 'Start issuing and managing credentials',
-                      description: 'Full control over your digital identity',
-                    },
-                  ].map((step) => (
-                    <div
-                      key={step.number}
-                      className="group/item flex items-start gap-5 p-5 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 cursor-pointer"
-                    >
-                      <div className="flex-shrink-0">
-                        <div className="w-12 h-12 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center">
-                          <span className="text-lg font-bold text-white">{step.number}</span>
-                        </div>
-                      </div>
-                      <div className="flex-1 min-w-0 pt-1">
-                        <h3 className="text-base lg:text-lg font-semibold text-white mb-1 text-pretty">
-                          {step.title}
-                        </h3>
-                        <p className="text-sm text-gray-400 text-pretty">{step.description}</p>
-                      </div>
-                      <ChevronRight className="w-5 h-5 text-gray-500 group-hover/item:text-white transition-colors flex-shrink-0 mt-2" />
-                    </div>
-                  ))}
-                </div>
+                <QuickStart />
               </div>
             </div>
           </div>
