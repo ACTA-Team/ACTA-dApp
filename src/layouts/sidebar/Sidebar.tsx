@@ -1,10 +1,10 @@
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Sidebar, SidebarBody, SidebarLink } from '@/components/ui/aceternity-sidebar';
 import {
   IconHome,
   IconId,
   IconUpload,
-  IconArrowLeft,
   IconUser,
   IconPlayerPlay,
   IconLock,
@@ -17,12 +17,13 @@ export function AppSidebar() {
       label: 'ACTA',
       href: '/dashboard',
       icon: (
-        <img
+        <Image
           src="/logo.png"
           alt="ACTA"
           className="h-6 w-6 shrink-0 rounded"
           width={24}
           height={24}
+          priority
         />
       ),
     },
@@ -57,8 +58,8 @@ export function AppSidebar() {
       <SidebarBody className="justify-between gap-10">
         <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
           <div className="mt-2 flex flex-col gap-2">
-            {links.map((link, idx) => (
-              <SidebarLink key={idx} link={link} />
+            {links.map((link) => (
+              <SidebarLink key={link.href} link={link} />
             ))}
           </div>
         </div>
