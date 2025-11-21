@@ -94,7 +94,7 @@ export default function DynamicIssueForm({
               <button
                 onClick={onSubmit}
                 disabled={issuing || !template}
-                className="w-full rounded-xl bg-blue-600 text-white px-6 py-3 font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="w-full rounded-xl bg-white text-black px-6 py-3 font-medium hover:bg-grey-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 {issuing ? 'Issuing...' : 'Issue Credential'}
               </button>
