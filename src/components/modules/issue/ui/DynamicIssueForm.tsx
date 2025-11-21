@@ -52,6 +52,7 @@ export default function DynamicIssueForm({
                   setHasExpiration(checked);
                   if (!checked) onSetField('expirationDate', '');
                 }}
+                aria-label="Toggle expiration"
                 className="h-4 w-4 rounded border border-zinc-700 bg-zinc-950/50 text-blue-600 focus:ring-blue-600"
               />
               <label htmlFor="hasExpiration" className="text-sm font-medium text-white">
