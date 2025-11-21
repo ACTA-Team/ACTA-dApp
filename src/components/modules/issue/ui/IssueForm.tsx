@@ -109,7 +109,7 @@ export default function IssueForm() {
                   type="date"
                   value={expires}
                   onChange={(e) => setExpires(e.target.value)}
-                className="w-full rounded-xl border border-[#edeed1]/20 bg-zinc-950/50 text-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  className="w-full rounded-xl border border-[#edeed1]/20 bg-zinc-950/50 text-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                 />
               </div>
             )}

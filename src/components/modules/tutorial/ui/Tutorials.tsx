@@ -106,7 +106,7 @@ export default function Tutorials() {
                       : 'border-white/10 bg-white/5 backdrop-blur-sm hover:border-white/20 hover:bg-white/10'
                   }`}
                 >
-                    <div className="absolute right-0 top-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full bg-[#edeed1]/10 blur-3xl" />
+                  <div className="absolute right-0 top-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full bg-[#edeed1]/10 blur-3xl" />
 
                   <div className="relative p-5">
                     <div className="mb-3 flex items-center justify-between">
