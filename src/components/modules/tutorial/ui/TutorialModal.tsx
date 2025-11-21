@@ -6,7 +6,6 @@ import { X } from 'lucide-react';
 
 export default function TutorialModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const timerRef = useRef<number | null>(null);
 
   if (!open) return null;
 
