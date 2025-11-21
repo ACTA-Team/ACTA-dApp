@@ -6,14 +6,10 @@ import { cn } from '@/lib/utils';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 export function Sidebar({
-  open,
-  setOpen,
   children,
   animate = false,
   className,
 }: {
-  open?: boolean;
-  setOpen?: (o: boolean) => void;
   children: React.ReactNode;
   animate?: boolean;
   className?: string;

@@ -21,7 +21,7 @@ export function useVaultCards() {
     }
   };
 
-  const [extras, setExtras] = useState<VaultItem[]>([]);
+  const [extras] = useState<VaultItem[]>([]);
   const credentials = useMemo<VaultItem[]>(() => {
     const base = actaCredentials.map((c) => ({
       id: c.id,

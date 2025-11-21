@@ -43,6 +43,7 @@ export default function Tutorials() {
                       controlsList="nodownload"
                     >
                       <source src={selectedTutorial.videoPath} type="video/mp4" />
+                      <track kind="captions" srcLang="en" src="/videos/tutorials/captions.vtt" />
                       Your browser does not support the video tag.
                     </video>
                   </div>

@@ -29,7 +29,7 @@ export const Wallet = () => {
       setCopied(true);
       setTimeout(() => setCopied(false), 1200);
     } catch (e) {
-      console.error('Copy failed', e);
+      void e;
     }
   };
 
@@ -37,7 +37,7 @@ export const Wallet = () => {
     try {
       await connectWithWalletKit();
     } catch (error) {
-      console.error('Failed to connect wallet:', error);
+      void error;
     }
   };
 
@@ -46,7 +46,7 @@ export const Wallet = () => {
       await disconnectWalletKit();
       setOpen(false);
     } catch (error) {
-      console.error('Failed to disconnect wallet:', error);
+      void error;
     }
   };
 
@@ -82,7 +82,7 @@ export const Wallet = () => {
         : '0';
       setUsdcBalance(formatted);
     } catch (e) {
-      console.warn('USDC balance fetch failed', e);
+      void e;
       setUsdcBalance('0');
     } finally {
       setLoadingBalance(false);

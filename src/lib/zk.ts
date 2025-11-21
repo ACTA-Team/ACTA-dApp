@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 type Predicate = { kind: 'none' | 'typeEq' | 'isAdult'; value?: string };
 
 function strToField(s: string): string {
@@ -61,7 +62,7 @@ export async function generateZkProof({
     });
     const proofData = await backend.generateProof(execRes.witness);
     const verified = await backend.verifyProof(proofData);
-    const rv = (execRes as any)?.returnValue;
+    const rv: unknown = (execRes as { returnValue?: unknown })?.returnValue;
     const isValid = rv === true || rv === '1' || rv === 1;
     const proof = JSON.stringify({
       publicInputs: proofData.publicInputs,
@@ -75,7 +76,7 @@ export async function generateZkProof({
     };
   }
   if (kind === 'isAdult') {
-    const dob = String((credential as any).birthDate || '');
+    const dob = String((credential as Record<string, unknown>)['birthDate'] || '');
     if (!dob) throw new Error('birth_date_missing');
     const t = Date.parse(dob);
     if (!Number.isFinite(t)) throw new Error('birth_date_invalid');
@@ -85,7 +86,7 @@ export async function generateZkProof({
     const execRes = await noir.execute({ age: ageYears });
     const proofData = await backend.generateProof(execRes.witness);
     const verified = await backend.verifyProof(proofData);
-    const rv = (execRes as any)?.returnValue;
+    const rv: unknown = (execRes as { returnValue?: unknown })?.returnValue;
     const isAdult = rv === true || rv === '1' || rv === 1;
     const proof = JSON.stringify({
       publicInputs: proofData.publicInputs,
@@ -104,37 +105,37 @@ export async function generateZkProof({
 export async function verifyZkProof(
   payload: {
     statement?: { kind?: string; typeHash?: string; expectedHash?: string; valid?: string };
-    publicSignals?: any[];
+    publicSignals?: string[];
     proof?: string;
   } | null
 ): Promise<boolean> {
   if (!payload || !payload.statement || !payload.proof) return false;
   const st = payload.statement;
   if (st.kind === 'typeEq') {
-    const { noir, backend } = await loadNoir('/zk/noir_valid_vc.json');
+    const { backend } = await loadNoir('/zk/noir_valid_vc.json');
     const p = JSON.parse(String(payload.proof || '{}')) as {
       publicInputs?: string[];
       proof?: string;
     };
     if (!p || !p.proof || !p.publicInputs) return false;
-    const proofData = {
+    const proofData: { publicInputs: string[]; proof: Uint8Array } = {
       publicInputs: p.publicInputs,
       proof: Buffer.from(p.proof, 'base64'),
-    } as any;
+    };
     const ok = await backend.verifyProof(proofData);
     return !!ok;
   }
   if (st.kind === 'isAdult') {
-    const { noir, backend } = await loadNoir('/zk/noir_workshop.json');
+    const { backend } = await loadNoir('/zk/noir_workshop.json');
     const p = JSON.parse(String(payload.proof || '{}')) as {
       publicInputs?: string[];
       proof?: string;
     };
     if (!p || !p.proof || !p.publicInputs) return false;
-    const proofData = {
+    const proofData: { publicInputs: string[]; proof: Uint8Array } = {
       publicInputs: p.publicInputs,
       proof: Buffer.from(p.proof, 'base64'),
-    } as any;
+    };
     const ok = await backend.verifyProof(proofData);
     return !!ok;
   }

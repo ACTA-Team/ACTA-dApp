@@ -57,20 +57,17 @@ const TUTORIALS_DATA: Tutorial[] = [
 export function useTutorials() {
   const [tutorials] = useState<Tutorial[]>(TUTORIALS_DATA);
   const [selectedTutorial, setSelectedTutorial] = useState<Tutorial | null>(null);
-  const [completedTutorials, setCompletedTutorials] = useState<Set<string>>(new Set());
-
-  // Load completed tutorials from localStorage on mount
-  useEffect(() => {
-    const stored = localStorage.getItem('completedTutorials');
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        setCompletedTutorials(new Set(parsed));
-      } catch (e) {
-        console.error('Failed to parse completed tutorials:', e);
-      }
+  const [completedTutorials, setCompletedTutorials] = useState<Set<string>>(() => {
+    try {
+      if (typeof window === 'undefined') return new Set();
+      const stored = localStorage.getItem('completedTutorials');
+      if (!stored) return new Set();
+      const parsed = JSON.parse(stored);
+      return new Set(Array.isArray(parsed) ? parsed : []);
+    } catch {
+      return new Set();
     }
-  }, []);
+  });
 
   // Save completed tutorials to localStorage whenever it changes
   useEffect(() => {

@@ -366,6 +366,11 @@ export function useIssueCredential() {
     authorizeSelf,
     walletKit,
     setWalletInfo,
+    client,
+    prepareStore,
+    vaultStore,
+    prepareIssue,
+    createCredential,
   ]);
 
   return {

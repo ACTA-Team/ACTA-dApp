@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import Script from 'next/script';
 import { WalletProvider } from '@/providers/wallet.provider';
 import { NetworkProvider } from '@/providers/network.provider';
 import { Toaster } from '@/components/ui/sonner';
@@ -26,11 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(()=>{try{const s=localStorage.getItem("theme");const isDark = s ? s === "dark" : true;document.documentElement.classList.toggle("dark", isDark);}catch(e){document.documentElement.classList.add("dark");}})();`,
-          }}
-        />
+        <Script id="theme-init" strategy="beforeInteractive">
+          {`(()=>{try{const s=localStorage.getItem("theme");const isDark = s ? s === "dark" : true;document.documentElement.classList.toggle("dark", isDark);}catch(e){document.documentElement.classList.add("dark");}})();`}
+        </Script>
       </head>
       <body className={`antialiased`} suppressHydrationWarning>
         <QueryProvider>

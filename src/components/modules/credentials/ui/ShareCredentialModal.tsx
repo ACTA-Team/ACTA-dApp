@@ -88,7 +88,10 @@ export default function ShareCredentialModal({
               <select
                 value={predicate.kind}
                 onChange={(e) =>
-                  setPredicate({ kind: e.target.value as any, value: predicate.value })
+                  setPredicate({
+                    kind: e.target.value as 'none' | 'typeEq' | 'isAdult',
+                    value: predicate.value,
+                  })
                 }
                 className="flex-1 rounded-lg border border-white/10 bg-zinc-900 text-white text-sm px-3 py-2 focus:outline-none focus:border-white/20"
               >

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import type { Credential } from '@/@types/credentials';
+import type { Credential, ZkStatement } from '@/@types/credentials';
 
 export function useShareCredential(credential: Credential | null) {
   const fields = useMemo(
@@ -22,9 +22,11 @@ export function useShareCredential(credential: Credential | null) {
     kind: 'none' | 'typeEq' | 'isAdult';
     value?: string;
   }>({ kind: 'none' });
-  const [proof, setProof] = useState<{ statement: any; publicSignals: any[]; proof: any } | null>(
-    null
-  );
+  const [proof, setProof] = useState<{
+    statement: ZkStatement;
+    publicSignals: string[];
+    proof: string | null;
+  } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,9 +64,9 @@ export function useShareCredential(credential: Credential | null) {
       const payload: Record<string, unknown> = { revealedFields };
       if (credential?.id) payload.vc_id = credential.id;
       if (proof) {
-        (payload as any).statement = proof.statement;
-        (payload as any).publicSignals = proof.publicSignals;
-        (payload as any).proof = proof.proof;
+        payload.statement = proof.statement as unknown;
+        payload.publicSignals = proof.publicSignals as unknown;
+        payload.proof = proof.proof as unknown;
       }
       const json = JSON.stringify(payload);
       const encoded = encodeURIComponent(btoa(unescape(encodeURIComponent(json))));
@@ -101,7 +103,7 @@ export function useShareCredential(credential: Credential | null) {
           setProof({ statement: 'none', publicSignals: [], proof: null });
           return;
         }
-        if (kind === 'isAdult' && !(credential as any).birthDate) {
+        if (kind === 'isAdult' && !('birthDate' in credential)) {
           throw new Error('birth_date_missing');
         }
         const { generateZkProof } = await import('@/lib/zk');
@@ -110,10 +112,18 @@ export function useShareCredential(credential: Credential | null) {
           revealFields: selected,
           predicate,
         });
-        setProof(res);
+        setProof({
+          statement: res.statement as ZkStatement,
+          publicSignals: res.publicSignals as string[],
+          proof: res.proof,
+        });
       }
-    } catch (e: any) {
-      setError(e?.message || 'proof_error');
+    } catch (e: unknown) {
+      const msg =
+        typeof e === 'object' && e && 'message' in e
+          ? String((e as { message?: unknown }).message || '')
+          : '';
+      setError(msg || 'proof_error');
     } finally {
       setLoading(false);
     }

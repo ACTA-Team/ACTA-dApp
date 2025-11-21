@@ -3,7 +3,7 @@ import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/layouts/sidebar/Sidebar';
 import { HeaderHome } from '@/layouts/header/Header';
 import { SettingsOverlayHost } from '@/components/modules/settings/ui/SettingsOverlayHost';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import TutorialModal from '@/components/modules/tutorial/ui/TutorialModal';
 import { useWalletContext } from '@/providers/wallet.provider';
@@ -19,44 +19,33 @@ export default function DashboardLayoutClient({
   const pathname = usePathname();
   const isMobile = useIsMobile();
   const [tutorialClosed, setTutorialClosed] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const [tutorialOpen, setTutorialOpen] = useState(false);
-
-  // Mark as mounted on client to avoid SSR/client mismatches
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Client-only: decide if tutorial should open using localStorage after mount
-  useEffect(() => {
-    if (!mounted) return;
+  const [tutorialOpen, setTutorialOpen] = useState(() => {
     try {
+      if (typeof window === 'undefined') return false;
       const key = 'tutorial_shown_global';
       const seen = localStorage.getItem(key) === 'true';
-      setTutorialOpen(!seen);
+      return !seen;
     } catch {
-      setTutorialOpen(false);
+      return false;
     }
-  }, [mounted]);
+  });
 
   return (
     <SidebarProvider>
       {!isMobile && <AppSidebar />}
       <SidebarInset>
         <SettingsOverlayHost />
-        {mounted && (
-          <TutorialModal
-            open={tutorialOpen && !tutorialClosed}
-            onClose={() => {
-              try {
-                const key = 'tutorial_shown_global';
-                localStorage.setItem(key, 'true');
-              } catch {}
-              setTutorialClosed(true);
-              setTutorialOpen(false);
-            }}
-          />
-        )}
+        <TutorialModal
+          open={tutorialOpen && !tutorialClosed}
+          onClose={() => {
+            try {
+              const key = 'tutorial_shown_global';
+              localStorage.setItem(key, 'true');
+            } catch {}
+            setTutorialClosed(true);
+            setTutorialOpen(false);
+          }}
+        />
         <div className="md:pl-16 pl-0">
           {pathname?.startsWith('/dashboard') &&
             !(isMobile && pathname?.startsWith('/dashboard/tutorials')) && <HeaderHome />}
