@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-black dark">
+    <div className="min-h-screendark">
       <div className="container mx-auto px-6 py-12 lg:py-16">
         <div className="mb-16">
           <h1 className="text-5xl lg:text-6xl font-bold tracking-tight text-balance mb-4 bg-gradient-to-br from-white via-white to-white/80 bg-clip-text text-transparent">
