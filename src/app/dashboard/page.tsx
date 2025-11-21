@@ -24,7 +24,7 @@ export default function DashboardPage() {
             <div className="relative group h-full">
               <div className="absolute -inset-0.5 bg-white/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-              <div className="relative glass-card rounded-2xl p-8 lg:p-10 h-full shadow-2xl border-border/50">
+              <div className="relative glass-card rounded-2xl p-8 lg:p-10 h-full shadow-2xl border-border/50 hover:border-white/30 transition-all duration-300 bg-black/40">
                 <div className="flex items-center gap-3 mb-8">
                   <div className="p-2.5 rounded-xl bg-white/10 shadow-lg shadow-white/5">
                     <Sparkles className="w-5 h-5 text-white" />
