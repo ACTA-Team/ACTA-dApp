@@ -14,8 +14,9 @@ export default function ShareCredentialModal({
   credential: Credential | null;
   onClose: () => void;
 }) {
-  const { fields, selected, copied, shareParam, onSelectAll, onUnselectAll, onToggle, onCopy } =
+  const { fields, selected, copied, shareParam, onSelectAll, onUnselectAll, onToggle, onCopy, predicate, setPredicate, loading, error, onGenerateProof } =
     useShareCredential(credential);
+  const hasDob = !!credential?.birthDate;
 
   if (!open) return null;
 
@@ -66,6 +67,40 @@ export default function ShareCredentialModal({
               />
             </label>
           ))}
+        </div>
+
+        <div className="mt-4 space-y-2">
+          <div className="text-xs text-zinc-300">ZK Predicate</div>
+          <div className="flex items-center gap-2">
+            <select
+              value={predicate.kind}
+              onChange={(e) => setPredicate({ kind: e.target.value as any, value: predicate.value })}
+              className="flex-1 rounded-lg border border-zinc-700 bg-zinc-900 text-white text-xs px-2 py-2"
+            >
+              <option value="none">none</option>
+              <option value="typeEq">type equals</option>
+              {hasDob && <option value="isAdult">age ≥ 18</option>}
+            </select>
+            {(predicate.kind === 'typeEq') && (
+              <input
+                value={predicate.value || ''}
+                onChange={(e) => setPredicate({ kind: predicate.kind, value: e.target.value })}
+                placeholder="expected value"
+                className="flex-1 rounded-lg border border-zinc-700 bg-zinc-900 text-white text-xs px-2 py-2"
+              />
+            )}
+            <button
+              onClick={onGenerateProof}
+              disabled={loading || (predicate.kind === 'isAdult' && !hasDob)}
+              className="rounded-lg bg-green-600 hover:bg-green-700 text-white px-3 py-2 text-xs font-medium disabled:opacity-50"
+            >
+              {loading ? 'Generating…' : 'Generate ZK Proof'}
+            </button>
+          </div>
+          {error && <div className="text-xs text-red-400">{error}</div>}
+          {predicate.kind === 'isAdult' && !hasDob && (
+            <div className="text-xs text-zinc-400">Birth date required in KYC to enable age proof.</div>
+          )}
         </div>
 
         <div className="mt-4 flex items-center gap-2">

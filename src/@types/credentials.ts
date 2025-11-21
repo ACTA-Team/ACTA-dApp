@@ -16,4 +16,5 @@ export type Credential = {
   issuedAt: string;
   expirationDate: string | null;
   status: 'valid' | 'expired' | 'revoked';
+  birthDate?: string;
 };

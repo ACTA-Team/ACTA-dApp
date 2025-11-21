@@ -15,7 +15,7 @@ export function ActaProvider({ children }: ActaProviderProps) {
 
   return (
     <ActaConfig baseURL={baseURL} apiKey={apiKeyTestnet}>
-      {children as any}
+      {children}
     </ActaConfig>
   );
 }

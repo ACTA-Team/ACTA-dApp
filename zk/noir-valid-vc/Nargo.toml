@@ -1,0 +1,8 @@
+[package]
+name = "noir_valid_vc"
+type = "bin"
+authors = ["ACTA"]
+version = "0.1.0"
+compiler_version = ">=0.20.0"
+
+[dependencies]

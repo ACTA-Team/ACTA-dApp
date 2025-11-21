@@ -39,6 +39,7 @@ function adaptVcToCredential(vc: unknown): Credential {
     (p.validUntil as string) ||
     (cs.expirationDate as string) ||
     null;
+  const birthDate = (cs.birthDate as string) || (p.birthDate as string) || undefined;
 
   return {
     id: String(obj.id ?? 'unknown'),
@@ -49,6 +50,7 @@ function adaptVcToCredential(vc: unknown): Credential {
     issuedAt: String(issuedAt),
     expirationDate: expirationDate ? String(expirationDate) : null,
     status: 'valid',
+    birthDate: birthDate ? String(birthDate) : undefined,
   };
 }
 
