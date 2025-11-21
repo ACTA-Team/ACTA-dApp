@@ -18,8 +18,13 @@ export function useShareCredential(credential: Credential | null) {
 
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [copied, setCopied] = useState(false);
-  const [predicate, setPredicate] = useState<{ kind: 'none' | 'typeEq' | 'isAdult'; value?: string }>({ kind: 'none' });
-  const [proof, setProof] = useState<{ statement: any; publicSignals: any[]; proof: any } | null>(null);
+  const [predicate, setPredicate] = useState<{
+    kind: 'none' | 'typeEq' | 'isAdult';
+    value?: string;
+  }>({ kind: 'none' });
+  const [proof, setProof] = useState<{ statement: any; publicSignals: any[]; proof: any } | null>(
+    null
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -100,7 +105,11 @@ export function useShareCredential(credential: Credential | null) {
           throw new Error('birth_date_missing');
         }
         const { generateZkProof } = await import('@/lib/zk');
-        const res = await generateZkProof({ credential: credential as unknown as Record<string, unknown>, revealFields: selected, predicate });
+        const res = await generateZkProof({
+          credential: credential as unknown as Record<string, unknown>,
+          revealFields: selected,
+          predicate,
+        });
         setProof(res);
       }
     } catch (e: any) {

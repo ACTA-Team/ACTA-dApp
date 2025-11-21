@@ -10,12 +10,12 @@ const nextConfig: NextConfig = {
       ...(config.resolve.fallback || {}),
       buffer: require.resolve('buffer/'),
       fs: false,
-      path: false
+      path: false,
     };
     config.resolve.mainFields = ['browser', 'module', 'main'];
     config.plugins = [
       ...(config.plugins || []),
-      new ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })
+      new ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }),
     ];
     return config;
   },

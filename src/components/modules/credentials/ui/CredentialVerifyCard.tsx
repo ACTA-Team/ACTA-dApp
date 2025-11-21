@@ -13,7 +13,14 @@ type Props = {
   zkStatement?: any | null;
 };
 
-export function CredentialVerifyCard({ vcId, status, since, revealed, zkValid, zkStatement }: Props) {
+export function CredentialVerifyCard({
+  vcId,
+  status,
+  since,
+  revealed,
+  zkValid,
+  zkStatement,
+}: Props) {
   const { displayStatus, statusDisplay, formatRevealed, copy } = useVerifyCard(status);
   const StatusIcon =
     displayStatus === 'Revoked'
@@ -85,14 +92,18 @@ export function CredentialVerifyCard({ vcId, status, since, revealed, zkValid, z
             </div>
             <div className="mt-3 flex items-center justify-between">
               <span className="text-sm font-medium text-blue-300">ZK Proof</span>
-              <span className={`text-xs px-2 py-1 rounded-lg ${zkValid ? 'bg-green-700 text-white' : zkValid === false ? 'bg-red-700 text-white' : 'bg-zinc-800 text-zinc-300'}`}>
+              <span
+                className={`text-xs px-2 py-1 rounded-lg ${zkValid ? 'bg-green-700 text-white' : zkValid === false ? 'bg-red-700 text-white' : 'bg-zinc-800 text-zinc-300'}`}
+              >
                 {zkValid == null ? 'Not provided' : zkValid ? 'Passed' : 'Failed'}
               </span>
             </div>
             {zkStatement?.kind === 'typeEq' && (
               <div className="mt-2 flex items-center justify-between">
                 <span className="text-sm font-medium text-blue-300">Is Valid</span>
-                <span className={`text-xs px-2 py-1 rounded-lg ${zkStatement?.isValid ? 'bg-green-700 text-white' : 'bg-zinc-800 text-zinc-300'}`}>
+                <span
+                  className={`text-xs px-2 py-1 rounded-lg ${zkStatement?.isValid ? 'bg-green-700 text-white' : 'bg-zinc-800 text-zinc-300'}`}
+                >
                   {zkStatement?.isValid ? 'true' : 'false'}
                 </span>
               </div>
@@ -100,7 +111,9 @@ export function CredentialVerifyCard({ vcId, status, since, revealed, zkValid, z
             {zkStatement?.kind === 'isAdult' && (
               <div className="mt-2 flex items-center justify-between">
                 <span className="text-sm font-medium text-blue-300">Is Adult</span>
-                <span className={`text-xs px-2 py-1 rounded-lg ${zkStatement?.isAdult ? 'bg-green-700 text-white' : 'bg-zinc-800 text-zinc-300'}`}>
+                <span
+                  className={`text-xs px-2 py-1 rounded-lg ${zkStatement?.isAdult ? 'bg-green-700 text-white' : 'bg-zinc-800 text-zinc-300'}`}
+                >
                   {zkStatement?.isAdult ? 'true' : 'false'}
                 </span>
               </div>

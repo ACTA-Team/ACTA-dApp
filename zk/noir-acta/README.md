@@ -52,10 +52,13 @@ bb verify -k ./target/vk -p ./target/proof -i ./target/public_inputs
 ## Artifact Cleanup (optional)
 
 - Windows PowerShell:
+
 ```
 Remove-Item -Force .\target\proof, .\target\public_inputs
 ```
+
 - WSL/Linux:
+
 ```
 rm -f ./target/proof ./target/public_inputs
 ```
