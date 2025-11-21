@@ -58,9 +58,9 @@ export default function DashboardPage() {
                       title: 'Start issuing and managing credentials',
                       description: 'Full control over your digital identity',
                     },
-                  ].map((step, index) => (
+                  ].map((step) => (
                     <div
-                      key={index}
+                      key={step.number}
                       className="group/item flex items-start gap-5 p-5 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 cursor-pointer"
                     >
                       <div className="flex-shrink-0">
