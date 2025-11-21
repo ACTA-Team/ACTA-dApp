@@ -58,9 +58,8 @@ export default function DashboardLayoutClient({
           />
         )}
         <div className="md:pl-16 pl-0">
-          {pathname?.startsWith('/dashboard') && !(isMobile && pathname?.startsWith('/dashboard/tutorials')) && (
-            <HeaderHome />
-          )}
+          {pathname?.startsWith('/dashboard') &&
+            !(isMobile && pathname?.startsWith('/dashboard/tutorials')) && <HeaderHome />}
           <div className="p-4 md:p-6 pb-20 md:pb-6">
             <div className="min-w-0">{children}</div>
           </div>
