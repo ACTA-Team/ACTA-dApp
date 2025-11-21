@@ -9,33 +9,35 @@ export const metadata = {
 export default function DashboardPage() {
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto px-6 py-12 lg:py-16">
-        <div className="mb-16">
-          <h1 className="text-5xl lg:text-6xl font-bold tracking-tight text-balance mb-4 bg-gradient-to-br from-white via-white to-white/80 bg-clip-text text-transparent">
-            Dashboard
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl text-pretty">
-            Manage your credentials and vault
-          </p>
+      <div className="border-b border-white/10 ">
+        <div className="mx-auto max-w-7xl px-6 py-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div>
+                <h1 className="text-4xl font-bold text-white tracking-tight">Dashboard</h1>
+                <p className="text-base text-white/50 mt-1">Manage your credentials and vault</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-        <div className="lg:col-span-2">
-          <div className="relative group h-full">
-            <div className="absolute -inset-0.5 bg-white/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-            <div className="relative glass-card rounded-2xl p-8 lg:p-10 h-full shadow-2xl border-border/50">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="p-2.5 rounded-xl bg-white/10 shadow-lg shadow-white/5">
-                  <Sparkles className="w-5 h-5 text-white" />
-                </div>
+      <div className="mx-auto max-w-7xl px-6 py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="lg:col-span-2">
+            <div className="relative h-full">
+ 
+              <div className="relative glass-card rounded-2xl p-8 lg:p-10 h-full shadow-2xl border-border/50">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="p-2.5 rounded-xl bg-white/10 shadow-lg shadow-white/5">
+                    <Sparkles className="w-5 h-5 text-white" />
+                  </div>
                 <h2 className="text-2xl lg:text-3xl font-bold tracking-tight text-white">
-                  Quick Start
-                </h2>
-              </div>
+                    Quick Start
+                  </h2>
+                </div>
 
-              <div className="space-y-5">
+                <div className="space-y-5">
                 {[
                   {
                     number: '01',
@@ -60,7 +62,7 @@ export default function DashboardPage() {
                 ].map((step, index) => (
                   <div
                     key={index}
-                    className="group/item flex items-start gap-5 p-5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/30 transition-all duration-300 cursor-pointer"
+                    className="group/item flex items-start gap-5 p-5 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 cursor-pointer"
                   >
                     <div className="flex-shrink-0">
                       <div className="w-12 h-12 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center">
@@ -80,10 +82,8 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-
         <div className="lg:col-span-1 space-y-6 lg:space-y-8">
           <div className="relative group">
-            <div className="absolute -inset-0.5 bg-white/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
             <div className="relative glass-card rounded-2xl p-8 shadow-2xl border-border/50 hover:border-white/30 transition-all duration-300 bg-black/40">
               <div className="mb-6">
@@ -109,7 +109,6 @@ export default function DashboardPage() {
           </div>
 
           <div className="relative group">
-            <div className="absolute -inset-0.5 bg-white/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
             <div className="relative glass-card rounded-2xl p-8 shadow-2xl border-border/50 hover:border-white/30 transition-all duration-300 bg-black/40">
               <div className="mb-6">
@@ -132,6 +131,7 @@ export default function DashboardPage() {
               </Button>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
