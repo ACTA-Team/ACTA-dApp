@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
   Sidebar,
   SidebarContent,
@@ -17,32 +17,13 @@ import {
   IconUpload,
   IconArrowLeft,
   IconUser,
-  IconChevronLeft,
-  IconChevronRight,
   IconPlayerPlay,
 } from '@tabler/icons-react';
 
 export function AppSidebar() {
   const router = useRouter();
   const pathname = usePathname();
-  const [vaultOpen, setVaultOpen] = useState<boolean>(
-    pathname !== '/dashboard' && pathname !== '/dashboard/tutorials'
-  );
-
-  useEffect(() => {
-    const handler = (e: Event) => {
-      const detail = (e as CustomEvent).detail as { open?: boolean } | undefined;
-      if (detail && typeof detail.open === 'boolean') {
-        setVaultOpen(detail.open);
-      }
-    };
-    window.addEventListener('vault-panel-state', handler as EventListener);
-    return () => window.removeEventListener('vault-panel-state', handler as EventListener);
-  }, []);
-
-  useEffect(() => {
-    setVaultOpen(pathname !== '/dashboard' && pathname !== '/dashboard/tutorials');
-  }, [pathname]);
+  useEffect(() => {}, [pathname]);
   return (
     <Sidebar variant="inset">
       <SidebarHeader>
@@ -55,24 +36,6 @@ export function AppSidebar() {
           >
             <IconArrowLeft className="size-5" />
           </button>
-          <div className="mt-3">
-            <button
-              type="button"
-              onClick={() => {
-                try {
-                  window.dispatchEvent(new CustomEvent('toggle-vault-panel'));
-                } catch {}
-              }}
-              className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
-              aria-label="Toggle vault panel"
-            >
-              {vaultOpen ? (
-                <IconChevronLeft className="size-5" />
-              ) : (
-                <IconChevronRight className="size-5" />
-              )}
-            </button>
-          </div>
         </div>
         <SidebarSeparator className="my-3" />
       </SidebarHeader>
