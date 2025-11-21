@@ -3,8 +3,17 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { IconHome, IconUpload, IconId, IconPlayerPlay, IconUser } from '@tabler/icons-react';
+import type { ComponentType } from 'react';
 
-function NavItem({ href, label, icon: Icon }: { href: string; label: string; icon: any }) {
+function NavItem({
+  href,
+  label,
+  icon: Icon,
+}: {
+  href: string;
+  label: string;
+  icon: ComponentType<{ className?: string }>;
+}) {
   const pathname = usePathname();
   const active = pathname === href || pathname.startsWith(href + '/');
   return (

@@ -11,7 +11,7 @@ export default function HeroSection() {
         <h1 className="relative z-10 max-w-4xl text-left text-2xl font-bold text-white md:text-4xl lg:text-7xl">
           {'Welcome to ACTA'.split(' ').map((word, index) => (
             <motion.span
-              key={index}
+              key={`${index}-${word}`}
               initial={{ opacity: 0, filter: 'blur(4px)', y: 10 }}
               animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
               transition={{
