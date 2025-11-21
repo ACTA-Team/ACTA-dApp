@@ -184,7 +184,10 @@ export async function verifyZkProof(
   }
   if (st.kind === 'notExpired') {
     const { backend } = await loadNoir('/zk/noir_not_expired.json');
-    const p = JSON.parse(String(payload.proof || '{}')) as { publicInputs?: string[]; proof?: string };
+    const p = JSON.parse(String(payload.proof || '{}')) as {
+      publicInputs?: string[];
+      proof?: string;
+    };
     if (!p || !p.proof || !p.publicInputs) return false;
     const proofData: { publicInputs: string[]; proof: Uint8Array } = {
       publicInputs: p.publicInputs,
@@ -195,7 +198,10 @@ export async function verifyZkProof(
   }
   if (st.kind === 'isValid') {
     const { backend } = await loadNoir('/zk/noir_valid_status.json');
-    const p = JSON.parse(String(payload.proof || '{}')) as { publicInputs?: string[]; proof?: string };
+    const p = JSON.parse(String(payload.proof || '{}')) as {
+      publicInputs?: string[];
+      proof?: string;
+    };
     if (!p || !p.proof || !p.publicInputs) return false;
     const proofData: { publicInputs: string[]; proof: Uint8Array } = {
       publicInputs: p.publicInputs,

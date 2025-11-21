@@ -89,7 +89,12 @@ export default function ShareCredentialModal({
                 value={predicate.kind}
                 onChange={(e) =>
                   setPredicate({
-                    kind: e.target.value as 'none' | 'typeEq' | 'isAdult' | 'notExpired' | 'isValid',
+                    kind: e.target.value as
+                      | 'none'
+                      | 'typeEq'
+                      | 'isAdult'
+                      | 'notExpired'
+                      | 'isValid',
                     value: predicate.value,
                   })
                 }
