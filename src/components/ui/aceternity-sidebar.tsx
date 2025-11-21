@@ -47,7 +47,13 @@ export function SidebarLink({
   link: { label: string; href: string; icon?: React.ReactNode; onClick?: () => void };
 }) {
   const pill = (
-    <div className={cn('size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center')}>{link.icon}</div>
+    <div
+      className={cn(
+        'size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center'
+      )}
+    >
+      {link.icon}
+    </div>
   );
   if (link.onClick) {
     return (

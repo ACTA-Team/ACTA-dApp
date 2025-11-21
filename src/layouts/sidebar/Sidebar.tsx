@@ -19,11 +19,31 @@ export function AppSidebar() {
       icon: <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-200" />,
       onClick: () => router.back(),
     },
-    { label: 'Home', href: '/dashboard', icon: <IconHome className="h-5 w-5 shrink-0 text-neutral-200" /> },
-    { label: 'Issue', href: '/dashboard/issue', icon: <IconUpload className="h-5 w-5 shrink-0 text-neutral-200" /> },
-    { label: 'Authorize', href: '/dashboard/authorize', icon: <IconId className="h-5 w-5 shrink-0 text-neutral-200" /> },
-    { label: 'Vault', href: '/dashboard/credentials', icon: <IconLock className="h-5 w-5 shrink-0 text-neutral-200" /> },
-    { label: 'Tutorials', href: '/dashboard/tutorials', icon: <IconPlayerPlay className="h-5 w-5 shrink-0 text-neutral-200" /> },
+    {
+      label: 'Home',
+      href: '/dashboard',
+      icon: <IconHome className="h-5 w-5 shrink-0 text-neutral-200" />,
+    },
+    {
+      label: 'Issue',
+      href: '/dashboard/issue',
+      icon: <IconUpload className="h-5 w-5 shrink-0 text-neutral-200" />,
+    },
+    {
+      label: 'Authorize',
+      href: '/dashboard/authorize',
+      icon: <IconId className="h-5 w-5 shrink-0 text-neutral-200" />,
+    },
+    {
+      label: 'Vault',
+      href: '/dashboard/credentials',
+      icon: <IconLock className="h-5 w-5 shrink-0 text-neutral-200" />,
+    },
+    {
+      label: 'Tutorials',
+      href: '/dashboard/tutorials',
+      icon: <IconPlayerPlay className="h-5 w-5 shrink-0 text-neutral-200" />,
+    },
   ];
   return (
     <Sidebar animate={true}>
