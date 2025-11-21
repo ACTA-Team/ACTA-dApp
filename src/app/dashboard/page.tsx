@@ -14,7 +14,9 @@ export default function DashboardPage() {
           <h1 className="text-5xl lg:text-6xl font-bold tracking-tight text-balance mb-4 bg-gradient-to-br from-white via-white to-white/80 bg-clip-text text-transparent">
             Dashboard
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl text-pretty">Manage your credentials and vault</p>
+          <p className="text-lg text-muted-foreground max-w-2xl text-pretty">
+            Manage your credentials and vault
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -27,7 +29,9 @@ export default function DashboardPage() {
                   <div className="p-2.5 rounded-xl bg-white/10 shadow-lg shadow-white/5">
                     <Sparkles className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className="text-2xl lg:text-3xl font-bold tracking-tight text-white">Quick Start</h2>
+                  <h2 className="text-2xl lg:text-3xl font-bold tracking-tight text-white">
+                    Quick Start
+                  </h2>
                 </div>
 
                 <div className="space-y-5">
@@ -63,7 +67,9 @@ export default function DashboardPage() {
                         </div>
                       </div>
                       <div className="flex-1 min-w-0 pt-1">
-                        <h3 className="text-base lg:text-lg font-semibold text-white mb-1 text-pretty">{step.title}</h3>
+                        <h3 className="text-base lg:text-lg font-semibold text-white mb-1 text-pretty">
+                          {step.title}
+                        </h3>
                         <p className="text-sm text-gray-400 text-pretty">{step.description}</p>
                       </div>
                       <ChevronRight className="w-5 h-5 text-gray-500 group-hover/item:text-white transition-colors flex-shrink-0 mt-2" />
@@ -84,7 +90,9 @@ export default function DashboardPage() {
                     <Shield className="w-7 h-7 text-white" />
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">Issue</h3>
-                  <p className="text-gray-400 text-sm text-pretty leading-relaxed">Create new credentials</p>
+                  <p className="text-gray-400 text-sm text-pretty leading-relaxed">
+                    Create new credentials
+                  </p>
                 </div>
 
                 <Button
@@ -107,8 +115,12 @@ export default function DashboardPage() {
                   <div className="w-14 h-14 rounded-xl bg-white/10 flex items-center justify-center mb-6 shadow-lg shadow-white/5">
                     <FileCheck2 className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">My Credentials</h3>
-                  <p className="text-gray-400 text-sm text-pretty leading-relaxed">View your credentials</p>
+                  <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">
+                    My Credentials
+                  </h3>
+                  <p className="text-gray-400 text-sm text-pretty leading-relaxed">
+                    View your credentials
+                  </p>
                 </div>
 
                 <Button
