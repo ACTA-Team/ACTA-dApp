@@ -21,7 +21,7 @@ export function Sidebar({
   return (
     <aside
       className={cn(
-        'relative flex h-screen w-16 flex-col items-center py-4 border-r border-neutral-800 bg-neutral-900/80 backdrop-blur-sm',
+        'fixed top-0 left-0 flex h-screen w-16 flex-col items-center border-r border-neutral-800 bg-neutral-900',
         animate ? 'transition-all duration-300 ease-out' : '',
         className
       )}
@@ -38,7 +38,7 @@ export function SidebarBody({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <div className={cn('flex flex-1 flex-col items-center gap-6', className)}>{children}</div>;
+  return <div className={cn('flex flex-1 flex-col items-center gap-5', className)}>{children}</div>;
 }
 
 export function SidebarLink({
