@@ -1,11 +1,12 @@
-"use client"
+'use client';
 
-import { Button } from "@/components/ui/button"
-import { Play, Clock, CheckCircle2 } from "lucide-react"
-import { useTutorials } from "../hooks/useTutorials"
+import { Button } from '@/components/ui/button';
+import { Play, Clock, CheckCircle2 } from 'lucide-react';
+import { useTutorials } from '../hooks/useTutorials';
 
 export default function Tutorials() {
-  const { tutorials, selectedTutorial, completedTutorials, selectTutorial, markComplete } = useTutorials()
+  const { tutorials, selectedTutorial, completedTutorials, selectTutorial, markComplete } =
+    useTutorials();
 
   return (
     <div className="min-h-screen bg-black">
@@ -51,19 +52,25 @@ export default function Tutorials() {
                         <div className="mb-3 inline-block rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-1.5 text-sm font-medium text-white">
                           {selectedTutorial.category}
                         </div>
-                        <h2 className="text-3xl font-bold text-white tracking-tight">{selectedTutorial.title}</h2>
-                        <p className="mt-3 text-base text-white/60 leading-relaxed">{selectedTutorial.description}</p>
+                        <h2 className="text-3xl font-bold text-white tracking-tight">
+                          {selectedTutorial.title}
+                        </h2>
+                        <p className="mt-3 text-base text-white/60 leading-relaxed">
+                          {selectedTutorial.description}
+                        </p>
                       </div>
                       <Button
                         onClick={() => markComplete(selectedTutorial.id)}
                         className={`shrink-0 gap-2 rounded-xl px-6 py-6 font-semibold transition-all duration-300 ${
                           completedTutorials.has(selectedTutorial.id)
-                            ? "bg-white text-black hover:bg-white/90 shadow-lg shadow-white/20"
-                            : "bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                            ? 'bg-white text-black hover:bg-white/90 shadow-lg shadow-white/20'
+                            : 'bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 hover:border-white/30'
                         }`}
                       >
                         <CheckCircle2 className="h-5 w-5" />
-                        {completedTutorials.has(selectedTutorial.id) ? "Completed" : "Mark Complete"}
+                        {completedTutorials.has(selectedTutorial.id)
+                          ? 'Completed'
+                          : 'Mark Complete'}
                       </Button>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-white/50">
@@ -94,8 +101,8 @@ export default function Tutorials() {
                   onClick={() => selectTutorial(tutorial)}
                   className={`group relative w-full overflow-hidden rounded-2xl border text-left transition-all duration-300 ${
                     selectedTutorial?.id === tutorial.id
-                      ? "border-white/30 bg-white/10 backdrop-blur-sm shadow-lg shadow-white/5"
-                      : "border-white/10 bg-white/5 backdrop-blur-sm hover:border-white/20 hover:bg-white/10"
+                      ? 'border-white/30 bg-white/10 backdrop-blur-sm shadow-lg shadow-white/5'
+                      : 'border-white/10 bg-white/5 backdrop-blur-sm hover:border-white/20 hover:bg-white/10'
                   }`}
                 >
                   <div className="absolute right-0 top-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full bg-white/5 blur-3xl" />
@@ -114,7 +121,9 @@ export default function Tutorials() {
                     <h4 className="mb-2 font-bold text-white group-hover:text-white/90 transition-colors">
                       {tutorial.title}
                     </h4>
-                    <p className="mb-4 line-clamp-2 text-sm text-white/50 leading-relaxed">{tutorial.description}</p>
+                    <p className="mb-4 line-clamp-2 text-sm text-white/50 leading-relaxed">
+                      {tutorial.description}
+                    </p>
                     <div className="flex items-center justify-between text-xs text-white/40">
                       <div className="flex items-center gap-1.5">
                         <Clock className="h-3.5 w-3.5" />
@@ -136,5 +145,5 @@ export default function Tutorials() {
         </div>
       </div>
     </div>
-  )
+  );
 }
