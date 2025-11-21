@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import type { ZkStatement } from '@/@types/credentials';
 import { useNetwork } from '@/providers/network.provider';
 import { useVaultApi, useActaClient } from '@acta-team/acta-sdk';
 import { verifyOnChain } from '@/lib/actaOnChain';
@@ -19,10 +20,10 @@ export function useCredentialVerify(vcId: string) {
   const [verify, setVerify] = useState<VerifyResult | null>(null);
   const [revealed, setRevealed] = useState<Record<string, unknown> | null>(null);
   const [zkValid, setZkValid] = useState<boolean | null>(null);
-  const [zkStatement, setZkStatement] = useState<any | null>(null);
+  const [zkStatement, setZkStatement] = useState<ZkStatement | null>(null);
   const { verifyInVault } = useVaultApi();
   const client = useActaClient();
-  const shareParam = useMemo(() => {
+  const shareParam = useMemo((): unknown => {
     if (typeof window === 'undefined') return null;
     try {
       let raw: string | null = null;
@@ -39,7 +40,7 @@ export function useCredentialVerify(vcId: string) {
       }
       if (!raw) return null;
       const json = decodeURIComponent(escape(atob(decodeURIComponent(raw))));
-      return JSON.parse(json);
+      return JSON.parse(json) as unknown;
     } catch {
       return null;
     }
@@ -50,12 +51,18 @@ export function useCredentialVerify(vcId: string) {
       try {
         const cfg = client.getDefaults();
         const vaultIdOverride = cfg.vaultContractId || '';
-        if (shareParam) {
-          setRevealed(shareParam.revealedFields || null);
+        if (shareParam && typeof shareParam === 'object') {
+          const sp = shareParam as { revealedFields?: Record<string, unknown>; statement?: unknown; proof?: string };
+          setRevealed(sp.revealedFields || null);
           try {
-            const ok = await verifyZkProof(shareParam);
+            const ok = await verifyZkProof(sp as unknown as { statement?: { kind?: string; typeHash?: string; expectedHash?: string; valid?: string }; publicSignals?: string[]; proof?: string } | null);
             setZkValid(ok);
-            setZkStatement(shareParam.statement || null);
+            const st = sp.statement;
+            if (st === 'none' || (typeof st === 'object' && st && 'kind' in st)) {
+              setZkStatement(st as ZkStatement);
+            } else {
+              setZkStatement(null);
+            }
           } catch {}
         }
 

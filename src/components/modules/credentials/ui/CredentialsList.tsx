@@ -3,55 +3,6 @@
 import { useCredentialsList } from '@/components/modules/credentials/hooks/useCredentialsList';
 import ShareCredentialModal from './ShareCredentialModal';
 
-function adaptVcToCredential(vc: unknown) {
-  const obj = (vc ?? {}) as Record<string, unknown>;
-  let parsed: unknown = null;
-  try {
-    parsed = typeof obj.data === 'string' ? JSON.parse(obj.data as string) : (obj.data ?? null);
-  } catch {
-    parsed = null;
-  }
-
-  const p = (parsed ?? {}) as Record<string, unknown>;
-  const cs = (p.credentialSubject ?? {}) as Record<string, unknown>;
-  const title = (p.title as string) || (p.name as string) || (cs.name as string) || 'Credential';
-  const issuer =
-    (obj.issuer_did as string) || (p.issuer as string) || (p.issuerName as string) || '-';
-  const subject = (p.subject as string) || (p.subjectDID as string) || (cs.id as string) || '-';
-  const rawType = (p.type as unknown) ?? (p.credentialType as unknown) ?? 'VC';
-  let type: string;
-  if (Array.isArray(rawType)) {
-    const filtered = rawType
-      .map((t) => String(t))
-      .filter((t) => t.toLowerCase() !== 'verifiablecredential');
-    type = filtered.join(', ') || 'Credential';
-  } else {
-    const parts = String(rawType)
-      .split(',')
-      .map((s) => s.trim())
-      .filter((s) => s && s.toLowerCase() !== 'verifiablecredential');
-    type = parts.join(', ') || 'Credential';
-  }
-  const issuedAt = (p.issuedAt as string) || (p.issuanceDate as string) || new Date().toISOString();
-  const expirationDate =
-    (p.expirationDate as string) ||
-    (p.validUntil as string) ||
-    (cs.expirationDate as string) ||
-    null;
-
-  return {
-    id: String(obj.id ?? 'unknown'),
-    title: String(title),
-    issuer: String(issuer),
-    subject: String(subject),
-    type: String(type),
-    issuedAt: String(issuedAt),
-    expirationDate: expirationDate ? String(expirationDate) : null,
-    status: 'valid',
-  };
-}
-void adaptVcToCredential(undefined as unknown);
-
 export default function CredentialsList() {
   const { query, setQuery, filter, setFilter, items, shareOpen, toShare, openShare, closeShare } =
     useCredentialsList();
@@ -63,6 +14,7 @@ export default function CredentialsList() {
           placeholder="Search by title, type, or issuer"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          aria-label="Search credentials"
           className="w-full mt-4 md:w-2/3 rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 

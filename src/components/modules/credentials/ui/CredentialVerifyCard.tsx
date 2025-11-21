@@ -13,7 +13,10 @@ export function CredentialVerifyCard({
   zkValid,
   zkStatement,
 }: CredentialVerifyProps) {
-  const { displayStatus, statusDisplay, formatRevealed, copy } = useVerifyCard(status);
+  const { displayStatus, formatRevealed, copy } = useVerifyCard(status);
+  const kind = typeof zkStatement === 'object' ? (zkStatement as { kind?: string }).kind : undefined;
+  const typeEqStmt = kind === 'typeEq' ? (zkStatement as { isValid?: boolean }) : null;
+  const isAdultStmt = kind === 'isAdult' ? (zkStatement as { isAdult?: boolean }) : null;
   const StatusIcon =
     displayStatus === 'Revoked'
       ? XCircle
@@ -81,31 +84,31 @@ export function CredentialVerifyCard({
                 {zkValid == null ? 'Not provided' : zkValid ? 'Passed' : 'Failed'}
               </span>
             </div>
-            {zkStatement?.kind === 'typeEq' && (
+            {kind === 'typeEq' && (
               <div className="mt-2 flex items-center justify-between">
                 <span className="text-sm font-medium text-white">Is Valid</span>
                 <span
                   className={`text-xs px-2 py-1 rounded-lg border ${
-                    zkStatement?.isValid
+                    typeEqStmt?.isValid
                       ? 'bg-green-950/50 border-green-500/30 text-green-400'
                       : 'bg-zinc-900 border-white/10 text-zinc-400'
                   }`}
                 >
-                  {zkStatement?.isValid ? 'true' : 'false'}
+                  {typeEqStmt?.isValid ? 'true' : 'false'}
                 </span>
               </div>
             )}
-            {zkStatement?.kind === 'isAdult' && (
+            {kind === 'isAdult' && (
               <div className="mt-2 flex items-center justify-between">
                 <span className="text-sm font-medium text-white">Is Adult</span>
                 <span
                   className={`text-xs px-2 py-1 rounded-lg border ${
-                    zkStatement?.isAdult
+                    isAdultStmt?.isAdult
                       ? 'bg-green-950/50 border-green-500/30 text-green-400'
                       : 'bg-zinc-900 border-white/10 text-zinc-400'
                   }`}
                 >
-                  {zkStatement?.isAdult ? 'true' : 'false'}
+                  {isAdultStmt?.isAdult ? 'true' : 'false'}
                 </span>
               </div>
             )}
