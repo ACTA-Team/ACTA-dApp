@@ -138,9 +138,7 @@ export default function Tutorials() {
                 </button>
               ))}
 
-              <div className="rounded-2xl border border-dashed border-[#edeed1]/30 bg-white/5 backdrop-blur-sm p-8 text-center">
-                <p className="text-sm text-white/40">More tutorials coming soon...</p>
-              </div>
+              
             </div>
           </div>
         </div>
