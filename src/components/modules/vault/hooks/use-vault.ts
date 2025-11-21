@@ -1,12 +1,7 @@
 'use client';
 
 import * as StellarSdk from '@stellar/stellar-sdk';
-import {
-  useCreateVault,
-  useAuthorizeIssuer,
-  useVaultApi,
-  useActaClient,
-} from '@acta-team/acta-sdk';
+import { useCreateVault, useAuthorizeIssuer, useVaultApi, useActaClient } from '@acta-team/acta-sdk';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useWalletContext } from '@/providers/wallet.provider';
@@ -484,6 +479,69 @@ export function useVault() {
     [walletAddress, signTransaction, ensureConfig, queryClient, network]
   );
 
+  const revokeCredential = useCallback(
+    async (vcId: string) => {
+      if (!walletAddress) throw new Error('Connect your wallet first');
+      if (!signTransaction) throw new Error('Signer unavailable');
+      if (!vcId) throw new Error('Credential ID required');
+      setLoading(true);
+      try {
+        const cfg = client.getDefaults();
+        const issuanceOverride = process.env.NEXT_PUBLIC_ISSUANCE_CONTRACT_ID;
+        const issuanceContractId = issuanceOverride && issuanceOverride.length > 0 ? issuanceOverride : cfg.issuanceContractId;
+        if (!issuanceContractId) throw new Error('Issuance contract ID not configured');
+        const server = new StellarSdk.rpc.Server(cfg.rpcUrl);
+        const acct = await server.getAccount(walletAddress);
+        const account = new StellarSdk.Account(walletAddress, acct.sequenceNumber());
+        const contract = new StellarSdk.Contract(issuanceContractId);
+        let tx = new StellarSdk.TransactionBuilder(account, {
+          fee: StellarSdk.BASE_FEE.toString(),
+          networkPassphrase: cfg.networkPassphrase,
+        })
+          .addOperation(
+            contract.call(
+              'revoke',
+              StellarSdk.xdr.ScVal.scvString(vcId),
+              StellarSdk.xdr.ScVal.scvString(new Date().toISOString())
+            )
+          )
+          .setTimeout(60)
+          .build();
+        tx = await server.prepareTransaction(tx);
+        const signedXdr = await signTransaction(tx.toXDR(), { networkPassphrase: cfg.networkPassphrase });
+        const signed = StellarSdk.TransactionBuilder.fromXDR(signedXdr, cfg.networkPassphrase);
+        const send = await server.sendTransaction(signed);
+        if (
+          send.status === 'PENDING' ||
+          send.status === 'DUPLICATE' ||
+          send.status === 'TRY_AGAIN_LATER'
+        ) {
+          await waitForTx(server, send.hash!);
+        } else if (send.status === 'ERROR') {
+          throw new Error('ERROR');
+        }
+        const txId = send.hash!;
+        await queryClient.invalidateQueries({ queryKey: ['vault', 'dashboard', walletAddress, network] });
+        await queryClient.refetchQueries({ queryKey: ['vault', 'dashboard', walletAddress, network] });
+        return { txId };
+      } catch (e: unknown) {
+        const msg =
+          e instanceof Error
+            ? e.message
+            : typeof e === 'object' && e && 'message' in (e as Record<string, unknown>)
+              ? String((e as Record<string, unknown>).message)
+              : String(e);
+        const friendly = mapContractErrorToMessage(msg);
+        throw new Error(friendly);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [walletAddress, signTransaction, client, queryClient, network]
+  );
+
+  
+
   return {
     dashboardStatus: dashboardQuery.status,
     loading,
@@ -492,6 +550,7 @@ export function useVault() {
     authorizeSelf,
     authorizeAddress,
     revokeAddress,
+    revokeCredential,
     ownerDid,
     vaultExists,
     vcIds,

@@ -2,7 +2,7 @@
 
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Copy, Share2 } from 'lucide-react';
+import { Copy, Share2, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import type { CredentialCardProps } from '@/@types/credentials';
 
@@ -13,6 +13,8 @@ export function CredentialCard({
   url,
   onCopy,
   onShare,
+  status,
+  onRevoke,
 }: CredentialCardProps) {
   return (
     <Card className="relative overflow-hidden bg-black border-[#edeed1]/40 min-h-[200px] w-full">
@@ -25,9 +27,16 @@ export function CredentialCard({
             height={40}
             className="w-10 h-10 object-contain flex-shrink-0"
           />
-          <span className="px-3 py-1 rounded-full bg-[#edeed1]/10 backdrop-blur-sm border border-[#edeed1]/30 text-xs font-medium whitespace-nowrap text-white">
-            {category}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="px-3 py-1 rounded-full bg-[#edeed1]/10 backdrop-blur-sm border border-[#edeed1]/30 text-xs font-medium whitespace-nowrap text-white">
+              {category}
+            </span>
+            {status === 'revoked' && (
+              <span className="px-2 py-1 rounded-full bg-red-900/30 border border-red-700/40 text-xs font-semibold text-red-300">
+                Revoked
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="space-y-1 mb-4">
@@ -64,18 +73,32 @@ export function CredentialCard({
               </a>
             )}
           </div>
-          {onShare && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onShare}
-              title="Share"
-              aria-label="Share"
-              className="h-11 w-11 rounded-xl bg-[#edeed1]/10 border border-[#edeed1]/30 hover:bg-[#edeed1]/20 text-white flex-shrink-0"
-            >
-              <Share2 className="w-4 h-4" />
-            </Button>
-          )}
+          <div className="flex items-center gap-2">
+            {onRevoke && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onRevoke}
+                title="Revoke"
+                aria-label="Revoke"
+                className="h-11 w-11 rounded-xl bg-red-900/20 border border-red-700/40 hover:bg-red-800/30 text-red-400 flex-shrink-0"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            )}
+            {onShare && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onShare}
+                title="Share"
+                aria-label="Share"
+                className="h-11 w-11 rounded-xl bg-[#edeed1]/10 border border-[#edeed1]/30 hover:bg-[#edeed1]/20 text-white flex-shrink-0"
+              >
+                <Share2 className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </Card>

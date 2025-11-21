@@ -24,10 +24,10 @@
     quick-lru "7.0.1"
     uuid "13.0.0"
 
-"@acta-team/acta-sdk@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@acta-team/acta-sdk/-/acta-sdk-1.0.0.tgz"
-  integrity sha512-hcUCdpJRb5a1vwjh32qLiMZHr5iXQuHnc1wYxDnsn5RInqCz/ZmignOkXrlhppKtw9VZFvWQ+zU5ZknTzFEUtA==
+"@acta-team/acta-sdk@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/@acta-team/acta-sdk/-/acta-sdk-1.0.3.tgz"
+  integrity sha512-xxcSM+tTDFGe+YGiQkx3bkwginaTGRxb8S5JSUHCKXS16jRi5V0Cqs86fxfbtxKORH/MVV7BoS0dYBCs2bTsAA==
   dependencies:
     "@stellar/stellar-sdk" "^13.3.0"
     axios "^1.9.0"
@@ -2778,7 +2778,7 @@ ajv-formats@3.0.1:
   dependencies:
     ajv "^8.0.0"
 
-ajv@^6.12.4, ajv@^8.0.0:
+ajv@^6.12.4:
   version "6.12.6"
   resolved "https://registry.npmjs.org/ajv/-/ajv-6.12.6.tgz"
   integrity sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==
@@ -2787,6 +2787,16 @@ ajv@^6.12.4, ajv@^8.0.0:
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
+
+ajv@^8.0.0:
+  version "8.17.1"
+  resolved "https://registry.npmjs.org/ajv/-/ajv-8.17.1.tgz"
+  integrity sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==
+  dependencies:
+    fast-deep-equal "^3.1.3"
+    fast-uri "^3.0.1"
+    json-schema-traverse "^1.0.0"
+    require-from-string "^2.0.2"
 
 ajv@8.17.1:
   version "8.17.1"

@@ -2,9 +2,10 @@
 
 import { useCredentialsList } from '@/components/modules/credentials/hooks/useCredentialsList';
 import ShareCredentialModal from './ShareCredentialModal';
+import { Trash2, Share2 } from 'lucide-react';
 
 export default function CredentialsList() {
-  const { query, setQuery, filter, setFilter, items, shareOpen, toShare, openShare, closeShare } =
+  const { query, setQuery, filter, setFilter, items, shareOpen, toShare, openShare, closeShare, onRevoke, revokingId } =
     useCredentialsList();
 
   return (
@@ -90,9 +91,20 @@ export default function CredentialsList() {
             <div className="mt-6 flex gap-3">
               <button
                 onClick={() => openShare(c)}
-                className="rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+                className="h-9 w-9 rounded-lg border border-[#edeed1]/30 bg-[#edeed1]/10 text-white hover:bg-[#edeed1]/20 flex items-center justify-center"
+                title="Share"
+                aria-label="Share"
               >
-                Share
+                <Share2 className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => onRevoke(c.id)}
+                disabled={revokingId === c.id}
+                className={`h-9 w-9 rounded-lg border flex items-center justify-center ${revokingId === c.id ? 'cursor-not-allowed opacity-60' : 'hover:bg-red-800/30'} border-red-700/60 bg-red-900/30 text-red-300`}
+                title="Revoke"
+                aria-label="Revoke"
+              >
+                <Trash2 className="w-4 h-4" />
               </button>
             </div>
           </div>

@@ -67,6 +67,8 @@ export type CredentialCardProps = {
   category: string;
   wallet: string;
   url?: string;
+  status?: string;
   onCopy?: (text: string, label: string) => void;
   onShare?: () => void;
+  onRevoke?: () => void;
 };
