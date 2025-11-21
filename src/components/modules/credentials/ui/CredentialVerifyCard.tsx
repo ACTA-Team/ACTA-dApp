@@ -15,7 +15,9 @@ export function CredentialVerifyCard({
 }: CredentialVerifyProps) {
   const { displayStatus, formatRevealed, copy } = useVerifyCard(status);
   const kind =
-    typeof zkStatement === 'object' ? (zkStatement as { kind?: string }).kind : undefined;
+    zkStatement && typeof zkStatement === 'object'
+      ? (zkStatement as { kind?: string }).kind
+      : undefined;
   const typeEqStmt = kind === 'typeEq' ? (zkStatement as { isValid?: boolean }) : null;
   const isAdultStmt = kind === 'isAdult' ? (zkStatement as { isAdult?: boolean }) : null;
   const StatusIcon =
