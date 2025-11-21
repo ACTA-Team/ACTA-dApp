@@ -10,7 +10,7 @@ export default function Tutorials() {
 
   return (
     <div className="min-h-screen">
-      <div className="border-b border-white/10 backdrop-blur-xl">
+      <div className="border-b border-[#edeed1]/20 backdrop-blur-xl">
         <div className="mx-auto max-w-7xl px-6 py-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -19,7 +19,7 @@ export default function Tutorials() {
                 <p className="text-base text-white/50 mt-1">Learn how to use the platform</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 px-5 py-3 shadow-lg">
+            <div className="flex items-center gap-3 rounded-2xl bg-white/5 backdrop-blur-sm border border-[#edeed1]/20 px-5 py-3 shadow-lg">
               <CheckCircle2 className="h-5 w-5 text-white" />
               <span className="text-white font-medium">
                 {completedTutorials.size} of {tutorials.length} completed
@@ -32,7 +32,7 @@ export default function Tutorials() {
       <div className="mx-auto max-w-7xl px-6 py-10">
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl">
+            <div className="overflow-hidden rounded-3xl border border-[#edeed1]/20 bg-white/5 backdrop-blur-xl shadow-2xl">
               {selectedTutorial ? (
                 <div className="space-y-0">
                   <div className="relative aspect-video w-full overflow-hidden bg-black">
@@ -50,7 +50,7 @@ export default function Tutorials() {
                   <div className="space-y-6 p-8 bg-gradient-to-b from-black/40 to-black/20">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
-                        <div className="mb-3 inline-block rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-1.5 text-sm font-medium text-white">
+                        <div className="mb-3 inline-block rounded-full bg-white/10 backdrop-blur-sm border border-[#edeed1]/30 px-4 py-1.5 text-sm font-medium text-white">
                           {selectedTutorial.category}
                         </div>
                         <h2 className="text-3xl font-bold text-white tracking-tight">
@@ -106,11 +106,11 @@ export default function Tutorials() {
                       : 'border-white/10 bg-white/5 backdrop-blur-sm hover:border-white/20 hover:bg-white/10'
                   }`}
                 >
-                  <div className="absolute right-0 top-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full bg-white/5 blur-3xl" />
+                  <div className="absolute right-0 top-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full bg-[#edeed1]/10 blur-3xl" />
 
                   <div className="relative p-5">
                     <div className="mb-3 flex items-center justify-between">
-                      <span className="rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-3 py-1 text-xs font-medium text-white">
+                      <span className="rounded-full bg-white/10 backdrop-blur-sm border border-[#edeed1]/30 px-3 py-1 text-xs font-medium text-white">
                         {tutorial.category}
                       </span>
                       {completedTutorials.has(tutorial.id) && (
@@ -130,7 +130,7 @@ export default function Tutorials() {
                         <Clock className="h-3.5 w-3.5" />
                         <span>{tutorial.duration}</span>
                       </div>
-                      <div className="flex items-center justify-center w-7 h-7 rounded-full bg-white/5 border border-white/10 group-hover:bg-white/10 transition-colors">
+                      <div className="flex items-center justify-center w-7 h-7 rounded-full bg-white/5 border border-[#edeed1]/20 group-hover:bg-[#edeed1]/10 transition-colors">
                         <Play className="h-3.5 w-3.5 text-white/60" />
                       </div>
                     </div>
@@ -138,7 +138,7 @@ export default function Tutorials() {
                 </button>
               ))}
 
-              <div className="rounded-2xl border border-dashed border-white/20 bg-white/5 backdrop-blur-sm p-8 text-center">
+              <div className="rounded-2xl border border-dashed border-[#edeed1]/30 bg-white/5 backdrop-blur-sm p-8 text-center">
                 <p className="text-sm text-white/40">More tutorials coming soon...</p>
               </div>
             </div>
