@@ -1,16 +1,5 @@
-'use client';
-
-import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
-import { useEffect } from 'react';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarSeparator,
-} from '@/components/ui/sidebar';
-import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { useRouter } from 'next/navigation';
+import { Sidebar, SidebarBody, SidebarLink } from '@/components/ui/aceternity-sidebar';
 import {
   IconHome,
   IconId,
@@ -23,115 +12,46 @@ import {
 
 export function AppSidebar() {
   const router = useRouter();
-  const pathname = usePathname();
-  useEffect(() => {}, [pathname]);
+  const links = [
+    {
+      label: 'Back',
+      href: '#',
+      icon: <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-200" />,
+      onClick: () => router.back(),
+    },
+    { label: 'Home', href: '/dashboard', icon: <IconHome className="h-5 w-5 shrink-0 text-neutral-200" /> },
+    { label: 'Issue', href: '/dashboard/issue', icon: <IconUpload className="h-5 w-5 shrink-0 text-neutral-200" /> },
+    { label: 'Authorize', href: '/dashboard/authorize', icon: <IconId className="h-5 w-5 shrink-0 text-neutral-200" /> },
+    { label: 'Vault', href: '/dashboard/credentials', icon: <IconLock className="h-5 w-5 shrink-0 text-neutral-200" /> },
+    { label: 'Tutorials', href: '/dashboard/tutorials', icon: <IconPlayerPlay className="h-5 w-5 shrink-0 text-neutral-200" /> },
+  ];
   return (
-    <Sidebar variant="inset">
-      <SidebarHeader>
-        <div className="px-2 pt-2">
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
-            aria-label="Back"
-          >
-            <IconArrowLeft className="size-5" />
-          </button>
+    <Sidebar animate={true}>
+      <SidebarBody className="justify-between gap-10">
+        <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
+          <div className="mt-2 flex flex-col gap-2">
+            {links.map((link, idx) => (
+              <SidebarLink key={idx} link={link} />
+            ))}
+          </div>
         </div>
-        <SidebarSeparator className="my-3" />
-      </SidebarHeader>
-
-      <SidebarContent className="px-2">
-        <div className="flex flex-col items-center gap-5 pt-2">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                aria-label="Home"
-                href="/dashboard"
-                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
-              >
-                <IconHome className="size-5" />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Home</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                aria-label="Issue"
-                href="/dashboard/issue"
-                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
-              >
-                <IconUpload className="size-5" />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Issue</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                aria-label="Credentials"
-                href="/dashboard/credentials"
-                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
-              >
-                <IconId className="size-5" />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Credentials</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                aria-label="Tutorials"
-                href="/dashboard/tutorials"
-                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
-              >
-                <IconPlayerPlay className="size-5" />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Tutorials</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                aria-label="Vault"
-                href="/dashboard/credentials"
-                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
-              >
-                <IconLock className="size-5" />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Vault</TooltipContent>
-          </Tooltip>
+        <div>
+          <SidebarLink
+            link={{
+              label: 'Settings',
+              href: '#',
+              icon: <IconUser className="h-5 w-5 shrink-0 text-neutral-200" />,
+              onClick: () => {
+                try {
+                  window.dispatchEvent(new CustomEvent('open-settings'));
+                } catch {
+                  router.push('/settings');
+                }
+              },
+            }}
+          />
         </div>
-      </SidebarContent>
-
-      <SidebarFooter>
-        <div className="px-2 pb-2 mt-auto">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                aria-label="Settings"
-                onClick={() => {
-                  try {
-                    window.dispatchEvent(new CustomEvent('open-settings'));
-                  } catch {
-                    router.push('/settings');
-                  }
-                }}
-                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
-              >
-                <IconUser className="size-5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="right">Settings</TooltipContent>
-          </Tooltip>
-        </div>
-      </SidebarFooter>
+      </SidebarBody>
     </Sidebar>
   );
 }
