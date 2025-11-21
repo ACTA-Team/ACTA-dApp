@@ -43,6 +43,30 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+@keyframes aurora {
+  0% {
+    background-position: 50% 50%, 50% 50%;
+    filter: blur(10px);
+  }
+  25% {
+    background-position: 60% 40%, 40% 60%;
+  }
+  50% {
+    background-position: 40% 60%, 60% 40%;
+  }
+  75% {
+    background-position: 55% 45%, 45% 55%;
+  }
+  100% {
+    background-position: 50% 50%, 50% 50%;
+    filter: blur(10px);
+  }
+}
+
+@utility animate-aurora {
+  animation: aurora 30s ease-in-out infinite;
+}
+
 :root {
   --radius: 0.625rem;
   /* Font variables set to avoid next/font build-time fetch */
