@@ -59,7 +59,7 @@ export function AppSidebar() {
         <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
           <div className="mt-2 flex flex-col gap-2">
             {links.map((link) => (
-              <SidebarLink key={link.href} link={link} />
+              <SidebarLink key={link.label} link={link} />
             ))}
           </div>
         </div>
