@@ -104,7 +104,7 @@ export function ProfilePanel({
 
       <div className="mt-3">
         <h2 className="mb-3 text-xl font-bold text-white">About</h2>
-        <div className="rounded-2xl bg-zinc-900/80 border border-[#edeed1]/30 p-4 backdrop-blur-sm">
+        <div className="rounded-2xl bg-zinc-900/80 border border-[#edeed1]/30 p-4 backdrop-blur-sm mb-6">
           <h3 className="mb-1 text-base font-semibold text-white">{appName}</h3>
           <p className="text-xs text-zinc-400">Version {appVersion}</p>
         </div>
