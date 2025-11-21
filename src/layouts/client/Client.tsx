@@ -59,9 +59,7 @@ export default function DashboardLayoutClient({
         )}
         {!(isMobile && pathname?.startsWith('/dashboard/tutorials')) && <HeaderHome />}
         <div className="p-4 md:p-6 pb-20 md:pb-6">
-          <div className="min-w-0">
-            {children}
-          </div>
+          <div className="min-w-0">{children}</div>
         </div>
       </SidebarInset>
       {/* Bottom navigation for mobile */}
