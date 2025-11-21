@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 import { useTutorials } from '../hooks/useTutorials';
@@ -9,7 +9,32 @@ export default function TutorialModal({ open, onClose }: { open: boolean; onClos
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const { tutorials } = useTutorials();
   const first = tutorials[0];
-  const src = first?.videoPath || '/videos/tutorials/Web\ACTA-dApp\public\videos\tutorials\Connect Wallet.mp4';
+  const src =
+    first?.videoPath ||
+    '/videos/tutorials/Web\ACTA-dApp\public\videos\tutorials\Connect Wallet.mp4';
+
+  useEffect(() => {
+    if (!open) return;
+    const v = videoRef.current;
+    if (!v) return;
+    let t: number | undefined;
+    const start = () => {
+      t = window.setTimeout(() => {
+        v.play().catch(() => {});
+      }, 1000);
+    };
+    if (v.readyState >= 2) start();
+    else {
+      const onLoaded = () => {
+        v.removeEventListener('loadeddata', onLoaded);
+        start();
+      };
+      v.addEventListener('loadeddata', onLoaded);
+    }
+    return () => {
+      if (t) window.clearTimeout(t);
+    };
+  }, [open, src]);
 
   if (!open) return null;
 
