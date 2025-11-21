@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { motion } from "motion/react";
-import React from "react";
-import { AuroraBackground } from "@/components/ui/aurora-background";
+import { motion } from 'motion/react';
+import React from 'react';
+import { AuroraBackground } from '@/components/ui/aurora-background';
 
 export default function AuroraBackgroundDemo() {
   return (
@@ -13,7 +13,7 @@ export default function AuroraBackgroundDemo() {
         transition={{
           delay: 0.3,
           duration: 0.8,
-          ease: "easeInOut",
+          ease: 'easeInOut',
         }}
         className="relative flex flex-col gap-4 items-center justify-center px-4"
       >

@@ -7,7 +7,6 @@ import { HoverBorderGradient } from './hover-border-gradient';
 export default function HeroSection() {
   return (
     <div className="relative min-h-screen w-full flex flex-col items-start justify-center px-6 md:px-16">
-
       <div className="py-10 md:py-20">
         <h1 className="relative z-10 max-w-4xl text-left text-2xl font-bold text-white md:text-4xl lg:text-7xl">
           {'Welcome to ACTA'.split(' ').map((word, index) => (
