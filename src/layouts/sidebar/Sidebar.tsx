@@ -18,6 +18,7 @@ import {
   IconArrowLeft,
   IconUser,
   IconPlayerPlay,
+  IconLock,
 } from '@tabler/icons-react';
 
 export function AppSidebar() {
@@ -32,7 +33,7 @@ export function AppSidebar() {
             type="button"
             onClick={() => router.back()}
             className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
-            aria-label="Volver"
+            aria-label="Back"
           >
             <IconArrowLeft className="size-5" />
           </button>
@@ -45,7 +46,7 @@ export function AppSidebar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                aria-label="Inicio"
+                aria-label="Home"
                 href="/dashboard"
                 className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
               >
@@ -71,7 +72,7 @@ export function AppSidebar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                aria-label="Credenciales"
+                aria-label="Credentials"
                 href="/dashboard/credentials"
                 className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
               >
@@ -92,6 +93,19 @@ export function AppSidebar() {
               </Link>
             </TooltipTrigger>
             <TooltipContent side="right">Tutorials</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                aria-label="Vault"
+                href="/dashboard/credentials"
+                className="size-12 rounded-xl bg-neutral-900/60 hover:bg-neutral-800 text-white grid place-items-center"
+              >
+                <IconLock className="size-5" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">Vault</TooltipContent>
           </Tooltip>
         </div>
       </SidebarContent>
