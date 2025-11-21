@@ -14,10 +14,17 @@ export function AppSidebar() {
   const router = useRouter();
   const links = [
     {
-      label: 'Back',
-      href: '#',
-      icon: <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-200" />,
-      onClick: () => router.back(),
+      label: 'ACTA',
+      href: '/dashboard',
+      icon: (
+        <img
+          src="/logo.png"
+          alt="ACTA"
+          className="h-6 w-6 shrink-0 rounded"
+          width={24}
+          height={24}
+        />
+      ),
     },
     {
       label: 'Home',

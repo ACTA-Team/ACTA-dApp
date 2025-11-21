@@ -21,7 +21,7 @@ export function Sidebar({
   return (
     <aside
       className={cn(
-        'fixed top-0 left-0 flex h-screen w-16 flex-col items-center border-r border-neutral-800 bg-neutral-900',
+        'fixed left-0 top-0 z-40 flex h-screen w-16 flex-col items-center border-r border-neutral-800 bg-neutral-900',
         animate ? 'transition-all duration-300 ease-out' : '',
         className
       )}

@@ -71,30 +71,30 @@ export function SettingsOverlayHost({
       <SheetContent
         side="left"
         showClose={false}
-        className="w-full border-r border-zinc-800 bg-zinc-900 p-0 sm:max-w-[420px] md:max-w-[520px]"
+        className="w-full border-r border-zinc-800 bg-zinc-900 p-0 sm:max-w-[360px] md:max-w-[420px]"
       >
-        <SheetHeader className="border-b border-zinc-800 p-4">
+        <SheetHeader className="border-b border-zinc-800 p-3">
           <SheetTitle className="sr-only">Settings</SheetTitle>
           <div className="flex items-center justify-between">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setOpen(false)}
-              className="h-12 w-12 rounded-xl bg-zinc-800/50 hover:bg-zinc-800"
+              className="h-10 w-10 rounded-xl bg-zinc-800/50 hover:bg-zinc-800"
             >
-              <ArrowLeft className="h-5 w-5 text-white" />
+              <ArrowLeft className="h-4 w-4 text-white" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setOpen(false)}
-              className="h-12 w-12 rounded-xl bg-zinc-800/50 hover:bg-zinc-800"
+              className="h-10 w-10 rounded-xl bg-zinc-800/50 hover:bg-zinc-800"
             >
-              <X className="h-5 w-5 text-white" />
+              <X className="h-4 w-4 text-white" />
             </Button>
           </div>
         </SheetHeader>
-        <div className="h-[calc(100vh-80px)] overflow-y-auto p-6 pretty-scrollbar">
+        <div className="h-[calc(100vh-72px)] overflow-y-auto p-4 pretty-scrollbar">
           <ProfilePanel
             theme={theme ?? currentTheme}
             onThemeChange={handleThemeChange}
