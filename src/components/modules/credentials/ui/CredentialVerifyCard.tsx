@@ -29,7 +29,7 @@ export function CredentialVerifyCard({
 
   return (
     <div className="relative w-full h-full flex items-center justify-center p-4">
-      <div className="relative rounded-2xl w-full max-w-4xl bg-black shadow-2xl overflow-hidden border border-white/10">
+      <div className="relative rounded-2xl w-full max-w-4xl bg-black shadow-2xl overflow-hidden border border-[#edeed1]/20">
         <div className="absolute right-8 top-1/2 -translate-y-1/2 opacity-5">
           <Image
             src="/logo.png"
@@ -41,15 +41,15 @@ export function CredentialVerifyCard({
         </div>
 
         <div className="relative z-10 p-8 space-y-6 text-white">
-          <div className="flex items-start justify-between pb-6 border-b border-white/10">
+          <div className="flex items-start justify-between pb-6 border-b border-[#edeed1]/20">
             <div>
               <h2 className="text-2xl font-bold text-white mb-2">Credential</h2>
-              <p className="text-sm text-zinc-400">
+              <p className="text-sm text-[#edeed1]">
                 {(revealed?.type as string) || 'UniversityDegreeCredential'}
               </p>
             </div>
             <div className="text-right">
-              <div className="text-5xl font-bold text-white tracking-tight mb-3">ACTA</div>
+              <div className="text-5xl font-bold text-[#edeed1] tracking-tight mb-3">ACTA</div>
               <div
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border ${
                   displayStatus === 'Revoked'
@@ -65,10 +65,10 @@ export function CredentialVerifyCard({
             </div>
           </div>
 
-          <div className="space-y-3 bg-zinc-900/40 backdrop-blur-sm rounded-xl p-5 border border-white/10">
+          <div className="space-y-3 bg-zinc-900/40 backdrop-blur-sm rounded-xl p-5 border border-[#edeed1]/20">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-white">VC ID</span>
-              <span className="text-xs text-zinc-500">Verification On-chain</span>
+              <span className="text-xs text-[#edeed1]">Verification On-chain</span>
             </div>
             <div className="font-mono text-sm text-zinc-300 break-all leading-relaxed">
               {vcId || '-'}
@@ -127,7 +127,7 @@ export function CredentialVerifyCard({
                   return (
                     <div
                       key={k}
-                      className="flex items-start justify-between gap-6 py-3 border-b border-white/5 last:border-0"
+                      className="flex items-start justify-between gap-6 py-3 border-b border-[#edeed1]/10 last:border-0"
                     >
                       <span className="text-sm font-medium text-white capitalize min-w-[120px]">
                         {k}
@@ -139,11 +139,11 @@ export function CredentialVerifyCard({
                         {isWallet && (
                           <button
                             onClick={() => copy(raw)}
-                            className="p-2 rounded-lg hover:bg-zinc-900 transition-colors shrink-0 border border-white/10"
+                            className="p-2 rounded-lg hover:bg-[#edeed1]/10 transition-colors shrink-0 border border-[#edeed1]/30"
                             title="Copy"
                             aria-label="Copy wallet"
                           >
-                            <Copy className="w-4 h-4 text-white" />
+                            <Copy className="w-4 h-4 text-[#edeed1]" />
                           </button>
                         )}
                       </div>
@@ -155,7 +155,7 @@ export function CredentialVerifyCard({
           )}
 
           {displayStatus === 'Revoked' && since && (
-            <div className="pt-4 border-t border-white/10">
+            <div className="pt-4 border-t border-[#edeed1]/20">
               <div className="text-sm text-red-400 font-medium">Revoked: {since}</div>
             </div>
           )}
