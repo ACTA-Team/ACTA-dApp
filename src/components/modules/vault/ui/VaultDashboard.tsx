@@ -44,7 +44,7 @@ export default function VaultPage() {
       <div>
         {/* Header */}
         <div className="border-b border-white/10 backdrop-blur-xl">
-          <div className="mx-auto max-w-7xl px-6 py-8">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div>
@@ -57,7 +57,7 @@ export default function VaultPage() {
         </div>
 
         {/* Search Bar */}
-        <div className="mx-auto max-w-7xl px-6 py-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
@@ -71,7 +71,7 @@ export default function VaultPage() {
         </div>
 
         {/* Stats */}
-        <div className="mx-auto max-w-7xl px-6 grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Card className="p-6 bg-card border-border">
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-lg bg-secondary">
@@ -108,7 +108,7 @@ export default function VaultPage() {
         </div>
 
         {/* Credentials List */}
-        <div className="mx-auto max-w-7xl px-6 space-y-3">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 space-y-3">
           <h2 className="text-xl font-semibold mb-4">Saved credentials</h2>
           {filteredCredentials.length === 0 ? (
             <Card className="p-12 text-center bg-card border-border">

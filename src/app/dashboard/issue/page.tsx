@@ -8,7 +8,7 @@ export default function IssuePage() {
   return (
     <div className="min-h-screen">
       <div className="border-b border-white/10 backdrop-blur-xl">
-        <div className="mx-auto max-w-7xl px-6 py-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div>
@@ -20,7 +20,7 @@ export default function IssuePage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-6 py-10">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-10">
         <IssueBuilder />
       </div>
     </div>

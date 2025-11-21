@@ -1,28 +1,28 @@
-"use client"
+'use client';
 
-import * as Dialog from "@radix-ui/react-dialog"
-import { X } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { useEffect } from "react"
+import * as Dialog from '@radix-ui/react-dialog';
+import { X } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useEffect } from 'react';
 
 type Props = {
-  open: boolean
-  onOpenChange: (o: boolean) => void
-  onConfirm: () => void
-}
+  open: boolean;
+  onOpenChange: (o: boolean) => void;
+  onConfirm: () => void;
+};
 
 export function NetworkSwitchModal({ open, onOpenChange, onConfirm }: Props) {
   useEffect(() => {
-    const cls = "modal-sidebar-transparent"
+    const cls = 'modal-sidebar-transparent';
     if (open) {
-      document.body.classList.add(cls)
+      document.body.classList.add(cls);
     } else {
-      document.body.classList.remove(cls)
+      document.body.classList.remove(cls);
     }
     return () => {
-      document.body.classList.remove(cls)
-    }
-  }, [open])
+      document.body.classList.remove(cls);
+    };
+  }, [open]);
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -30,13 +30,15 @@ export function NetworkSwitchModal({ open, onOpenChange, onConfirm }: Props) {
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=open]:fade-in-0" />
         <Dialog.Content
           className={cn(
-            "fixed left-1/2 top-1/2 z-50 w-[92vw] max-w-[440px] max-h-[85vh] -translate-x-1/2 -translate-y-1/2 overflow-y-auto pretty-scrollbar",
-            "rounded-2xl border border-white/10 shadow-2xl",
-            "bg-black text-white",
+            'fixed left-1/2 top-1/2 z-50 w-[92vw] max-w-[440px] max-h-[85vh] -translate-x-1/2 -translate-y-1/2 overflow-y-auto pretty-scrollbar',
+            'rounded-2xl border border-white/10 shadow-2xl',
+            'bg-black text-white'
           )}
         >
           <div className="flex items-center justify-between border-b border-white/10 px-5 py-3">
-            <Dialog.Title className="text-lg font-semibold text-white">Switch to Mainnet</Dialog.Title>
+            <Dialog.Title className="text-lg font-semibold text-white">
+              Switch to Mainnet
+            </Dialog.Title>
             <Dialog.Close asChild>
               <button className="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-white/5 hover:text-white">
                 <X className="h-5 w-5" />
@@ -61,8 +63,9 @@ export function NetworkSwitchModal({ open, onOpenChange, onConfirm }: Props) {
             <div className="rounded-xl border border-white/10 bg-white/5 p-3">
               <div className="text-sm font-semibold text-white">What is Mainnet?</div>
               <p className="mt-2 text-xs leading-relaxed text-zinc-300">
-                Mainnet is Stellar's production network where real transactions occur. Unlike testnet, all operations
-                are effective and may have economic impact. Make sure you understand the risks before continuing.
+                Mainnet is Stellar's production network where real transactions occur. Unlike
+                testnet, all operations are effective and may have economic impact. Make sure you
+                understand the risks before continuing.
               </p>
             </div>
           </div>
@@ -75,8 +78,8 @@ export function NetworkSwitchModal({ open, onOpenChange, onConfirm }: Props) {
             </Dialog.Close>
             <button
               onClick={() => {
-                onConfirm()
-                onOpenChange(false)
+                onConfirm();
+                onOpenChange(false);
               }}
               className="rounded-lg border border-white bg-white px-5 py-2.5 text-sm font-medium text-black transition-colors hover:bg-white/90"
             >
@@ -86,5 +89,5 @@ export function NetworkSwitchModal({ open, onOpenChange, onConfirm }: Props) {
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
-  )
+  );
 }

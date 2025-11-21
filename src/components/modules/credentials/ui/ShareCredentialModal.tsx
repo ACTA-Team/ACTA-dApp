@@ -1,17 +1,17 @@
-"use client"
+'use client';
 
-import { useShareCredential } from "@/components/modules/credentials/hooks/useShareCredential"
+import { useShareCredential } from '@/components/modules/credentials/hooks/useShareCredential';
 
-import type { Credential } from "@/@types/credentials"
+import type { Credential } from '@/@types/credentials';
 
 export default function ShareCredentialModal({
   open,
   credential,
   onClose,
 }: {
-  open: boolean
-  credential: Credential | null
-  onClose: () => void
+  open: boolean;
+  credential: Credential | null;
+  onClose: () => void;
 }) {
   const {
     fields,
@@ -27,10 +27,10 @@ export default function ShareCredentialModal({
     loading,
     error,
     onGenerateProof,
-  } = useShareCredential(credential)
-  const hasDob = !!credential?.birthDate
+  } = useShareCredential(credential);
+  const hasDob = !!credential?.birthDate;
 
-  if (!open) return null
+  if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
@@ -87,16 +87,18 @@ export default function ShareCredentialModal({
             <div className="flex items-center gap-2">
               <select
                 value={predicate.kind}
-                onChange={(e) => setPredicate({ kind: e.target.value as any, value: predicate.value })}
+                onChange={(e) =>
+                  setPredicate({ kind: e.target.value as any, value: predicate.value })
+                }
                 className="flex-1 rounded-lg border border-white/10 bg-zinc-900 text-white text-sm px-3 py-2 focus:outline-none focus:border-white/20"
               >
                 <option value="none">none</option>
                 <option value="typeEq">type equals</option>
                 {hasDob && <option value="isAdult">age ≥ 18</option>}
               </select>
-              {predicate.kind === "typeEq" && (
+              {predicate.kind === 'typeEq' && (
                 <input
-                  value={predicate.value || ""}
+                  value={predicate.value || ''}
                   onChange={(e) => setPredicate({ kind: predicate.kind, value: e.target.value })}
                   placeholder="expected value"
                   className="flex-1 rounded-lg border border-white/10 bg-zinc-900 text-white text-sm px-3 py-2 placeholder:text-zinc-500 focus:outline-none focus:border-white/20"
@@ -104,15 +106,17 @@ export default function ShareCredentialModal({
               )}
               <button
                 onClick={onGenerateProof}
-                disabled={loading || (predicate.kind === "isAdult" && !hasDob)}
+                disabled={loading || (predicate.kind === 'isAdult' && !hasDob)}
                 className="rounded-lg border border-white/20 bg-transparent hover:bg-white/5 text-white px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                {loading ? "Generating…" : "Generate ZK Proof"}
+                {loading ? 'Generating…' : 'Generate ZK Proof'}
               </button>
             </div>
             {error && <div className="text-sm text-red-400">{error}</div>}
-            {predicate.kind === "isAdult" && !hasDob && (
-              <div className="text-sm text-zinc-400">Birth date required in KYC to enable age proof.</div>
+            {predicate.kind === 'isAdult' && !hasDob && (
+              <div className="text-sm text-zinc-400">
+                Birth date required in KYC to enable age proof.
+              </div>
             )}
           </div>
 
@@ -122,11 +126,11 @@ export default function ShareCredentialModal({
               disabled={!shareParam}
               className="flex-1 rounded-lg border border-white/20 bg-transparent hover:bg-white/5 text-white px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {copied ? "Copied!" : "Copy Share Link"}
+              {copied ? 'Copied!' : 'Copy Share Link'}
             </button>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
