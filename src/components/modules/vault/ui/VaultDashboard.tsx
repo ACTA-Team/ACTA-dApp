@@ -10,8 +10,17 @@ import ShareCredentialModal from '@/components/modules/credentials/ui/ShareCrede
 import { CredentialCard } from '@/components/modules/credentials/ui/SavedCredentialsCard';
 
 export default function VaultPage() {
-  const { vaultExists, onCreateVault, query, setQuery, shareOpen, toShare, openShare, closeShare, onRevoke } =
-    useVaultDashboard();
+  const {
+    vaultExists,
+    onCreateVault,
+    query,
+    setQuery,
+    shareOpen,
+    toShare,
+    openShare,
+    closeShare,
+    onRevoke,
+  } = useVaultDashboard();
   const { actaById, getWalletFromDid, filteredCredentials, copyToClipboard } = useVaultCards();
 
   if (vaultExists === false) {

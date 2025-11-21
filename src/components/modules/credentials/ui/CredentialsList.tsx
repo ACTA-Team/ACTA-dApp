@@ -5,8 +5,19 @@ import ShareCredentialModal from './ShareCredentialModal';
 import { Trash2, Share2 } from 'lucide-react';
 
 export default function CredentialsList() {
-  const { query, setQuery, filter, setFilter, items, shareOpen, toShare, openShare, closeShare, onRevoke, revokingId } =
-    useCredentialsList();
+  const {
+    query,
+    setQuery,
+    filter,
+    setFilter,
+    items,
+    shareOpen,
+    toShare,
+    openShare,
+    closeShare,
+    onRevoke,
+    revokingId,
+  } = useCredentialsList();
 
   return (
     <div className="space-y-6 overflow-x-hidden">

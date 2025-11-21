@@ -1,7 +1,12 @@
 'use client';
 
 import * as StellarSdk from '@stellar/stellar-sdk';
-import { useCreateVault, useAuthorizeIssuer, useVaultApi, useActaClient } from '@acta-team/acta-sdk';
+import {
+  useCreateVault,
+  useAuthorizeIssuer,
+  useVaultApi,
+  useActaClient,
+} from '@acta-team/acta-sdk';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useWalletContext } from '@/providers/wallet.provider';
@@ -488,7 +493,10 @@ export function useVault() {
       try {
         const cfg = client.getDefaults();
         const issuanceOverride = process.env.NEXT_PUBLIC_ISSUANCE_CONTRACT_ID;
-        const issuanceContractId = issuanceOverride && issuanceOverride.length > 0 ? issuanceOverride : cfg.issuanceContractId;
+        const issuanceContractId =
+          issuanceOverride && issuanceOverride.length > 0
+            ? issuanceOverride
+            : cfg.issuanceContractId;
         if (!issuanceContractId) throw new Error('Issuance contract ID not configured');
         const server = new StellarSdk.rpc.Server(cfg.rpcUrl);
         const acct = await server.getAccount(walletAddress);
@@ -508,7 +516,9 @@ export function useVault() {
           .setTimeout(60)
           .build();
         tx = await server.prepareTransaction(tx);
-        const signedXdr = await signTransaction(tx.toXDR(), { networkPassphrase: cfg.networkPassphrase });
+        const signedXdr = await signTransaction(tx.toXDR(), {
+          networkPassphrase: cfg.networkPassphrase,
+        });
         const signed = StellarSdk.TransactionBuilder.fromXDR(signedXdr, cfg.networkPassphrase);
         const send = await server.sendTransaction(signed);
         if (
@@ -521,8 +531,12 @@ export function useVault() {
           throw new Error('ERROR');
         }
         const txId = send.hash!;
-        await queryClient.invalidateQueries({ queryKey: ['vault', 'dashboard', walletAddress, network] });
-        await queryClient.refetchQueries({ queryKey: ['vault', 'dashboard', walletAddress, network] });
+        await queryClient.invalidateQueries({
+          queryKey: ['vault', 'dashboard', walletAddress, network],
+        });
+        await queryClient.refetchQueries({
+          queryKey: ['vault', 'dashboard', walletAddress, network],
+        });
         return { txId };
       } catch (e: unknown) {
         const msg =
@@ -539,8 +553,6 @@ export function useVault() {
     },
     [walletAddress, signTransaction, client, queryClient, network]
   );
-
-  
 
   return {
     dashboardStatus: dashboardQuery.status,
