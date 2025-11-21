@@ -44,3 +44,12 @@ export type ZkIsAdultStatement = {
 };
 
 export type ZkStatement = 'none' | ZkTypeEqStatement | ZkIsAdultStatement;
+
+export type CredentialCardProps = {
+  name: string;
+  category: string;
+  wallet: string;
+  url?: string;
+  onCopy?: (text: string, label: string) => void;
+  onShare?: () => void;
+};
