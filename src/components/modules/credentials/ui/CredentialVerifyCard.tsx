@@ -20,6 +20,8 @@ export function CredentialVerifyCard({
       : undefined;
   const typeEqStmt = kind === 'typeEq' ? (zkStatement as { isValid?: boolean }) : null;
   const isAdultStmt = kind === 'isAdult' ? (zkStatement as { isAdult?: boolean }) : null;
+  const notExpiredStmt = kind === 'notExpired' ? (zkStatement as { notExpired?: boolean }) : null;
+  const isValidStmt = kind === 'isValid' ? (zkStatement as { isValid?: boolean }) : null;
   const StatusIcon =
     displayStatus === 'Revoked'
       ? XCircle
@@ -98,6 +100,34 @@ export function CredentialVerifyCard({
                   }`}
                 >
                   {typeEqStmt?.isValid ? 'true' : 'false'}
+                </span>
+              </div>
+            )}
+            {kind === 'notExpired' && (
+              <div className="mt-2 flex items-center justify-between">
+                <span className="text-sm font-medium text-white">Not Expired</span>
+                <span
+                  className={`text-xs px-2 py-1 rounded-lg border ${
+                    notExpiredStmt?.notExpired
+                      ? 'bg-green-950/50 border-green-500/30 text-green-400'
+                      : 'bg-zinc-900 border-white/10 text-zinc-400'
+                  }`}
+                >
+                  {notExpiredStmt?.notExpired ? 'true' : 'false'}
+                </span>
+              </div>
+            )}
+            {kind === 'isValid' && (
+              <div className="mt-2 flex items-center justify-between">
+                <span className="text-sm font-medium text-white">Status Valid</span>
+                <span
+                  className={`text-xs px-2 py-1 rounded-lg border ${
+                    isValidStmt?.isValid
+                      ? 'bg-green-950/50 border-green-500/30 text-green-400'
+                      : 'bg-zinc-900 border-white/10 text-zinc-400'
+                  }`}
+                >
+                  {isValidStmt?.isValid ? 'true' : 'false'}
                 </span>
               </div>
             )}

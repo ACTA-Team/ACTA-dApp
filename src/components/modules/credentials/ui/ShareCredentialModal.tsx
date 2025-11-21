@@ -89,7 +89,7 @@ export default function ShareCredentialModal({
                 value={predicate.kind}
                 onChange={(e) =>
                   setPredicate({
-                    kind: e.target.value as 'none' | 'typeEq' | 'isAdult',
+                    kind: e.target.value as 'none' | 'typeEq' | 'isAdult' | 'notExpired' | 'isValid',
                     value: predicate.value,
                   })
                 }
@@ -98,6 +98,8 @@ export default function ShareCredentialModal({
                 <option value="none">none</option>
                 <option value="typeEq">type equals</option>
                 {hasDob && <option value="isAdult">age ≥ 18</option>}
+                <option value="notExpired">not expired</option>
+                <option value="isValid">status is valid</option>
               </select>
               {predicate.kind === 'typeEq' && (
                 <input

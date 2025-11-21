@@ -43,7 +43,24 @@ export type ZkIsAdultStatement = {
   isAdult: boolean;
 };
 
-export type ZkStatement = 'none' | ZkTypeEqStatement | ZkIsAdultStatement;
+export type ZkNotExpiredStatement = {
+  kind: 'notExpired';
+  selectedKeys: string[];
+  notExpired: boolean;
+};
+
+export type ZkIsValidStatement = {
+  kind: 'isValid';
+  selectedKeys: string[];
+  isValid: boolean;
+};
+
+export type ZkStatement =
+  | 'none'
+  | ZkTypeEqStatement
+  | ZkIsAdultStatement
+  | ZkNotExpiredStatement
+  | ZkIsValidStatement;
 
 export type CredentialCardProps = {
   name: string;
