@@ -60,6 +60,7 @@ export default function HeroSection() {
             containerClassName="rounded-full"
             as="button"
             className="flex items-center space-x-2 bg-white text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-zinc-200"
+            highlightEnabled={false}
           >
             <Link
               href="/dashboard"
@@ -73,6 +74,7 @@ export default function HeroSection() {
             containerClassName="rounded-full"
             as="button"
             className="flex items-center space-x-2 bg-zinc-800/50 text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-zinc-800/70 backdrop-blur-sm"
+            highlightEnabled={false}
           >
             <Link
               href="/dashboard/credentials"
