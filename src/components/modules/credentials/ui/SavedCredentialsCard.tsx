@@ -23,20 +23,17 @@ export function CredentialCard({
         <div className="flex items-center justify-between mt-0 mb-0">
           {(() => {
             const c = String(category || '').toLowerCase();
-            const logoSrc = c.includes('escrow')
-              ? '/tw-x-acta.png'
-              : c.includes('contributions')
-                ? '/gf-x-acta.png'
-                : '/acta.png';
+            const isEscrow = c.includes('escrow');
+            const isContrib = c.includes('contributions');
+            const logoSrc = isEscrow ? '/tw-x-acta.png' : isContrib ? '/gf-x-acta.png' : '/acta.png';
+            const logoClass = isEscrow
+              ? 'logo-img logo-escrow'
+              : isContrib
+                ? 'logo-img logo-contributions'
+                : 'logo-img logo-acta';
             return (
               <div className="-ml-4 -mt-4 shrink-0">
-                <Image
-                  src={logoSrc}
-                  alt="Logo"
-                  width={64}
-                  height={64}
-                  className={'w-32 h-32 object-contain'}
-                />
+                <Image src={logoSrc} alt="Logo" width={96} height={96} className={logoClass} />
               </div>
             );
           })()}

@@ -77,6 +77,22 @@
   animation: aurora 30s ease-in-out infinite;
 }
 
+@utility logo-img {
+  @apply object-contain w-24 h-24;
+}
+
+@utility logo-escrow {
+  @apply object-contain w-12 h-12;
+}
+
+@utility logo-contributions {
+  @apply object-contain w-24 h-24;
+}
+
+@utility logo-acta {
+  @apply object-contain w-32 h-32;
+}
+
 :root {
   --radius: 0.625rem;
   /* Font variables set to avoid next/font build-time fetch */
