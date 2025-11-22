@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Copy, Share2, Trash2 } from 'lucide-react';
 import Image from 'next/image';
+import { BorderBeam } from '@/components/ui/border-beam';
 import type { CredentialCardProps } from '@/@types/credentials';
 
 export function CredentialCard({
@@ -40,9 +41,17 @@ export function CredentialCard({
             );
           })()}
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-[#edeed1]/10 backdrop-blur-sm border border-[#edeed1]/30 text-xs font-medium whitespace-nowrap text-white">
-              {category}
-            </span>
+            <div className="relative inline-flex items-center px-3 py-1 rounded-full bg-[#edeed1]/10 backdrop-blur-sm border border-[#edeed1]/30 text-xs font-medium whitespace-nowrap text-white overflow-hidden">
+              <span className="relative z-10">{category}</span>
+              <BorderBeam
+                size={28}
+                duration={8}
+                initialOffset={0}
+                borderWidth={2}
+                colorFrom="#FFD36B"
+                colorTo="#FFF1C2"
+              />
+            </div>
             {status === 'revoked' && (
               <span className="px-2 py-1 rounded-full bg-red-900/30 border border-red-700/40 text-xs font-semibold text-red-300">
                 Revoked
