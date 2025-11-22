@@ -1,17 +1,19 @@
-'use client';
+"use client"
 
-import { useShareCredential } from '@/components/modules/credentials/hooks/useShareCredential';
+import { useShareCredential } from "@/components/modules/credentials/hooks/useShareCredential"
 
-import type { Credential } from '@/@types/credentials';
+import type { Credential } from "@/@types/credentials"
+import { useEffect, useState } from "react"
+import Image from "next/image"
 
 export default function ShareCredentialModal({
   open,
   credential,
   onClose,
 }: {
-  open: boolean;
-  credential: Credential | null;
-  onClose: () => void;
+  open: boolean
+  credential: Credential | null
+  onClose: () => void
 }) {
   const {
     fields,
@@ -28,116 +30,263 @@ export default function ShareCredentialModal({
     error,
     onGenerateProof,
     isExpired,
-  } = useShareCredential(credential);
-  const hasDob = !!credential?.birthDate;
+  } = useShareCredential(credential)
+  const hasDob = !!credential?.birthDate
+  const hasExp = !!credential?.expirationDate
+  const [qrDataUrl, setQrDataUrl] = useState<string>("")
 
-  if (!open) return null;
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const url =
+          credential?.id && shareParam
+            ? `${window.location.origin}/credential/${credential.id}#share=${shareParam}`
+            : ""
+        if (!url) {
+          setQrDataUrl("")
+          return
+        }
+        const QR = await import("qrcode")
+        const dataUrl = await QR.toDataURL(url, { width: 512, margin: 2 })
+        setQrDataUrl(dataUrl)
+      } catch {}
+    })()
+  }, [shareParam, credential?.id])
+
+  if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-[520px] max-h-[90vh] rounded-2xl border border-[#edeed1]/30 bg-black shadow-xl mx-4 overflow-y-auto">
-        <div className="p-6">
-          <div className="flex items-start justify-between mb-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden p-4">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
+
+      <div className="relative z-10 w-full max-w-4xl max-h-[90vh] rounded-xl border border-zinc-800 bg-black shadow-2xl overflow-hidden flex flex-col">
+        <div className="border-b border-zinc-800 px-6 py-4">
+          <div className="flex items-start justify-between">
             <div>
-              <div className="text-white font-semibold text-lg">Share Credential</div>
-              <div className="text-xs text-zinc-400">Select which fields to include</div>
+              <h2 className="text-white font-semibold text-lg">Share Credential</h2>
+              <p className="text-xs text-zinc-500 mt-0.5">Select fields and generate a secure QR code</p>
             </div>
             <button
               onClick={onClose}
-              className="text-xs px-3 py-1.5 rounded-lg border border-[#edeed1]/30 text-white hover:bg-[#edeed1]/10 transition-colors"
+              className="text-zinc-400 hover:text-white transition-colors p-1.5 hover:bg-zinc-800/50 rounded-lg"
             >
-              Close
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
           </div>
+        </div>
 
-          <div className="flex items-center gap-2 mb-4">
-            <button
-              onClick={onSelectAll}
-              className="text-xs px-3 py-1.5 rounded-lg border border-[#edeed1]/30 text-white hover:bg-[#edeed1]/10 transition-colors"
-            >
-              Select all
-            </button>
-            <button
-              onClick={onUnselectAll}
-              className="text-xs px-3 py-1.5 rounded-lg border border-[#edeed1]/30 text-white hover:bg-[#edeed1]/10 transition-colors"
-            >
-              Unselect
-            </button>
-          </div>
+        <div className="flex-1 overflow-y-auto">
+          <div className="grid lg:grid-cols-[340px_1fr] gap-6 p-6">
+            <div className="flex flex-col gap-4">
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 backdrop-blur-sm">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-6 h-6 rounded-lg bg-zinc-800 flex items-center justify-center">
+                    <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-white font-medium text-sm">QR Code</h3>
+                </div>
 
-          <div className="space-y-2">
-            {fields.map((f) => (
-              <label
-                key={f.key}
-                className="flex items-center justify-between rounded-lg border border-[#edeed1]/20 bg-zinc-900/50 px-4 py-3 cursor-pointer hover:border-[#edeed1]/30 transition-colors"
-              >
-                <div className="text-white text-sm font-medium">{f.label}</div>
-                <input
-                  type="checkbox"
-                  checked={!!selected[f.key]}
-                  onChange={() => onToggle(f.key)}
-                  className="w-4 h-4 rounded border-[#edeed1]/30 bg-zinc-900 text-white focus:ring-[#edeed1]/40 focus:ring-offset-0 cursor-pointer"
-                />
-              </label>
-            ))}
-          </div>
+                <div className="aspect-square rounded-xl border border-zinc-800 bg-zinc-950 p-4 flex items-center justify-center">
+                  {qrDataUrl ? (
+                    <Image
+                      src={qrDataUrl || "/placeholder.svg"}
+                      alt="QR Code"
+                      width={256}
+                      height={256}
+                      className="w-full h-full rounded-lg"
+                    />
+                  ) : (
+                    <div className="text-center">
+                      <svg
+                        className="w-12 h-12 text-zinc-700 mx-auto mb-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+                        />
+                      </svg>
+                      <p className="text-xs text-zinc-600">Generate proof</p>
+                    </div>
+                  )}
+                </div>
 
-          <div className="mt-6 space-y-3">
-            <div className="text-xs text-zinc-400">
-              A zero-knowledge proof will be generated to demonstrate your credential satisfies the
-              selected test, without revealing your private data.
-            </div>
-            <div className="text-sm text-white font-medium">ZK Predicate</div>
-            <div className="flex items-center gap-2">
-              <select
-                value={predicate.kind}
-                onChange={(e) =>
-                  setPredicate({
-                    kind: e.target.value as 'none' | 'isAdult' | 'notExpired' | 'isValid',
-                  })
-                }
-                className="flex-1 rounded-lg border border-[#edeed1]/20 bg-zinc-900 text-white text-sm px-3 py-2 focus:outline-none focus:border-[#edeed1]/30"
-              >
-                <option value="none">none</option>
-                {hasDob && <option value="isAdult">age ≥ 18</option>}
-                <option value="notExpired">not expired</option>
-                <option value="isValid">status is valid</option>
-              </select>
-              <button
-                onClick={onGenerateProof}
-                disabled={
-                  loading ||
-                  (predicate.kind === 'isAdult' && !hasDob) ||
-                  (predicate.kind === 'notExpired' && isExpired)
-                }
-                className="rounded-lg border border-[#edeed1]/30 bg-transparent hover:bg-[#edeed1]/10 text-white px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                {loading ? 'Generating…' : 'Generate ZK Proof'}
-              </button>
-            </div>
-            {error && <div className="text-sm text-red-400">{error}</div>}
-            {predicate.kind === 'notExpired' && isExpired && (
-              <div className="text-sm text-zinc-400">This credential is expired.</div>
-            )}
-            {predicate.kind === 'isAdult' && !hasDob && (
-              <div className="text-sm text-zinc-400">
-                Birth date required in KYC to enable age proof.
+                <div className="grid grid-cols-2 gap-2 mt-3">
+                  <button
+                    onClick={async () => {
+                      await onCopy()
+                    }}
+                    disabled={!shareParam}
+                    className="rounded-lg bg-white text-black px-3 py-2 text-xs font-medium hover:bg-zinc-200 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                  >
+                    {copied ? "✓ Copied!" : "Copy Link"}
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!qrDataUrl) return
+                      const a = document.createElement("a")
+                      a.href = qrDataUrl
+                      a.download = "credential-qr.png"
+                      document.body.appendChild(a)
+                      a.click()
+                      document.body.removeChild(a)
+                    }}
+                    disabled={!qrDataUrl}
+                    className="rounded-lg border border-zinc-700 bg-zinc-900 text-white px-3 py-2 text-xs font-medium hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                  >
+                    Download
+                  </button>
+                </div>
               </div>
-            )}
-          </div>
+            </div>
 
-          <div className="mt-6 flex items-center gap-2">
-            <button
-              onClick={onCopy}
-              disabled={!shareParam}
-              className="flex-1 rounded-lg border border-[#edeed1]/30 bg-transparent hover:bg-[#edeed1]/10 text-white px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {copied ? 'Copied!' : 'Copy Share Link'}
-            </button>
+            <div className="flex flex-col gap-4">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-white font-medium text-sm">Select Fields</h3>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={onSelectAll}
+                      className="text-xs px-2.5 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-all"
+                    >
+                      Select All
+                    </button>
+                    <button
+                      onClick={onUnselectAll}
+                      className="text-xs px-2.5 py-1.5 rounded-lg border border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-white transition-all"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2 max-h-[240px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+                  {fields
+                    .filter((f) => (hasExp ? true : f.key !== "expirationDate"))
+                    .map((f) => (
+                    <label
+                      key={f.key}
+                      className="flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900/30 px-3 py-2.5 cursor-pointer hover:border-zinc-700 hover:bg-zinc-900/60 transition-all group"
+                    >
+                      <span className="text-zinc-300 text-sm font-medium group-hover:text-white transition-colors">
+                        {f.label}
+                      </span>
+                      <input
+                        type="checkbox"
+                        checked={!!selected[f.key]}
+                        onChange={() => onToggle(f.key)}
+                        className="w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-white focus:ring-2 focus:ring-white/20 focus:ring-offset-0 cursor-pointer accent-white"
+                      />
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-5 h-5 rounded bg-zinc-800 flex items-center justify-center">
+                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-white font-medium text-sm">Zero-Knowledge Proof</h3>
+                </div>
+
+                <p className="text-xs text-zinc-500 mb-3 leading-relaxed">
+                  Verify your credential without revealing private data
+                </p>
+
+                <div className="space-y-2.5">
+                  <div>
+                    <label className="text-xs text-zinc-400 font-medium mb-1.5 block">Predicate</label>
+                    <select
+                      value={predicate.kind}
+                      onChange={(e) =>
+                        setPredicate({
+                          kind: e.target.value as "none" | "isAdult" | "notExpired" | "isValid",
+                        })
+                      }
+                      className="w-full rounded-lg border border-zinc-800 bg-zinc-950 text-white text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-700"
+                    >
+                      <option value="none">None</option>
+                      {hasDob && <option value="isAdult">Age ≥ 18</option>}
+                      {hasExp && <option value="notExpired">Not Expired</option>}
+                      <option value="isValid">Status is Valid</option>
+                    </select>
+                  </div>
+
+                  <button
+                    onClick={onGenerateProof}
+                    disabled={
+                      loading ||
+                      (predicate.kind === "isAdult" && !hasDob) ||
+                      (predicate.kind === "notExpired" && (isExpired || !hasExp))
+                    }
+                    className="w-full rounded-lg bg-white text-black px-4 py-2 text-sm font-semibold hover:bg-zinc-200 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                  >
+                    {loading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Generating...
+                      </span>
+                    ) : (
+                      "Generate Proof"
+                    )}
+                  </button>
+
+                  {error && (
+                    <div className="text-xs text-red-400 bg-red-950/30 border border-red-900/50 rounded-lg px-3 py-1.5">
+                      {error}
+                    </div>
+                  )}
+                  {predicate.kind === "notExpired" && isExpired && (
+                    <div className="text-xs text-zinc-500 bg-zinc-900/50 rounded-lg px-3 py-1.5">
+                      This credential is expired
+                    </div>
+                  )}
+                  {predicate.kind === "isAdult" && !hasDob && (
+                    <div className="text-xs text-zinc-500 bg-zinc-900/50 rounded-lg px-3 py-1.5">
+                      Birth date required to enable age proof
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
