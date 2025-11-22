@@ -29,16 +29,18 @@ export function useCredentialVerify(vcId: string) {
     if (typeof window === 'undefined') return null;
     try {
       let raw: string | null = null;
-      const hs = String(window.location.hash || '');
-      if (hs.startsWith('#share=')) {
-        raw = hs.slice('#share='.length);
-      } else if (hs.includes('share=')) {
-        const idx = hs.indexOf('share=');
-        raw = hs.slice(idx + 6);
-      }
+      // Prefer query param for mobile robustness
+      const sp = new URLSearchParams(window.location.search);
+      raw = sp.get('share');
+      // Fallback to hash
       if (!raw) {
-        const sp = new URLSearchParams(window.location.search);
-        raw = sp.get('share');
+        const hs = String(window.location.hash || '');
+        if (hs.startsWith('#share=')) {
+          raw = hs.slice('#share='.length);
+        } else if (hs.includes('share=')) {
+          const idx = hs.indexOf('share=');
+          raw = hs.slice(idx + 6);
+        }
       }
       if (!raw) return null;
       const json = decodeURIComponent(escape(atob(decodeURIComponent(raw))));

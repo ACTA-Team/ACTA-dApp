@@ -95,7 +95,7 @@ export function useShareCredential(credential: Credential | null) {
   const onCopy = async () => {
     try {
       const vcId = credential?.id || '';
-      const url = `${window.location.origin}/credential/${vcId}#share=${shareParam}`;
+      const url = `${window.location.origin}/credential/${vcId}?share=${shareParam}`;
       await navigator.clipboard.writeText(url);
       setCopied(true);
     } catch {}

@@ -40,7 +40,7 @@ export default function ShareCredentialModal({
       try {
         const url =
           credential?.id && shareParam
-            ? `${window.location.origin}/credential/${credential.id}#share=${shareParam}`
+            ? `${window.location.origin}/credential/${credential.id}?share=${shareParam}`
             : '';
         if (!url) {
           setQrDataUrl('');
