@@ -24,6 +24,22 @@ function notExpired(expiration: unknown): boolean {
   return Date.now() < t;
 }
 
+function bytesToBase64(bytes: Uint8Array): string {
+  if (typeof Buffer !== 'undefined' && Buffer.from) return Buffer.from(bytes).toString('base64');
+  let binary = '';
+  const len = bytes.length;
+  for (let i = 0; i < len; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+}
+
+function base64ToBytes(b64: string): Uint8Array {
+  if (typeof Buffer !== 'undefined' && Buffer.from) return new Uint8Array(Buffer.from(b64, 'base64'));
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
 async function loadNoir(acirUrl: string) {
   const { Noir } = await import('@noir-lang/noir_js');
   const { UltraHonkBackend } = await import('@aztec/bb.js');
@@ -66,7 +82,7 @@ export async function generateZkProof({
     // Do not use returnValue; rely only on the verified result
     const proof = JSON.stringify({
       publicInputs: proofData.publicInputs,
-      proof: Buffer.from(proofData.proof).toString('base64'),
+      proof: bytesToBase64(proofData.proof),
     });
     return {
       statement: { kind, selectedKeys, typeHash, expectedHash, valid: validFlag },
@@ -89,7 +105,7 @@ export async function generateZkProof({
     const verified = await backend.verifyProof(proofData);
     const proof = JSON.stringify({
       publicInputs: proofData.publicInputs,
-      proof: Buffer.from(proofData.proof).toString('base64'),
+      proof: bytesToBase64(proofData.proof),
     });
     return {
       statement: { kind, selectedKeys, age: ageYears },
@@ -111,7 +127,7 @@ export async function generateZkProof({
     const verified = await backend.verifyProof(proofData);
     const proof = JSON.stringify({
       publicInputs: proofData.publicInputs,
-      proof: Buffer.from(proofData.proof).toString('base64'),
+      proof: bytesToBase64(proofData.proof),
     });
     return {
       statement: { kind, selectedKeys, expiry_ts: Math.floor(t), now_ts: Math.floor(now) },
@@ -130,7 +146,7 @@ export async function generateZkProof({
     const verified = await backend.verifyProof(proofData);
     const proof = JSON.stringify({
       publicInputs: proofData.publicInputs,
-      proof: Buffer.from(proofData.proof).toString('base64'),
+      proof: bytesToBase64(proofData.proof),
     });
     return {
       statement: { kind, selectedKeys, valid: flag },
@@ -171,7 +187,7 @@ export async function verifyZkProof(
   if (!p || !p.proof || !p.publicInputs) return false;
   const proofData: { publicInputs: string[]; proof: Uint8Array } = {
     publicInputs: p.publicInputs,
-    proof: Buffer.from(p.proof, 'base64'),
+    proof: base64ToBytes(p.proof),
   };
   const ok = await backend.verifyProof(proofData);
   return !!ok;
