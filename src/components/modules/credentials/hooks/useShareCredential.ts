@@ -19,8 +19,7 @@ export function useShareCredential(credential: Credential | null) {
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [copied, setCopied] = useState(false);
   const [predicate, setPredicate] = useState<{
-    kind: 'none' | 'typeEq' | 'isAdult' | 'notExpired' | 'isValid';
-    value?: string;
+    kind: 'none' | 'isAdult' | 'notExpired' | 'isValid';
   }>({ kind: 'none' });
   const [proof, setProof] = useState<{
     statement: ZkStatement;

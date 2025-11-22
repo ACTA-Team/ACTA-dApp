@@ -12,28 +12,32 @@ export function CredentialVerifyCard({
   revealed,
   zkValid,
   zkStatement,
+  hasVerified,
 }: CredentialVerifyProps) {
   const { displayStatus, formatRevealed, copy } = useVerifyCard(status);
   const kind =
     zkStatement && typeof zkStatement === 'object'
       ? (zkStatement as { kind?: string }).kind
       : undefined;
-  const typeEqStmt = kind === 'typeEq' ? (zkStatement as { isValid?: boolean }) : null;
-  const isAdultStmt = kind === 'isAdult' ? (zkStatement as { isAdult?: boolean }) : null;
-  const notExpiredStmt = kind === 'notExpired' ? (zkStatement as { notExpired?: boolean }) : null;
-  const isValidStmt = kind === 'isValid' ? (zkStatement as { isValid?: boolean }) : null;
+  const testName =
+    kind === 'isAdult'
+      ? 'Age ≥ 18'
+      : kind === 'notExpired'
+        ? 'Not expired'
+        : kind === 'isValid'
+          ? 'Status is valid'
+          : undefined;
   const StatusIcon =
     displayStatus === 'Revoked'
       ? XCircle
       : displayStatus === 'Expired'
         ? AlertCircle
         : CheckCircle2;
-  const zkChecking = zkValid == null && !!zkStatement;
 
   return (
     <div className="relative w-full h-full flex items-center justify-center p-4">
       <div className="relative rounded-2xl w-full max-w-4xl bg-black shadow-2xl overflow-hidden border border-[#edeed1]/20">
-        <div className="absolute right-8 top-1/2 -translate-y-1/2 opacity-5">
+        <div className="absolute right-[-32rem] opacity-5 pointer-events-none">
           {(() => {
             const t = String(revealed?.type || '').toLowerCase();
             const wmSrc = t.includes('escrow')
@@ -45,9 +49,9 @@ export function CredentialVerifyCard({
               <Image
                 src={wmSrc}
                 alt=""
-                width={320}
-                height={320}
-                className={'w-80 h-80 object-contain'}
+                width={1024}
+                height={1024}
+                className={'w-[1024px] h-[1024px] object-contain'}
               />
             );
           })()}
@@ -86,110 +90,34 @@ export function CredentialVerifyCard({
             <div className="font-mono text-sm text-zinc-300 break-all leading-relaxed">
               {vcId || '-'}
             </div>
-            <div className="mt-3 flex items-center justify-between">
-              <span className="text-sm font-medium text-white">ZK Proof</span>
-              {zkChecking ? (
-                <span className="inline-flex items-center gap-2 text-xs px-2 py-1 rounded-lg border bg-zinc-900 border-white/10 text-zinc-400">
-                  <span className="h-3 w-3 rounded-full border-2 border-zinc-400 border-t-transparent animate-spin" />
-                  Verifying…
-                </span>
-              ) : (
-                <span
-                  className={`text-xs px-2 py-1 rounded-lg border ${
-                    zkValid
-                      ? 'bg-green-950/50 border-green-500/30 text-green-400'
-                      : zkValid === false
-                        ? 'bg-red-950/50 border-red-500/30 text-red-400'
-                        : 'bg-zinc-900 border-white/10 text-zinc-400'
-                  }`}
-                >
-                  {zkValid == null ? 'Not provided' : zkValid ? 'Passed' : 'Failed'}
-                </span>
-              )}
-            </div>
-            {kind === 'typeEq' && (
-              <div className="mt-2 flex items-center justify-between">
-                <span className="text-sm font-medium text-white">Is Valid</span>
-                {zkChecking ? (
-                  <span className="inline-flex items-center gap-2 text-xs px-2 py-1 rounded-lg border bg-zinc-900 border-white/10 text-zinc-400">
-                    <span className="h-3 w-3 rounded-full border-2 border-zinc-400 border-t-transparent animate-spin" />
-                    …
-                  </span>
-                ) : (
+            {hasVerified && (
+              <>
+                <div className="mt-3 flex items-center justify-between">
+                  <span className="text-sm font-medium text-white">ZK Proof</span>
                   <span
                     className={`text-xs px-2 py-1 rounded-lg border ${
-                      typeEqStmt?.isValid
+                      zkValid
                         ? 'bg-green-950/50 border-green-500/30 text-green-400'
-                        : 'bg-zinc-900 border-white/10 text-zinc-400'
+                        : zkValid === false
+                          ? 'bg-red-950/50 border-red-500/30 text-red-400'
+                          : 'bg-zinc-900 border-white/10 text-zinc-400'
                     }`}
                   >
-                    {typeEqStmt?.isValid ? 'true' : 'false'}
+                    {zkValid == null ? 'Not provided' : zkValid ? 'Passed' : 'Failed'}
                   </span>
+                </div>
+                {testName && (
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-sm font-medium text-white">Test</span>
+                    <span className="text-xs px-2 py-1 rounded-lg border bg-zinc-900 border-white/10 text-zinc-400">
+                      {testName}
+                    </span>
+                  </div>
                 )}
-              </div>
-            )}
-            {kind === 'notExpired' && (
-              <div className="mt-2 flex items-center justify-between">
-                <span className="text-sm font-medium text-white">Not Expired</span>
-                {zkChecking ? (
-                  <span className="inline-flex items-center gap-2 text-xs px-2 py-1 rounded-lg border bg-zinc-900 border-white/10 text-zinc-400">
-                    <span className="h-3 w-3 rounded-full border-2 border-zinc-400 border-t-transparent animate-spin" />
-                    …
-                  </span>
-                ) : (
-                  <span
-                    className={`text-xs px-2 py-1 rounded-lg border ${
-                      notExpiredStmt?.notExpired
-                        ? 'bg-green-950/50 border-green-500/30 text-green-400'
-                        : 'bg-zinc-900 border-white/10 text-zinc-400'
-                    }`}
-                  >
-                    {notExpiredStmt?.notExpired ? 'true' : 'false'}
-                  </span>
-                )}
-              </div>
-            )}
-            {kind === 'isValid' && (
-              <div className="mt-2 flex items-center justify-between">
-                <span className="text-sm font-medium text-white">Status Valid</span>
-                {zkChecking ? (
-                  <span className="inline-flex items-center gap-2 text-xs px-2 py-1 rounded-lg border bg-zinc-900 border-white/10 text-zinc-400">
-                    <span className="h-3 w-3 rounded-full border-2 border-zinc-400 border-t-transparent animate-spin" />
-                    …
-                  </span>
-                ) : (
-                  <span
-                    className={`text-xs px-2 py-1 rounded-lg border ${
-                      isValidStmt?.isValid
-                        ? 'bg-green-950/50 border-green-500/30 text-green-400'
-                        : 'bg-zinc-900 border-white/10 text-zinc-400'
-                    }`}
-                  >
-                    {isValidStmt?.isValid ? 'true' : 'false'}
-                  </span>
-                )}
-              </div>
-            )}
-            {kind === 'isAdult' && (
-              <div className="mt-2 flex items-center justify-between">
-                <span className="text-sm font-medium text-white">Is Adult</span>
-                {zkChecking ? (
-                  <span className="inline-flex items-center gap-2 text-xs px-2 py-1 rounded-lg border bg-zinc-900 border-white/10 text-zinc-400">
-                    <span className="h-3 w-3 rounded-full border-2 border-zinc-400 border-t-transparent animate-spin" />
-                    …
-                  </span>
-                ) : (
-                  <span
-                    className={`text-xs px-2 py-1 rounded-lg border ${
-                      isAdultStmt?.isAdult
-                        ? 'bg-green-950/50 border-green-500/30 text-green-400'
-                        : 'bg-zinc-900 border-white/10 text-zinc-400'
-                    }`}
-                  >
-                    {isAdultStmt?.isAdult ? 'true' : 'false'}
-                  </span>
-                )}
-              </div>
+                <div className="mt-2 text-xs text-zinc-400">
+                  Verification uses the provided zero-knowledge proof; no private data is revealed.
+                </div>
+              </>
             )}
           </div>
 
