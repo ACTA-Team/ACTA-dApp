@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { IconHome, IconUpload, IconId, IconPlayerPlay, IconUser } from '@tabler/icons-react';
+import { Home, FilePlus, IdCard, Book, User } from 'lucide-react';
 import type { ComponentType } from 'react';
 
 function NavItem({
@@ -41,11 +41,11 @@ export default function MobileBottomNav() {
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         <div className="grid grid-cols-5 gap-1">
-          <NavItem href="/dashboard" label="Home" icon={IconHome} />
-          <NavItem href="/dashboard/issue" label="Issue" icon={IconUpload} />
-          <NavItem href="/dashboard/credentials" label="Creds" icon={IconId} />
-          <NavItem href="/dashboard/tutorials" label="Tutorials" icon={IconPlayerPlay} />
-          <NavItem href="#settings" label="Profile" icon={IconUser} />
+          <NavItem href="/dashboard" label="Home" icon={Home} />
+          <NavItem href="/dashboard/issue" label="Issue" icon={FilePlus} />
+          <NavItem href="/dashboard/credentials" label="Creds" icon={IdCard} />
+          <NavItem href="/dashboard/tutorials" label="Tutorials" icon={Book} />
+          <NavItem href="#settings" label="Profile" icon={User} />
         </div>
       </div>
     </nav>

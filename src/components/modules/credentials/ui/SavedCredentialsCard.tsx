@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Copy, Share2, Trash2 } from 'lucide-react';
 import Image from 'next/image';
+import { BorderBeam } from '@/components/ui/border-beam';
 import type { CredentialCardProps } from '@/@types/credentials';
 
 export function CredentialCard({
@@ -17,20 +18,40 @@ export function CredentialCard({
   onRevoke,
 }: CredentialCardProps) {
   return (
-    <Card className="relative overflow-hidden bg-black border-[#edeed1]/40 min-h-[200px] w-full">
-      <div className="relative flex flex-col p-5 text-white">
-        <div className="flex items-center justify-between mb-4">
-          <Image
-            src="/logo.png"
-            alt="Logo"
-            width={40}
-            height={40}
-            className="w-10 h-10 object-contain flex-shrink-0"
-          />
+    <Card className="relative overflow-hidden bg-black border-[#edeed1]/40 min-h-[200px] w-full py-0 pr-4 pl-4 pb-4">
+      <div className="relative flex flex-col pt-0 px-4 pb-4 text-white">
+        <div className="flex items-center justify-between mt-0 mb-0">
+          {(() => {
+            const c = String(category || '').toLowerCase();
+            const logoSrc = c.includes('escrow')
+              ? '/tw-x-acta.png'
+              : c.includes('contributions')
+                ? '/gf-x-acta.png'
+                : '/acta.png';
+            return (
+              <div className="-ml-4 -mt-4 shrink-0">
+                <Image
+                  src={logoSrc}
+                  alt="Logo"
+                  width={64}
+                  height={64}
+                  className={'w-32 h-32 object-contain'}
+                />
+              </div>
+            );
+          })()}
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-[#edeed1]/10 backdrop-blur-sm border border-[#edeed1]/30 text-xs font-medium whitespace-nowrap text-white">
-              {category}
-            </span>
+            <div className="relative inline-flex items-center px-3 py-1 rounded-full bg-[#edeed1]/10 backdrop-blur-sm border border-[#edeed1]/30 text-xs font-medium whitespace-nowrap text-white overflow-hidden">
+              <span className="relative z-10">{category}</span>
+              <BorderBeam
+                size={28}
+                duration={8}
+                initialOffset={0}
+                borderWidth={2}
+                colorFrom="#FFD36B"
+                colorTo="#FFF1C2"
+              />
+            </div>
             {status === 'revoked' && (
               <span className="px-2 py-1 rounded-full bg-red-900/30 border border-red-700/40 text-xs font-semibold text-red-300">
                 Revoked
@@ -39,7 +60,7 @@ export function CredentialCard({
           </div>
         </div>
 
-        <div className="space-y-1 mb-4">
+        <div className="space-y-1 mb-1">
           <p className="text-xs text-slate-400 uppercase tracking-wider">Wallet Address</p>
           <div className="flex items-start gap-2">
             <p className="font-mono text-xs font-medium break-all flex-1 leading-relaxed">
@@ -58,10 +79,10 @@ export function CredentialCard({
           </div>
         </div>
 
-        <div className="flex items-end justify-between gap-3">
+        <div className="flex items-end justify-between gap-3 mt-2">
           <div className="space-y-1 flex-1 min-w-0">
             <p className="text-xs text-slate-400 uppercase tracking-wider">Credential Name</p>
-            <p className="text-lg font-semibold truncate">{name}</p>
+            <p className="text-sm font-medium truncate">{name}</p>
             {url && (
               <a
                 href={url}

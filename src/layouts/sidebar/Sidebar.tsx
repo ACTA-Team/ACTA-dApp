@@ -1,14 +1,7 @@
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Sidebar, SidebarBody, SidebarLink } from '@/components/ui/aceternity-sidebar';
-import {
-  IconHome,
-  IconId,
-  IconUpload,
-  IconUser,
-  IconPlayerPlay,
-  IconLock,
-} from '@tabler/icons-react';
+import { Home, User, Book, ShieldCheck, FilePlus, Lock } from 'lucide-react';
 
 export function AppSidebar() {
   const router = useRouter();
@@ -30,27 +23,27 @@ export function AppSidebar() {
     {
       label: 'Home',
       href: '/dashboard',
-      icon: <IconHome className="h-5 w-5 shrink-0 text-neutral-200" />,
+      icon: <Home className="h-5 w-5 shrink-0 text-neutral-200" />,
     },
     {
       label: 'Issue',
       href: '/dashboard/issue',
-      icon: <IconUpload className="h-5 w-5 shrink-0 text-neutral-200" />,
+      icon: <FilePlus className="h-5 w-5 shrink-0 text-neutral-200" />,
     },
     {
       label: 'Authorize',
       href: '/dashboard/authorize',
-      icon: <IconId className="h-5 w-5 shrink-0 text-neutral-200" />,
+      icon: <ShieldCheck className="h-5 w-5 shrink-0 text-neutral-200" />,
     },
     {
       label: 'Vault',
       href: '/dashboard/credentials',
-      icon: <IconLock className="h-5 w-5 shrink-0 text-neutral-200" />,
+      icon: <Lock className="h-5 w-5 shrink-0 text-neutral-200" />,
     },
     {
       label: 'Tutorials',
       href: '/dashboard/tutorials',
-      icon: <IconPlayerPlay className="h-5 w-5 shrink-0 text-neutral-200" />,
+      icon: <Book className="h-5 w-5 shrink-0 text-neutral-200" />,
     },
   ];
   return (
@@ -68,7 +61,7 @@ export function AppSidebar() {
             link={{
               label: 'Settings',
               href: '#',
-              icon: <IconUser className="h-5 w-5 shrink-0 text-neutral-200" />,
+              icon: <User className="h-5 w-5 shrink-0 text-neutral-200" />,
               onClick: () => {
                 try {
                   window.dispatchEvent(new CustomEvent('open-settings'));

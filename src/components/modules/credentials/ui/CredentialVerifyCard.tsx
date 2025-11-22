@@ -33,13 +33,23 @@ export function CredentialVerifyCard({
     <div className="relative w-full h-full flex items-center justify-center p-4">
       <div className="relative rounded-2xl w-full max-w-4xl bg-black shadow-2xl overflow-hidden border border-[#edeed1]/20">
         <div className="absolute right-8 top-1/2 -translate-y-1/2 opacity-5">
-          <Image
-            src="/logo.png"
-            alt=""
-            width={320}
-            height={320}
-            className="w-80 h-80 object-contain"
-          />
+          {(() => {
+            const t = String(revealed?.type || '').toLowerCase();
+            const wmSrc = t.includes('escrow')
+              ? '/tw-x-acta.png'
+              : t.includes('contributions')
+                ? '/gf-x-acta.png'
+                : '/acta.png';
+            return (
+              <Image
+                src={wmSrc}
+                alt=""
+                width={320}
+                height={320}
+                className={'w-80 h-80 object-contain'}
+              />
+            );
+          })()}
         </div>
 
         <div className="relative z-10 p-8 space-y-6 text-white">
@@ -47,7 +57,7 @@ export function CredentialVerifyCard({
             <div>
               <h2 className="text-2xl font-bold text-white mb-2">Credential</h2>
               <p className="text-sm text-zinc-400">
-                {(revealed?.type as string) || 'UniversityDegreeCredential'}
+                {(revealed?.type as string) || 'VerifiableCredential'}
               </p>
             </div>
             <div className="text-right">

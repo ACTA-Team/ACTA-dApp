@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { CredentialTemplate } from '@/@types/templates';
+import Image from 'next/image';
 
 export default function DynamicIssueForm({
   template,
@@ -36,11 +37,33 @@ export default function DynamicIssueForm({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 backdrop-blur-sm">
+      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 backdrop-blur-sm relative">
         <div className="mb-6">
-          <h3 className="text-xl font-semibold text-white mb-2">
-            {template ? `Create ${template.title}` : 'Form'}
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-semibold text-white mb-2">
+              {template ? `Create credential ${template.title.toLowerCase()}` : 'Form'}
+            </h3>
+            {template?.id === 'escrow' && (
+              <Image
+                src="/tw.png"
+                alt="Escrow"
+                width={120}
+                height={120}
+                className="absolute top-4 right-4 w-24 h-24 object-contain"
+                priority={false}
+              />
+            )}
+            {template?.id === 'contributions' && (
+              <Image
+                src="/gf.png"
+                alt="Contributions"
+                width={120}
+                height={120}
+                className="absolute top-4 right-4 w-24 h-24 object-contain"
+                priority={false}
+              />
+            )}
+          </div>
           {template && (
             <div className="mt-4 flex items-center gap-3">
               <input
