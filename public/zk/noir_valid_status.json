@@ -1,18 +1,1 @@
-{
-  "noir_version": "1.0.0-beta.15+83245db91dcf63420ef4bcbbd85b98f397fee663",
-  "hash": "15646952623615000962",
-  "abi": {
-    "parameters": [{ "name": "valid", "type": { "kind": "field" }, "visibility": "private" }],
-    "return_type": { "abi_type": { "kind": "boolean" }, "visibility": "public" },
-    "error_types": {}
-  },
-  "bytecode": "H4sIAAAAAAAA/7VSsQ6CMBR8r0WDmzGwM+qm8ROMiZNxdDHGCEMHiSGExJFPMP6AX2H0c9gcXdwdbLVgFZ4Jtxxc++6OUoQnLMmblQi59q4Y4RNK86ASUN/b96dRNjj2zrPxKU3ni+7wOtldtvtRdj/cIJ/Hcg5AC2TwNvAqhjNCBif4vkoB7Ru4Ya4si1fPyKF4VmX9sKZOvy4cGrS2ZF9EwToWSbAUYRJEcUvqtmRXmyP0QTXv/DcPTYPmas/KV+Uwbc0DGrjkhmFN+VqFvXaBkZ6P33qY/mVHsqNp6jweqVTabZUEAAA=",
-  "debug_symbols": "dZDBCoMwDIbfJece3JgHfZUxpNYohZCW2A6G+O6LRTd32CVp8vf722SBAfs8dZ7HMEN7X6AXT+SnjoKzyQfW7rIaOMouCaK24KQrFa0gJ2g5Exl4Wsrl0hwtl5ysqFoZQB40q+HoCbfTar509R+9NTtbNx+4VvqhlXVefv4LFbQXA5cSrxrXzVi87Qn3ecbM7jReesVDORYQJTgcsuBmXTR97A0=",
-  "file_map": {
-    "50": {
-      "source": "fn main(valid: Field) -> pub bool {\n    let ok = valid == 1;\n    ok\n}",
-      "path": "/mnt/c/Users/Josué Brenes/Downloads/Argentina/hackathon/Web/ACTA-dApp/zk/noir-valid-status/src/main.nr"
-    }
-  },
-  "expression_width": { "Bounded": { "width": 4 } }
-}
+{"noir_version":"1.0.0-beta.15+83245db91dcf63420ef4bcbbd85b98f397fee663","hash":"3434633426592842425","abi":{"parameters":[{"name":"valid","type":{"kind":"field"},"visibility":"private"}],"return_type":null,"error_types":{}},"bytecode":"H4sIAAAAAAAA/43NIQqAMBgF4P8HD2LUpngEEUxitBgEi0ERm3FHEC/gKUSPs2a0rI+xDQbbYF958HjwEKRI5TxMi0gEm+5iCILmNhubjeZX+rTVTUjXJ8VX7+96lJSdP7j/fDgTEmjotAAAAA==","debug_symbols":"dY/BCoMwDIbfJeceHJsXX2UMqTVKIKQltoMhvvui6OYOO6XJ3+9P/hl67MrYkgxxguY+Q6fETGPLMfhMUWw6Lw6Ots2KaCM46UYlrygZGinMDp6ey/ZpSl62mr2aWjlA6a2a4UCM62txX7r6j17rnb3VH7g2+mGdD6Q/90IFzWVZzZR8x7hnGIqEU6T8SodyhE4aA/ZFcbXbNFvwBg==","file_map":{"50":{"source":"fn main(valid: Field) {\n    assert(valid == 1);\n}\n","path":"/mnt/c/Users/Josué Brenes/Downloads/Argentina/hackathon/zks/noir-valid-status/src/main.nr"}},"expression_width":{"Bounded":{"width":4}}}
