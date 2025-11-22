@@ -63,7 +63,7 @@ export async function generateZkProof({
     });
     const proofData = await backend.generateProof(execRes.witness);
     const verified = await backend.verifyProof(proofData);
-    // NO USAR returnValue, solo el resultado de verified
+    // Do not use returnValue; rely only on the verified result
     const proof = JSON.stringify({
       publicInputs: proofData.publicInputs,
       proof: Buffer.from(proofData.proof).toString('base64'),
