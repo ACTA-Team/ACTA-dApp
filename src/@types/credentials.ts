@@ -26,6 +26,7 @@ export type CredentialVerifyProps = {
   revealed?: Record<string, unknown> | null;
   zkValid?: boolean | null;
   zkStatement?: ZkStatement | null;
+  hasVerified?: boolean;
 };
 
 export type ZkTypeEqStatement = {

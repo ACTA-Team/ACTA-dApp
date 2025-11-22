@@ -83,37 +83,26 @@ export default function ShareCredentialModal({
           </div>
 
           <div className="mt-6 space-y-3">
+            <div className="text-xs text-zinc-400">
+              A zero-knowledge proof will be generated to demonstrate your credential satisfies the
+              selected test, without revealing your private data.
+            </div>
             <div className="text-sm text-white font-medium">ZK Predicate</div>
             <div className="flex items-center gap-2">
               <select
                 value={predicate.kind}
                 onChange={(e) =>
                   setPredicate({
-                    kind: e.target.value as
-                      | 'none'
-                      | 'typeEq'
-                      | 'isAdult'
-                      | 'notExpired'
-                      | 'isValid',
-                    value: predicate.value,
+                    kind: e.target.value as 'none' | 'isAdult' | 'notExpired' | 'isValid',
                   })
                 }
                 className="flex-1 rounded-lg border border-[#edeed1]/20 bg-zinc-900 text-white text-sm px-3 py-2 focus:outline-none focus:border-[#edeed1]/30"
               >
                 <option value="none">none</option>
-                <option value="typeEq">type equals</option>
                 {hasDob && <option value="isAdult">age ≥ 18</option>}
                 <option value="notExpired">not expired</option>
                 <option value="isValid">status is valid</option>
               </select>
-              {predicate.kind === 'typeEq' && (
-                <input
-                  value={predicate.value || ''}
-                  onChange={(e) => setPredicate({ kind: predicate.kind, value: e.target.value })}
-                  placeholder="expected value"
-                  className="flex-1 rounded-lg border border-[#edeed1]/20 bg-zinc-900 text-white text-sm px-3 py-2 placeholder:text-zinc-500 focus:outline-none focus:border-[#edeed1]/30"
-                />
-              )}
               <button
                 onClick={onGenerateProof}
                 disabled={loading || (predicate.kind === 'isAdult' && !hasDob)}

@@ -21,6 +21,8 @@ export function useCredentialVerify(vcId: string) {
   const [revealed, setRevealed] = useState<Record<string, unknown> | null>(null);
   const [zkValid, setZkValid] = useState<boolean | null>(null);
   const [zkStatement, setZkStatement] = useState<ZkStatement | null>(null);
+  const [hasVerified, setHasVerified] = useState(false);
+  const [reverifyLoading, setReverifyLoading] = useState(false);
   const { verifyInVault } = useVaultApi();
   const client = useActaClient();
   const shareParam = useMemo((): unknown => {
@@ -58,27 +60,12 @@ export function useCredentialVerify(vcId: string) {
             proof?: string;
           };
           setRevealed(sp.revealedFields || null);
-          try {
-            const ok = await verifyZkProof(
-              sp as unknown as {
-                statement?: {
-                  kind?: string;
-                  typeHash?: string;
-                  expectedHash?: string;
-                  valid?: string;
-                };
-                publicSignals?: string[];
-                proof?: string;
-              } | null
-            );
-            setZkValid(ok);
-            const st = sp.statement;
-            if (st === 'none' || (typeof st === 'object' && st && 'kind' in st)) {
-              setZkStatement(st as ZkStatement);
-            } else {
-              setZkStatement(null);
-            }
-          } catch {}
+          const st = sp.statement;
+          if (st === 'none' || (typeof st === 'object' && st && 'kind' in st)) {
+            setZkStatement(st as ZkStatement);
+          } else {
+            setZkStatement(null);
+          }
         }
 
         if (vcId && walletAddress) {
@@ -121,5 +108,27 @@ export function useCredentialVerify(vcId: string) {
     run();
   }, [vcId, network, walletAddress, shareParam, verifyInVault, client]);
 
-  return { verify, revealed, zkValid, zkStatement };
+  const reverify = async () => {
+    if (!shareParam || typeof shareParam !== 'object') return;
+    const sp = shareParam as {
+      statement?: {
+        kind?: string;
+        typeHash?: string;
+        expectedHash?: string;
+        valid?: string;
+      };
+      publicSignals?: string[];
+      proof?: string;
+    };
+    try {
+      setReverifyLoading(true);
+      const ok = await verifyZkProof(sp as unknown as typeof sp);
+      setZkValid(ok);
+      setHasVerified(true);
+    } finally {
+      setReverifyLoading(false);
+    }
+  };
+
+  return { verify, revealed, zkValid, zkStatement, reverify, reverifyLoading, hasVerified };
 }
