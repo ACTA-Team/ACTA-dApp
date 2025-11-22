@@ -29,6 +29,7 @@ export function CredentialCard({
                 : c.includes('contributions')
                   ? '/gf-x-acta.png'
                   : '/acta.png';
+              const translateClass = logoSrc === '/acta.png' ? '-translate-x-2' : '-translate-x-1';
               return (
                 <div className={'shrink-0 h-20'}>
                   <Image
@@ -36,7 +37,7 @@ export function CredentialCard({
                     alt="Logo"
                     width={360}
                     height={108}
-                    className={'h-20 w-auto object-contain object-left'}
+                    className={`h-20 w-auto object-contain object-left transform ${translateClass}`}
                   />
                 </div>
               );
