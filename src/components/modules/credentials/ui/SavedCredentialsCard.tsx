@@ -18,28 +18,30 @@ export function CredentialCard({
   onRevoke,
 }: CredentialCardProps) {
   return (
-    <Card className="relative overflow-hidden bg-black border-[#edeed1]/40 min-h-[200px] w-full py-0 pr-4 pl-4 pb-4">
-      <div className="relative flex flex-col pt-0 px-4 pb-4 text-white">
-        <div className="flex items-center justify-between mt-0 mb-0">
-          {(() => {
-            const c = String(category || '').toLowerCase();
-            const logoSrc = c.includes('escrow')
-              ? '/tw-x-acta.png'
-              : c.includes('contributions')
-                ? '/gf-x-acta.png'
-                : '/acta.png';
-            return (
-              <div className="-ml-4 -mt-4 shrink-0">
-                <Image
-                  src={logoSrc}
-                  alt="Logo"
-                  width={64}
-                  height={64}
-                  className={'w-32 h-32 object-contain'}
-                />
-              </div>
-            );
-          })()}
+    <Card className="relative overflow-hidden bg-black border-[#edeed1]/40 min-h-[200px] w-full p-0">
+      <div className="relative flex flex-col pr-6 pl-6 pb-6 pt-2 text-white">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {(() => {
+              const c = String(category || '').toLowerCase();
+              const logoSrc = c.includes('escrow')
+                ? '/tw-x-acta.png'
+                : c.includes('contributions')
+                  ? '/gf-x-acta.png'
+                  : '/acta.png';
+              return (
+                <div className={'shrink-0 h-20'}>
+                  <Image
+                    src={logoSrc}
+                    alt="Logo"
+                    width={360}
+                    height={108}
+                    className={'h-20 w-auto object-contain object-left'}
+                  />
+                </div>
+              );
+            })()}
+          </div>
           <div className="flex items-center gap-2">
             <div className="relative inline-flex items-center px-3 py-1 rounded-full bg-[#edeed1]/10 backdrop-blur-sm border border-[#edeed1]/30 text-xs font-medium whitespace-nowrap text-white overflow-hidden">
               <span className="relative z-10">{category}</span>
