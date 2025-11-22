@@ -1,19 +1,19 @@
-"use client"
+'use client';
 
-import { useShareCredential } from "@/components/modules/credentials/hooks/useShareCredential"
+import { useShareCredential } from '@/components/modules/credentials/hooks/useShareCredential';
 
-import type { Credential } from "@/@types/credentials"
-import { useEffect, useState } from "react"
-import Image from "next/image"
+import type { Credential } from '@/@types/credentials';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 export default function ShareCredentialModal({
   open,
   credential,
   onClose,
 }: {
-  open: boolean
-  credential: Credential | null
-  onClose: () => void
+  open: boolean;
+  credential: Credential | null;
+  onClose: () => void;
 }) {
   const {
     fields,
@@ -30,30 +30,30 @@ export default function ShareCredentialModal({
     error,
     onGenerateProof,
     isExpired,
-  } = useShareCredential(credential)
-  const hasDob = !!credential?.birthDate
-  const hasExp = !!credential?.expirationDate
-  const [qrDataUrl, setQrDataUrl] = useState<string>("")
+  } = useShareCredential(credential);
+  const hasDob = !!credential?.birthDate;
+  const hasExp = !!credential?.expirationDate;
+  const [qrDataUrl, setQrDataUrl] = useState<string>('');
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       try {
         const url =
           credential?.id && shareParam
             ? `${window.location.origin}/credential/${credential.id}#share=${shareParam}`
-            : ""
+            : '';
         if (!url) {
-          setQrDataUrl("")
-          return
+          setQrDataUrl('');
+          return;
         }
-        const QR = await import("qrcode")
-        const dataUrl = await QR.toDataURL(url, { width: 512, margin: 2 })
-        setQrDataUrl(dataUrl)
+        const QR = await import('qrcode');
+        const dataUrl = await QR.toDataURL(url, { width: 512, margin: 2 });
+        setQrDataUrl(dataUrl);
       } catch {}
-    })()
-  }, [shareParam, credential?.id])
+    })();
+  }, [shareParam, credential?.id]);
 
-  if (!open) return null
+  if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden p-4">
@@ -64,14 +64,21 @@ export default function ShareCredentialModal({
           <div className="flex items-start justify-between">
             <div>
               <h2 className="text-white font-semibold text-lg">Share Credential</h2>
-              <p className="text-xs text-zinc-500 mt-0.5">Select fields and generate a secure QR code</p>
+              <p className="text-xs text-zinc-500 mt-0.5">
+                Select fields and generate a secure QR code
+              </p>
             </div>
             <button
               onClick={onClose}
               className="text-zinc-400 hover:text-white transition-colors p-1.5 hover:bg-zinc-800/50 rounded-lg"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -83,7 +90,12 @@ export default function ShareCredentialModal({
               <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 backdrop-blur-sm">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-6 h-6 rounded-lg bg-zinc-800 flex items-center justify-center">
-                    <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      className="w-3.5 h-3.5 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -98,7 +110,7 @@ export default function ShareCredentialModal({
                 <div className="aspect-square rounded-xl border border-zinc-800 bg-zinc-950 p-4 flex items-center justify-center">
                   {qrDataUrl ? (
                     <Image
-                      src={qrDataUrl || "/placeholder.svg"}
+                      src={qrDataUrl || '/placeholder.svg'}
                       alt="QR Code"
                       width={256}
                       height={256}
@@ -127,22 +139,22 @@ export default function ShareCredentialModal({
                 <div className="grid grid-cols-2 gap-2 mt-3">
                   <button
                     onClick={async () => {
-                      await onCopy()
+                      await onCopy();
                     }}
                     disabled={!shareParam}
                     className="rounded-lg bg-white text-black px-3 py-2 text-xs font-medium hover:bg-zinc-200 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                   >
-                    {copied ? "✓ Copied!" : "Copy Link"}
+                    {copied ? '✓ Copied!' : 'Copy Link'}
                   </button>
                   <button
                     onClick={() => {
-                      if (!qrDataUrl) return
-                      const a = document.createElement("a")
-                      a.href = qrDataUrl
-                      a.download = "credential-qr.png"
-                      document.body.appendChild(a)
-                      a.click()
-                      document.body.removeChild(a)
+                      if (!qrDataUrl) return;
+                      const a = document.createElement('a');
+                      a.href = qrDataUrl;
+                      a.download = 'credential-qr.png';
+                      document.body.appendChild(a);
+                      a.click();
+                      document.body.removeChild(a);
                     }}
                     disabled={!qrDataUrl}
                     className="rounded-lg border border-zinc-700 bg-zinc-900 text-white px-3 py-2 text-xs font-medium hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
@@ -175,30 +187,35 @@ export default function ShareCredentialModal({
 
                 <div className="space-y-2 max-h-[240px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
                   {fields
-                    .filter((f) => (hasExp ? true : f.key !== "expirationDate"))
+                    .filter((f) => (hasExp ? true : f.key !== 'expirationDate'))
                     .map((f) => (
-                    <label
-                      key={f.key}
-                      className="flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900/30 px-3 py-2.5 cursor-pointer hover:border-zinc-700 hover:bg-zinc-900/60 transition-all group"
-                    >
-                      <span className="text-zinc-300 text-sm font-medium group-hover:text-white transition-colors">
-                        {f.label}
-                      </span>
-                      <input
-                        type="checkbox"
-                        checked={!!selected[f.key]}
-                        onChange={() => onToggle(f.key)}
-                        className="w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-white focus:ring-2 focus:ring-white/20 focus:ring-offset-0 cursor-pointer accent-white"
-                      />
-                    </label>
-                  ))}
+                      <label
+                        key={f.key}
+                        className="flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900/30 px-3 py-2.5 cursor-pointer hover:border-zinc-700 hover:bg-zinc-900/60 transition-all group"
+                      >
+                        <span className="text-zinc-300 text-sm font-medium group-hover:text-white transition-colors">
+                          {f.label}
+                        </span>
+                        <input
+                          type="checkbox"
+                          checked={!!selected[f.key]}
+                          onChange={() => onToggle(f.key)}
+                          className="w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-white focus:ring-2 focus:ring-white/20 focus:ring-offset-0 cursor-pointer accent-white"
+                        />
+                      </label>
+                    ))}
                 </div>
               </div>
 
               <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-5 h-5 rounded bg-zinc-800 flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      className="w-3 h-3 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -216,12 +233,14 @@ export default function ShareCredentialModal({
 
                 <div className="space-y-2.5">
                   <div>
-                    <label className="text-xs text-zinc-400 font-medium mb-1.5 block">Predicate</label>
+                    <label className="text-xs text-zinc-400 font-medium mb-1.5 block">
+                      Predicate
+                    </label>
                     <select
                       value={predicate.kind}
                       onChange={(e) =>
                         setPredicate({
-                          kind: e.target.value as "none" | "isAdult" | "notExpired" | "isValid",
+                          kind: e.target.value as 'none' | 'isAdult' | 'notExpired' | 'isValid',
                         })
                       }
                       className="w-full rounded-lg border border-zinc-800 bg-zinc-950 text-white text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-700"
@@ -237,8 +256,8 @@ export default function ShareCredentialModal({
                     onClick={onGenerateProof}
                     disabled={
                       loading ||
-                      (predicate.kind === "isAdult" && !hasDob) ||
-                      (predicate.kind === "notExpired" && (isExpired || !hasExp))
+                      (predicate.kind === 'isAdult' && !hasDob) ||
+                      (predicate.kind === 'notExpired' && (isExpired || !hasExp))
                     }
                     className="w-full rounded-lg bg-white text-black px-4 py-2 text-sm font-semibold hover:bg-zinc-200 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                   >
@@ -262,7 +281,7 @@ export default function ShareCredentialModal({
                         Generating...
                       </span>
                     ) : (
-                      "Generate Proof"
+                      'Generate Proof'
                     )}
                   </button>
 
@@ -271,12 +290,12 @@ export default function ShareCredentialModal({
                       {error}
                     </div>
                   )}
-                  {predicate.kind === "notExpired" && isExpired && (
+                  {predicate.kind === 'notExpired' && isExpired && (
                     <div className="text-xs text-zinc-500 bg-zinc-900/50 rounded-lg px-3 py-1.5">
                       This credential is expired
                     </div>
                   )}
-                  {predicate.kind === "isAdult" && !hasDob && (
+                  {predicate.kind === 'isAdult' && !hasDob && (
                     <div className="text-xs text-zinc-500 bg-zinc-900/50 rounded-lg px-3 py-1.5">
                       Birth date required to enable age proof
                     </div>
@@ -288,5 +307,5 @@ export default function ShareCredentialModal({
         </div>
       </div>
     </div>
-  )
+  );
 }
