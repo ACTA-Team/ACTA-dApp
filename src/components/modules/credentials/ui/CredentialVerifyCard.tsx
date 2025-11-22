@@ -39,7 +39,7 @@ export function CredentialVerifyCard({
       <div className="relative rounded-2xl w-full max-w-4xl bg-black shadow-2xl overflow-hidden border border-[#edeed1]/20">
         <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
           <Image
-            src={"/acta.png"}
+            src={'/acta.png'}
             alt=""
             width={1024}
             height={1024}

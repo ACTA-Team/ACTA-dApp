@@ -151,9 +151,10 @@ export function useShareCredential(credential: Credential | null) {
       const m = msg.toLowerCase();
       let display = 'Proof could not be generated.';
       if (predicate.kind === 'notExpired') {
-        display = m.includes('satisfy') || m.includes('constraint')
-          ? 'Credential is expired. Cannot generate proof.'
-          : 'Proof error on expiration test.';
+        display =
+          m.includes('satisfy') || m.includes('constraint')
+            ? 'Credential is expired. Cannot generate proof.'
+            : 'Proof error on expiration test.';
       } else if (predicate.kind === 'isValid') {
         display = 'Credential status is invalid. Cannot generate proof.';
       } else if (predicate.kind === 'isAdult') {
