@@ -17,9 +17,9 @@ export function CredentialCard({
   onRevoke,
 }: CredentialCardProps) {
   return (
-    <Card className="relative overflow-hidden bg-black border-[#edeed1]/40 min-h-[200px] w-full py-0">
+    <Card className="relative overflow-hidden bg-black border-[#edeed1]/40 min-h-[200px] w-full py-0 pr-4 pl-4 pb-4">
       <div className="relative flex flex-col pt-0 px-4 pb-4 text-white">
-        <div className="flex items-center justify-between -mt-4 mb-0">
+        <div className="flex items-center justify-between mt-0 mb-0">
           {(() => {
             const c = String(category || '').toLowerCase();
             const logoSrc = c.includes('escrow')
@@ -28,13 +28,15 @@ export function CredentialCard({
                 ? '/gf-x-acta.png'
                 : '/acta.png';
             return (
-              <Image
-                src={logoSrc}
-                alt="Logo"
-                width={64}
-                height={64}
-                className={'w-32 h-32 object-contain flex-shrink-0'}
-              />
+              <div className="-ml-4 -mt-4 shrink-0">
+                <Image
+                  src={logoSrc}
+                  alt="Logo"
+                  width={64}
+                  height={64}
+                  className={'w-32 h-32 object-contain'}
+                />
+              </div>
             );
           })()}
           <div className="flex items-center gap-2">
