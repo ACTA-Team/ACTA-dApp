@@ -28,6 +28,7 @@ export function CredentialVerifyCard({
       : displayStatus === 'Expired'
         ? AlertCircle
         : CheckCircle2;
+  const zkChecking = zkValid == null && !!zkStatement;
 
   return (
     <div className="relative w-full h-full flex items-center justify-center p-4">
@@ -87,72 +88,107 @@ export function CredentialVerifyCard({
             </div>
             <div className="mt-3 flex items-center justify-between">
               <span className="text-sm font-medium text-white">ZK Proof</span>
-              <span
-                className={`text-xs px-2 py-1 rounded-lg border ${
-                  zkValid
-                    ? 'bg-green-950/50 border-green-500/30 text-green-400'
-                    : zkValid === false
-                      ? 'bg-red-950/50 border-red-500/30 text-red-400'
-                      : 'bg-zinc-900 border-white/10 text-zinc-400'
-                }`}
-              >
-                {zkValid == null ? 'Not provided' : zkValid ? 'Passed' : 'Failed'}
-              </span>
+              {zkChecking ? (
+                <span className="inline-flex items-center gap-2 text-xs px-2 py-1 rounded-lg border bg-zinc-900 border-white/10 text-zinc-400">
+                  <span className="h-3 w-3 rounded-full border-2 border-zinc-400 border-t-transparent animate-spin" />
+                  Verifying…
+                </span>
+              ) : (
+                <span
+                  className={`text-xs px-2 py-1 rounded-lg border ${
+                    zkValid
+                      ? 'bg-green-950/50 border-green-500/30 text-green-400'
+                      : zkValid === false
+                        ? 'bg-red-950/50 border-red-500/30 text-red-400'
+                        : 'bg-zinc-900 border-white/10 text-zinc-400'
+                  }`}
+                >
+                  {zkValid == null ? 'Not provided' : zkValid ? 'Passed' : 'Failed'}
+                </span>
+              )}
             </div>
             {kind === 'typeEq' && (
               <div className="mt-2 flex items-center justify-between">
                 <span className="text-sm font-medium text-white">Is Valid</span>
-                <span
-                  className={`text-xs px-2 py-1 rounded-lg border ${
-                    typeEqStmt?.isValid
-                      ? 'bg-green-950/50 border-green-500/30 text-green-400'
-                      : 'bg-zinc-900 border-white/10 text-zinc-400'
-                  }`}
-                >
-                  {typeEqStmt?.isValid ? 'true' : 'false'}
-                </span>
+                {zkChecking ? (
+                  <span className="inline-flex items-center gap-2 text-xs px-2 py-1 rounded-lg border bg-zinc-900 border-white/10 text-zinc-400">
+                    <span className="h-3 w-3 rounded-full border-2 border-zinc-400 border-t-transparent animate-spin" />
+                    …
+                  </span>
+                ) : (
+                  <span
+                    className={`text-xs px-2 py-1 rounded-lg border ${
+                      typeEqStmt?.isValid
+                        ? 'bg-green-950/50 border-green-500/30 text-green-400'
+                        : 'bg-zinc-900 border-white/10 text-zinc-400'
+                    }`}
+                  >
+                    {typeEqStmt?.isValid ? 'true' : 'false'}
+                  </span>
+                )}
               </div>
             )}
             {kind === 'notExpired' && (
               <div className="mt-2 flex items-center justify-between">
                 <span className="text-sm font-medium text-white">Not Expired</span>
-                <span
-                  className={`text-xs px-2 py-1 rounded-lg border ${
-                    notExpiredStmt?.notExpired
-                      ? 'bg-green-950/50 border-green-500/30 text-green-400'
-                      : 'bg-zinc-900 border-white/10 text-zinc-400'
-                  }`}
-                >
-                  {notExpiredStmt?.notExpired ? 'true' : 'false'}
-                </span>
+                {zkChecking ? (
+                  <span className="inline-flex items-center gap-2 text-xs px-2 py-1 rounded-lg border bg-zinc-900 border-white/10 text-zinc-400">
+                    <span className="h-3 w-3 rounded-full border-2 border-zinc-400 border-t-transparent animate-spin" />
+                    …
+                  </span>
+                ) : (
+                  <span
+                    className={`text-xs px-2 py-1 rounded-lg border ${
+                      notExpiredStmt?.notExpired
+                        ? 'bg-green-950/50 border-green-500/30 text-green-400'
+                        : 'bg-zinc-900 border-white/10 text-zinc-400'
+                    }`}
+                  >
+                    {notExpiredStmt?.notExpired ? 'true' : 'false'}
+                  </span>
+                )}
               </div>
             )}
             {kind === 'isValid' && (
               <div className="mt-2 flex items-center justify-between">
                 <span className="text-sm font-medium text-white">Status Valid</span>
-                <span
-                  className={`text-xs px-2 py-1 rounded-lg border ${
-                    isValidStmt?.isValid
-                      ? 'bg-green-950/50 border-green-500/30 text-green-400'
-                      : 'bg-zinc-900 border-white/10 text-zinc-400'
-                  }`}
-                >
-                  {isValidStmt?.isValid ? 'true' : 'false'}
-                </span>
+                {zkChecking ? (
+                  <span className="inline-flex items-center gap-2 text-xs px-2 py-1 rounded-lg border bg-zinc-900 border-white/10 text-zinc-400">
+                    <span className="h-3 w-3 rounded-full border-2 border-zinc-400 border-t-transparent animate-spin" />
+                    …
+                  </span>
+                ) : (
+                  <span
+                    className={`text-xs px-2 py-1 rounded-lg border ${
+                      isValidStmt?.isValid
+                        ? 'bg-green-950/50 border-green-500/30 text-green-400'
+                        : 'bg-zinc-900 border-white/10 text-zinc-400'
+                    }`}
+                  >
+                    {isValidStmt?.isValid ? 'true' : 'false'}
+                  </span>
+                )}
               </div>
             )}
             {kind === 'isAdult' && (
               <div className="mt-2 flex items-center justify-between">
                 <span className="text-sm font-medium text-white">Is Adult</span>
-                <span
-                  className={`text-xs px-2 py-1 rounded-lg border ${
-                    isAdultStmt?.isAdult
-                      ? 'bg-green-950/50 border-green-500/30 text-green-400'
-                      : 'bg-zinc-900 border-white/10 text-zinc-400'
-                  }`}
-                >
-                  {isAdultStmt?.isAdult ? 'true' : 'false'}
-                </span>
+                {zkChecking ? (
+                  <span className="inline-flex items-center gap-2 text-xs px-2 py-1 rounded-lg border bg-zinc-900 border-white/10 text-zinc-400">
+                    <span className="h-3 w-3 rounded-full border-2 border-zinc-400 border-t-transparent animate-spin" />
+                    …
+                  </span>
+                ) : (
+                  <span
+                    className={`text-xs px-2 py-1 rounded-lg border ${
+                      isAdultStmt?.isAdult
+                        ? 'bg-green-950/50 border-green-500/30 text-green-400'
+                        : 'bg-zinc-900 border-white/10 text-zinc-400'
+                    }`}
+                  >
+                    {isAdultStmt?.isAdult ? 'true' : 'false'}
+                  </span>
+                )}
               </div>
             )}
           </div>
