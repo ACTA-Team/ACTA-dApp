@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ACTA dApp
+
+A modern web dApp to issue, manage, share, and authorize verifiable credentials. Built with Next.js 16, React 19, TypeScript, Tailwind CSS, and the ACTA SDK.
+
+## Overview
+
+- Issue credentials to users and manage issuer authorization
+- Maintain a vault of credentials with search, share, and revoke actions
+- Guided onboarding via tutorials and quick start flows
+- Responsive UI with accessible components and consistent design
+
+## Features
+
+- Dashboard: overview and quick actions
+- Issue: create and issue new credentials
+- Authorize: manage authorized issuers
+- Vault: list, search, share, and revoke credentials
+- Tutorials: step-by-step guidance
+
+## Tech Stack
+
+- Framework: Next.js 16 (App Router, Turbopack)
+- UI: React 19, TypeScript, Tailwind CSS v4, Radix UI
+- Icons: `lucide-react`
+- State & Data: TanStack Query
+- SDKs: `@acta-team/acta-sdk`, Stellar Wallets Kit
+
+## Prerequisites
+
+- Node.js 18 or newer
+- npm (or your preferred package manager)
 
 ## Getting Started
 
-First, run the development server:
+1. Install dependencies:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+   ```bash
+   npm install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Run in development:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+   ```bash
+   npm run dev
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   The app runs at `http://localhost:3000/`.
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+- `npm run dev` — start the dev server
+- `npm run build` — create a production build
+- `npm run start` — run the production server
+- `npm run lint` — run ESLint
+- `npm run format` — format with Prettier
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Build & Deploy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Build the app:
 
-## Deploy on Vercel
+   ```bash
+   npm run build
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Start the server:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   ```bash
+   npm run start
+   ```
+
+Deploy to any Node-compatible environment. Static and dynamic routes are handled by Next.js.
+
+## Project Structure
+
+- `src/app` — App Router pages and layouts
+  - `dashboard/` — home, authorize, credentials, issue, tutorials
+  - `credential/[id]` — dynamic credential page
+- `src/components/modules` — domain components
+  - `dashboard/` — quick start and dashboard UI
+  - `credentials/` — credential list, card, share modal
+  - `vault/` — vault dashboard and issuer management
+- `src/components/ui` — shared UI (buttons, cards, effects)
+- `src/layouts` — application layout and sidebar
+- `src/providers` — app-wide context providers (network, wallet, ACTA SDK)
+
+## Configuration Notes
+
+- Icons are provided by `lucide-react` for consistency and clarity
+- Tailwind CSS v4 is used for styling with utility classes
+- The ACTA SDK is configured via `ActaProvider`; no environment setup is required for local development
+
+## Security
+
+- Do not commit secrets to the repository
+- Keep `.env*` files local and out of version control
+
+## Contributing
+
+Issues and PRs are welcome. Keep changes focused and follow the existing code style. Run `npm run lint` and `npm run build` before submitting.
