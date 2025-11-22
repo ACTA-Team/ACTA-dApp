@@ -31,6 +31,7 @@ export function useVaultCards() {
       url: '',
       category: c.type,
       createdAt: new Date(c.issuedAt),
+      status: c.status,
     }));
     return [...base, ...extras];
   }, [actaCredentials, extras]);

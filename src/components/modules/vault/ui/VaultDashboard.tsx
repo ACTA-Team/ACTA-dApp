@@ -10,8 +10,17 @@ import ShareCredentialModal from '@/components/modules/credentials/ui/ShareCrede
 import { CredentialCard } from '@/components/modules/credentials/ui/SavedCredentialsCard';
 
 export default function VaultPage() {
-  const { vaultExists, onCreateVault, query, setQuery, shareOpen, toShare, openShare, closeShare } =
-    useVaultDashboard();
+  const {
+    vaultExists,
+    onCreateVault,
+    query,
+    setQuery,
+    shareOpen,
+    toShare,
+    openShare,
+    closeShare,
+    onRevoke,
+  } = useVaultDashboard();
   const { actaById, getWalletFromDid, filteredCredentials, copyToClipboard } = useVaultCards();
 
   if (vaultExists === false) {
@@ -122,6 +131,7 @@ export default function VaultPage() {
                   key={credential.id}
                   name={credential.name}
                   category={credential.category}
+                  status={credential.status}
                   wallet={getWalletFromDid(credential.username)}
                   url={credential.url || undefined}
                   onCopy={(text, label) => copyToClipboard(text, label)}
@@ -129,6 +139,7 @@ export default function VaultPage() {
                     const ac = actaById.get(credential.id);
                     if (ac) openShare(ac);
                   }}
+                  onRevoke={() => onRevoke(credential.id)}
                 />
               ))}
             </div>

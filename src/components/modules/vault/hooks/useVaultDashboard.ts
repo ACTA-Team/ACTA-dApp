@@ -7,8 +7,17 @@ import { useCredentialsList } from '@/components/modules/credentials/hooks/useCr
 
 export function useVaultDashboard() {
   const { vaultExists, createVault } = useVault();
-  const { query, setQuery, items, shareOpen, toShare, openShare, closeShare } =
-    useCredentialsList();
+  const {
+    query,
+    setQuery,
+    items,
+    shareOpen,
+    toShare,
+    openShare,
+    closeShare,
+    onRevoke,
+    revokingId,
+  } = useCredentialsList();
 
   const onCreateVault = useCallback(async () => {
     try {
@@ -32,5 +41,7 @@ export function useVaultDashboard() {
     toShare,
     openShare,
     closeShare,
+    onRevoke,
+    revokingId,
   };
 }

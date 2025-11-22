@@ -24,7 +24,7 @@ export default function DashboardLayoutClient({
     try {
       const key = 'tutorial_shown_global';
       const seen = localStorage.getItem(key) === 'true';
-      setTutorialOpen(!seen);
+      setTimeout(() => setTutorialOpen(!seen), 0);
     } catch {}
   }, []);
 

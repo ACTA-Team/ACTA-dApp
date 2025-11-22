@@ -1,8 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useVault } from '@/components/modules/vault/hooks/use-vault';
 import type { Credential } from '@/@types/credentials';
+import { toast } from 'sonner';
+import { useNetwork } from '@/providers/network.provider';
+import { useWalletContext } from '@/providers/wallet.provider';
 
 function adaptVcToCredential(vc: unknown): Credential {
   const obj = (vc ?? {}) as Record<string, unknown>;
@@ -41,6 +44,11 @@ function adaptVcToCredential(vc: unknown): Credential {
     null;
   const birthDate = (cs.birthDate as string) || (p.birthDate as string) || undefined;
 
+  const statusRaw = (obj.status as string) || (p.status as string) || 'valid';
+  const statusNorm = String(statusRaw).toLowerCase();
+  const status: 'valid' | 'expired' | 'revoked' =
+    statusNorm === 'revoked' ? 'revoked' : statusNorm === 'expired' ? 'expired' : 'valid';
+
   return {
     id: String(obj.id ?? 'unknown'),
     title: String(title),
@@ -49,7 +57,7 @@ function adaptVcToCredential(vc: unknown): Credential {
     type: String(type),
     issuedAt: String(issuedAt),
     expirationDate: expirationDate ? String(expirationDate) : null,
-    status: 'valid',
+    status,
     birthDate: birthDate ? String(birthDate) : undefined,
   };
 }
@@ -57,7 +65,9 @@ function adaptVcToCredential(vc: unknown): Credential {
 export function useCredentialsList() {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<string>('all');
-  const { vcs } = useVault();
+  const { vcs, revokeCredential } = useVault();
+  const { network } = useNetwork();
+  const { walletAddress } = useWalletContext();
 
   const source = useMemo<Credential[]>(() => {
     const list = Array.isArray(vcs) ? (vcs as unknown[]).map((vc) => adaptVcToCredential(vc)) : [];
@@ -89,6 +99,36 @@ export function useCredentialsList() {
     setToShare(null);
   };
 
+  const [revokingId, setRevokingId] = useState<string | null>(null);
+  const extractGFromDid = (did?: string): string | null => {
+    if (!did) return null;
+    const m = String(did).match(/did:pkh:stellar:(public|testnet):([A-Z0-9]{56})/i);
+    return m ? m[2] : null;
+  };
+  const onRevoke = useCallback(
+    async (vcId: string) => {
+      setRevokingId(vcId);
+      try {
+        const c = source.find((x) => x.id === vcId);
+        void c;
+        const { txId } = await revokeCredential(vcId);
+        const net = network === 'mainnet' ? 'public' : 'testnet';
+        const url = `https://stellar.expert/explorer/${net}/tx/${txId}`;
+        toast.success('Credential revoked', {
+          description: txId,
+          action: {
+            label: 'View on Stellar Expert',
+            onClick: () => window.open(url, '_blank'),
+          },
+        });
+        return txId;
+      } finally {
+        setRevokingId(null);
+      }
+    },
+    [revokeCredential, network, source, walletAddress]
+  );
+
   return {
     query,
     setQuery,
@@ -99,5 +139,7 @@ export function useCredentialsList() {
     toShare,
     openShare,
     closeShare,
+    onRevoke,
+    revokingId,
   };
 }

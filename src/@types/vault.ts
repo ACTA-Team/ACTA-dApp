@@ -6,4 +6,5 @@ export type VaultItem = {
   url?: string;
   category: string;
   createdAt: Date;
+  status?: string;
 };
