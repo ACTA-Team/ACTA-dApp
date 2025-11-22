@@ -37,7 +37,7 @@ export function CredentialVerifyCard({
   return (
     <div className="relative w-full h-full flex items-center justify-center p-4">
       <div className="relative rounded-2xl w-full max-w-4xl bg-black shadow-2xl overflow-hidden border border-[#edeed1]/20">
-        <div className="absolute right-[-32rem] top-6 opacity-5 pointer-events-none">
+        <div className="absolute right-[-32rem] opacity-5 pointer-events-none">
           {(() => {
             const t = String(revealed?.type || '').toLowerCase();
             const wmSrc = t.includes('escrow')
