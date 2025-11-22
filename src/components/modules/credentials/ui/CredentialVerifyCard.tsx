@@ -37,7 +37,7 @@ export function CredentialVerifyCard({
   return (
     <div className="relative w-full h-full flex items-center justify-center p-4">
       <div className="relative rounded-2xl w-full max-w-4xl bg-black shadow-2xl overflow-hidden border border-[#edeed1]/20">
-        <div className="absolute right-8 top-1/2 -translate-y-1/2 opacity-5">
+        <div className="absolute right-[-32rem] opacity-5 pointer-events-none">
           {(() => {
             const t = String(revealed?.type || '').toLowerCase();
             const wmSrc = t.includes('escrow')
@@ -49,9 +49,9 @@ export function CredentialVerifyCard({
               <Image
                 src={wmSrc}
                 alt=""
-                width={320}
-                height={320}
-                className={'w-80 h-80 object-contain'}
+                width={1024}
+                height={1024}
+                className={'w-[1024px] h-[1024px] object-contain'}
               />
             );
           })()}

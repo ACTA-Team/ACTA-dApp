@@ -6,7 +6,7 @@ import { useVault } from '../hooks/use-vault';
 import { useCredentialsList } from '@/components/modules/credentials/hooks/useCredentialsList';
 
 export function useVaultDashboard() {
-  const { vaultExists, createVault } = useVault();
+  const { vaultExists, createVault, dashboardStatus } = useVault();
   const {
     query,
     setQuery,
@@ -34,6 +34,7 @@ export function useVaultDashboard() {
   return {
     vaultExists,
     onCreateVault,
+    dashboardStatus,
     query,
     setQuery,
     items,
