@@ -17,16 +17,26 @@ export function CredentialCard({
   onRevoke,
 }: CredentialCardProps) {
   return (
-    <Card className="relative overflow-hidden bg-black border-[#edeed1]/40 min-h-[200px] w-full">
-      <div className="relative flex flex-col p-5 text-white">
-        <div className="flex items-center justify-between mb-4">
-          <Image
-            src="/logo.png"
-            alt="Logo"
-            width={40}
-            height={40}
-            className="w-10 h-10 object-contain flex-shrink-0"
-          />
+    <Card className="relative overflow-hidden bg-black border-[#edeed1]/40 min-h-[200px] w-full py-0">
+      <div className="relative flex flex-col pt-0 px-4 pb-4 text-white">
+        <div className="flex items-center justify-between -mt-4 mb-0">
+          {(() => {
+            const c = String(category || '').toLowerCase();
+            const logoSrc = c.includes('escrow')
+              ? '/tw-x-acta.png'
+              : c.includes('contributions')
+                ? '/gf-x-acta.png'
+                : '/acta.png';
+            return (
+              <Image
+                src={logoSrc}
+                alt="Logo"
+                width={64}
+                height={64}
+                className={'w-32 h-32 object-contain flex-shrink-0'}
+              />
+            );
+          })()}
           <div className="flex items-center gap-2">
             <span className="px-3 py-1 rounded-full bg-[#edeed1]/10 backdrop-blur-sm border border-[#edeed1]/30 text-xs font-medium whitespace-nowrap text-white">
               {category}
@@ -39,7 +49,7 @@ export function CredentialCard({
           </div>
         </div>
 
-        <div className="space-y-1 mb-4">
+        <div className="space-y-1 mb-1">
           <p className="text-xs text-slate-400 uppercase tracking-wider">Wallet Address</p>
           <div className="flex items-start gap-2">
             <p className="font-mono text-xs font-medium break-all flex-1 leading-relaxed">
@@ -58,10 +68,10 @@ export function CredentialCard({
           </div>
         </div>
 
-        <div className="flex items-end justify-between gap-3">
+        <div className="flex items-end justify-between gap-3 mt-2">
           <div className="space-y-1 flex-1 min-w-0">
             <p className="text-xs text-slate-400 uppercase tracking-wider">Credential Name</p>
-            <p className="text-lg font-semibold truncate">{name}</p>
+            <p className="text-sm font-medium truncate">{name}</p>
             {url && (
               <a
                 href={url}

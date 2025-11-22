@@ -87,8 +87,8 @@ export default function IssueForm() {
                 onChange={(e) => setType(e.target.value)}
                 className="w-full rounded-xl border border-[#edeed1]/20 bg-zinc-950/50 text-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               >
-                <option value="UniversityDegree">UniversityDegree</option>
-                <option value="KYC">KYC</option>
+                <option value="Escrow">Escrow</option>
+                <option value="Contributions">Contributions</option>
                 <option value="Membership">Membership</option>
               </select>
             </div>
