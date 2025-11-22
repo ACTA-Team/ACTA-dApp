@@ -100,11 +100,6 @@ export function useCredentialsList() {
   };
 
   const [revokingId, setRevokingId] = useState<string | null>(null);
-  const extractGFromDid = (did?: string): string | null => {
-    if (!did) return null;
-    const m = String(did).match(/did:pkh:stellar:(public|testnet):([A-Z0-9]{56})/i);
-    return m ? m[2] : null;
-  };
   const onRevoke = useCallback(
     async (vcId: string) => {
       setRevokingId(vcId);
