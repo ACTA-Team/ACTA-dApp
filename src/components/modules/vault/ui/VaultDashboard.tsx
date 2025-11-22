@@ -7,12 +7,14 @@ import { Shield, Search, Key, Lock } from 'lucide-react';
 import { useVaultDashboard } from '@/components/modules/vault/hooks/useVaultDashboard';
 import { useVaultCards } from '@/components/modules/vault/hooks/useVaultCards';
 import ShareCredentialModal from '@/components/modules/credentials/ui/ShareCredentialModal';
+import { Skeleton } from '@/components/ui/skeleton';
 import { CredentialCard } from '@/components/modules/credentials/ui/SavedCredentialsCard';
 
 export default function VaultPage() {
   const {
     vaultExists,
     onCreateVault,
+    dashboardStatus,
     query,
     setQuery,
     shareOpen,
@@ -115,7 +117,19 @@ export default function VaultPage() {
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <h2 className="text-xl font-semibold mb-4">Saved credentials</h2>
-          {filteredCredentials.length === 0 ? (
+          {dashboardStatus === 'pending' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[0, 1, 2].map((i) => (
+                <Card key={i} className="p-4 bg-card border-border">
+                  <div className="space-y-3">
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-24 w-full" />
+                  </div>
+                </Card>
+              ))}
+            </div>
+          ) : filteredCredentials.length === 0 ? (
             <Card className="p-12 text-center bg-card border-border">
               <Shield className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">
