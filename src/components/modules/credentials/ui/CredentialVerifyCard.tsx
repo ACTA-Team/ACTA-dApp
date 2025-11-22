@@ -37,24 +37,14 @@ export function CredentialVerifyCard({
   return (
     <div className="relative w-full h-full flex items-center justify-center p-4">
       <div className="relative rounded-2xl w-full max-w-4xl bg-black shadow-2xl overflow-hidden border border-[#edeed1]/20">
-        <div className="absolute right-[-32rem] opacity-5 pointer-events-none">
-          {(() => {
-            const t = String(revealed?.type || '').toLowerCase();
-            const wmSrc = t.includes('escrow')
-              ? '/tw-x-acta.png'
-              : t.includes('contributions')
-                ? '/gf-x-acta.png'
-                : '/acta.png';
-            return (
-              <Image
-                src={wmSrc}
-                alt=""
-                width={1024}
-                height={1024}
-                className={'w-[1024px] h-[1024px] object-contain'}
-              />
-            );
-          })()}
+        <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
+          <Image
+            src={"/acta.png"}
+            alt=""
+            width={1024}
+            height={1024}
+            className={'w-[1024px] h-[1024px] object-contain'}
+          />
         </div>
 
         <div className="relative z-10 p-8 space-y-6 text-white">
@@ -109,7 +99,13 @@ export function CredentialVerifyCard({
                 {testName && (
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-sm font-medium text-white">Test</span>
-                    <span className="text-xs px-2 py-1 rounded-lg border bg-zinc-900 border-white/10 text-zinc-400">
+                    <span
+                      className={
+                        kind === 'isValid'
+                          ? 'text-xs px-2 py-1 rounded-lg border bg-zinc-900 border-green-500/30 text-green-400'
+                          : 'text-xs px-2 py-1 rounded-lg border bg-zinc-900 border-white/10 text-zinc-400'
+                      }
+                    >
                       {testName}
                     </span>
                   </div>

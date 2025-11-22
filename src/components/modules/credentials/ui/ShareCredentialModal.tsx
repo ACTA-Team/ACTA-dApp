@@ -27,6 +27,7 @@ export default function ShareCredentialModal({
     loading,
     error,
     onGenerateProof,
+    isExpired,
   } = useShareCredential(credential);
   const hasDob = !!credential?.birthDate;
 
@@ -105,13 +106,20 @@ export default function ShareCredentialModal({
               </select>
               <button
                 onClick={onGenerateProof}
-                disabled={loading || (predicate.kind === 'isAdult' && !hasDob)}
+                disabled={
+                  loading ||
+                  (predicate.kind === 'isAdult' && !hasDob) ||
+                  (predicate.kind === 'notExpired' && isExpired)
+                }
                 className="rounded-lg border border-[#edeed1]/30 bg-transparent hover:bg-[#edeed1]/10 text-white px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {loading ? 'Generating…' : 'Generate ZK Proof'}
               </button>
             </div>
             {error && <div className="text-sm text-red-400">{error}</div>}
+            {predicate.kind === 'notExpired' && isExpired && (
+              <div className="text-sm text-zinc-400">This credential is expired.</div>
+            )}
             {predicate.kind === 'isAdult' && !hasDob && (
               <div className="text-sm text-zinc-400">
                 Birth date required in KYC to enable age proof.

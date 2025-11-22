@@ -75,6 +75,18 @@ export function useShareCredential(credential: Credential | null) {
     }
   }, [revealedFields, credential, proof]);
 
+  const isExpired = useMemo(() => {
+    try {
+      const exp = credential?.expirationDate || null;
+      if (!exp) return false;
+      const t = typeof exp === 'string' ? Date.parse(exp) : Number(exp);
+      if (!Number.isFinite(t)) return false;
+      return Date.now() >= t;
+    } catch {
+      return false;
+    }
+  }, [credential]);
+
   const onToggle = (key: string) => {
     setSelected((prev) => ({ ...prev, [key]: !prev[key] }));
     setCopied(false);
@@ -105,6 +117,20 @@ export function useShareCredential(credential: Credential | null) {
         if (kind === 'isAdult' && !('birthDate' in credential)) {
           throw new Error('birth_date_missing');
         }
+        if (kind === 'notExpired') {
+          const exp = credential.expirationDate || null;
+          const t = typeof exp === 'string' ? Date.parse(exp || '') : Number(exp);
+          if (!exp) {
+            throw new Error('expiration_date_missing');
+          }
+          if (!Number.isFinite(t)) {
+            throw new Error('expiration_date_invalid');
+          }
+          if (Date.now() >= t) {
+            setError('Credential is expired. Cannot generate proof.');
+            return;
+          }
+        }
         const { generateZkProof } = await import('@/lib/zk');
         const res = await generateZkProof({
           credential: credential as unknown as Record<string, unknown>,
@@ -122,7 +148,20 @@ export function useShareCredential(credential: Credential | null) {
         typeof e === 'object' && e && 'message' in e
           ? String((e as { message?: unknown }).message || '')
           : '';
-      setError(msg || 'proof_error');
+      const m = msg.toLowerCase();
+      let display = 'Proof could not be generated.';
+      if (predicate.kind === 'notExpired') {
+        display = m.includes('satisfy') || m.includes('constraint')
+          ? 'Credential is expired. Cannot generate proof.'
+          : 'Proof error on expiration test.';
+      } else if (predicate.kind === 'isValid') {
+        display = 'Credential status is invalid. Cannot generate proof.';
+      } else if (predicate.kind === 'isAdult') {
+        display = m.includes('missing')
+          ? 'Birth date required to generate age proof.'
+          : 'Age below threshold. Cannot generate proof.';
+      }
+      setError(display);
     } finally {
       setLoading(false);
     }
@@ -143,5 +182,6 @@ export function useShareCredential(credential: Credential | null) {
     loading,
     error,
     onGenerateProof,
+    isExpired,
   };
 }
