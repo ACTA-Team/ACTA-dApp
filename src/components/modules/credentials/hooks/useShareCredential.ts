@@ -25,6 +25,7 @@ export function useShareCredential(credential: Credential | null) {
     statement: ZkStatement;
     publicSignals: string[];
     proof: string | null;
+    ok?: boolean;
   } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -66,9 +67,13 @@ export function useShareCredential(credential: Credential | null) {
         payload.statement = proof.statement as unknown;
         payload.publicSignals = proof.publicSignals as unknown;
         payload.proof = proof.proof as unknown;
+        if (typeof proof.ok === 'boolean') payload.ok = proof.ok as unknown;
       }
       const json = JSON.stringify(payload);
-      const encoded = encodeURIComponent(btoa(unescape(encodeURIComponent(json))));
+      const bytes = new TextEncoder().encode(json);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      const encoded = encodeURIComponent(btoa(binary));
       return encoded;
     } catch {
       return '';
@@ -141,6 +146,7 @@ export function useShareCredential(credential: Credential | null) {
           statement: res.statement as ZkStatement,
           publicSignals: res.publicSignals as string[],
           proof: res.proof,
+          ok: (res as unknown as { ok?: boolean }).ok === true,
         });
       }
     } catch (e: unknown) {

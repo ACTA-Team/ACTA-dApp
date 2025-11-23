@@ -43,7 +43,11 @@ export function useCredentialVerify(vcId: string) {
         }
       }
       if (!raw) return null;
-      const json = decodeURIComponent(escape(atob(decodeURIComponent(raw))));
+      const b64 = decodeURIComponent(raw);
+      const bin = atob(b64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      const json = new TextDecoder().decode(bytes);
       return JSON.parse(json) as unknown;
     } catch {
       return null;
