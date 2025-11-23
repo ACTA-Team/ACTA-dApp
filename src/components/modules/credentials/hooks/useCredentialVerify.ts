@@ -25,14 +25,13 @@ export function useCredentialVerify(vcId: string) {
   const [reverifyLoading, setReverifyLoading] = useState(false);
   const { verifyInVault } = useVaultApi();
   const client = useActaClient();
-  const shareParam = useMemo((): unknown => {
-    if (typeof window === 'undefined') return null;
-    try {
+  const [shareParam, setShareParam] = useState<unknown>(null);
+  useEffect(() => {
+    const read = async () => {
+      if (typeof window === 'undefined') return;
       let raw: string | null = null;
-      // Prefer query param for mobile robustness
       const sp = new URLSearchParams(window.location.search);
       raw = sp.get('share');
-      // Fallback to hash
       if (!raw) {
         const hs = String(window.location.hash || '');
         if (hs.startsWith('#share=')) {
@@ -42,30 +41,48 @@ export function useCredentialVerify(vcId: string) {
           raw = hs.slice(idx + 6);
         }
       }
-      if (!raw) return null;
-      let b64 = '';
-      try {
-        b64 = decodeURIComponent(raw);
-      } catch {
-        b64 = raw;
+      if (!raw) {
+        setShareParam(null);
+        return;
       }
-      b64 = b64.replace(/\s+/g, '');
-      b64 = b64.replace(/-/g, '+').replace(/_/g, '/');
-      const pad = b64.length % 4;
-      if (pad) b64 = b64 + '='.repeat(4 - pad);
-      let bin = '';
       try {
-        bin = atob(b64);
-      } catch {
-        return null;
-      }
-      const bytes = new Uint8Array(bin.length);
-      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-      const json = new TextDecoder().decode(bytes);
-      return JSON.parse(json) as unknown;
-    } catch {
-      return null;
-    }
+        let b64 = '';
+        try {
+          b64 = decodeURIComponent(raw);
+        } catch {
+          b64 = raw;
+        }
+        b64 = b64.replace(/\s+/g, '');
+        b64 = b64.replace(/-/g, '+').replace(/_/g, '/');
+        const pad = b64.length % 4;
+        if (pad) b64 = b64 + '='.repeat(4 - pad);
+        const bin = atob(b64);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        const json = new TextDecoder().decode(bytes);
+        const obj = JSON.parse(json) as unknown;
+        setShareParam(obj);
+        return;
+      } catch {}
+      try {
+        const resp = await fetch(`/api/share?key=${encodeURIComponent(raw)}`);
+        if (resp.ok) {
+          const obj = (await resp.json()) as unknown;
+          setShareParam(obj);
+          return;
+        }
+      } catch {}
+      try {
+        console.error('share_parse_error');
+        fetch('/api/log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tag: 'share_parse_error', error: String(raw || '') }),
+        });
+      } catch {}
+      setShareParam(null);
+    };
+    read();
   }, []);
 
   useEffect(() => {
@@ -105,7 +122,16 @@ export function useCredentialVerify(vcId: string) {
               setVerify(v);
               return;
             }
-          } catch {}
+          } catch (e) {
+            try {
+              console.error('vault_verify_error', e);
+              fetch('/api/log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tag: 'vault_verify_error', error: String((e as any)?.message || e) }),
+              });
+            } catch {}
+          }
         }
 
         const issuanceId = cfg.issuanceContractId || '';
@@ -122,11 +148,28 @@ export function useCredentialVerify(vcId: string) {
               setVerify(r);
               return;
             }
-          } catch {}
+          } catch (e) {
+            try {
+              console.error('onchain_verify_error', e);
+              fetch('/api/log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tag: 'onchain_verify_error', error: String((e as any)?.message || e) }),
+              });
+            } catch {}
+          }
         }
 
         setVerify({ vc_id: vcId, status: 'not_verified' });
-      } catch {
+      } catch (e) {
+        try {
+          console.error('verify_run_error', e);
+          fetch('/api/log', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tag: 'verify_run_error', error: String((e as any)?.message || e) }),
+          });
+        } catch {}
         setVerify({ vc_id: vcId, status: 'not_verified' });
       }
     };
@@ -156,6 +199,15 @@ export function useCredentialVerify(vcId: string) {
       const ok = await verifyZkProof(sp as unknown as typeof sp);
       setZkValid(ok);
       setHasVerified(true);
+    } catch (e) {
+      try {
+        console.error('reverify_error', e);
+        fetch('/api/log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tag: 'reverify_error', error: String((e as any)?.message || e) }),
+        });
+      } catch {}
     } finally {
       setReverifyLoading(false);
     }

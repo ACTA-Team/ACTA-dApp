@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Credential, ZkStatement } from '@/@types/credentials';
 
 export function useShareCredential(credential: Credential | null) {
@@ -59,25 +59,48 @@ export function useShareCredential(credential: Credential | null) {
     return obj;
   }, [fields, selected, credential]);
 
-  const shareParam = useMemo(() => {
-    try {
-      const payload: Record<string, unknown> = { revealedFields };
-      if (credential?.id) payload.vc_id = credential.id;
-      if (proof) {
-        payload.statement = proof.statement as unknown;
-        payload.publicSignals = proof.publicSignals as unknown;
-        payload.proof = proof.proof as unknown;
-        if (typeof proof.ok === 'boolean') payload.ok = proof.ok as unknown;
+  const [shareParam, setShareParam] = useState<string>('');
+  useEffect(() => {
+    (async () => {
+      try {
+        const payload: Record<string, unknown> = { revealedFields };
+        if (credential?.id) payload.vc_id = credential.id;
+        if (proof) {
+          payload.statement = proof.statement as unknown;
+          payload.publicSignals = proof.publicSignals as unknown;
+          payload.proof = proof.proof as unknown;
+          if (typeof proof.ok === 'boolean') payload.ok = proof.ok as unknown;
+        }
+        const resp = await fetch('/api/share', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (resp.ok) {
+          const j = (await resp.json()) as { id?: string };
+          if (j?.id) {
+            setShareParam(encodeURIComponent(j.id));
+            return;
+          }
+        }
+        const json = JSON.stringify(payload);
+        const bytes = new TextEncoder().encode(json);
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+        const encoded = encodeURIComponent(btoa(binary));
+        setShareParam(encoded);
+      } catch (e) {
+        try {
+          console.error('share_build_error', e);
+          fetch('/api/log', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tag: 'share_build_error', error: String((e as any)?.message || e) }),
+          });
+        } catch {}
+        setShareParam('');
       }
-      const json = JSON.stringify(payload);
-      const bytes = new TextEncoder().encode(json);
-      let binary = '';
-      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-      const encoded = encodeURIComponent(btoa(binary));
-      return encoded;
-    } catch {
-      return '';
-    }
+    })();
   }, [revealedFields, credential, proof]);
 
   const isExpired = useMemo(() => {
@@ -103,7 +126,16 @@ export function useShareCredential(credential: Credential | null) {
       const url = `${window.location.origin}/credential/${vcId}?share=${shareParam}`;
       await navigator.clipboard.writeText(url);
       setCopied(true);
-    } catch {}
+    } catch (e) {
+      try {
+        console.error('copy_error', e);
+        fetch('/api/log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tag: 'copy_error', error: String((e as any)?.message || e) }),
+        });
+      } catch {}
+    }
   };
 
   async function onGenerateProof() {
@@ -150,6 +182,14 @@ export function useShareCredential(credential: Credential | null) {
         });
       }
     } catch (e: unknown) {
+      try {
+        console.error('proof_error', e);
+        fetch('/api/log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tag: 'proof_error', error: String((e as any)?.message || e) }),
+        });
+      } catch {}
       const msg =
         typeof e === 'object' && e && 'message' in e
           ? String((e as { message?: unknown }).message || '')
