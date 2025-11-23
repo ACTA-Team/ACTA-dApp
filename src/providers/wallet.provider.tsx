@@ -4,9 +4,15 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 import {
   StellarWalletsKit,
   WalletNetwork,
-  allowAllModules,
   FREIGHTER_ID,
+  FreighterModule,
+  AlbedoModule,
+  xBullModule,
 } from '@creit.tech/stellar-wallets-kit';
+import {
+  WalletConnectModule,
+  WalletConnectAllowedMethods,
+} from '@creit.tech/stellar-wallets-kit/modules/walletconnect.module';
 import { useNetwork } from '@/providers/network.provider';
 
 type WalletContextType = {
@@ -42,7 +48,19 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       return new StellarWalletsKit({
         network: net,
         selectedWalletId: FREIGHTER_ID,
-        modules: allowAllModules(),
+        modules: [
+          new FreighterModule(),
+          new AlbedoModule(),
+          new WalletConnectModule({
+            url: 'https://dapp.acta.build',
+            projectId: '3a91e3876dc1b53df126947b152c4e16',
+            method: WalletConnectAllowedMethods.SIGN,
+            description: 'ACTA dApp',
+            name: 'ACTA NFT',
+            icons: ['https://dapp.acta.build/logo.png'],
+            network: net,
+          }),
+        ],
       });
     } catch {
       return null;
