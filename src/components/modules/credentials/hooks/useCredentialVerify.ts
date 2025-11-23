@@ -104,10 +104,7 @@ export function useCredentialVerify(vcId: string) {
           } else {
             setZkStatement(null);
           }
-          if (typeof sp.ok === 'boolean') {
-            setZkValid(sp.ok === true);
-            setHasVerified(true);
-          }
+          // No auto-verification: status must be shown only after user clicks
         }
 
         if (vcId && walletAddress) {
