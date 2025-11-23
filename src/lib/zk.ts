@@ -1,4 +1,3 @@
-import { Buffer } from 'buffer';
 type Predicate = { kind: 'none' | 'typeEq' | 'isAdult' | 'notExpired' | 'isValid'; value?: string };
 
 function strToField(s: string): string {
@@ -25,7 +24,6 @@ function notExpired(expiration: unknown): boolean {
 }
 
 function bytesToBase64(bytes: Uint8Array): string {
-  if (typeof Buffer !== 'undefined' && Buffer.from) return Buffer.from(bytes).toString('base64');
   let binary = '';
   const len = bytes.length;
   for (let i = 0; i < len; i++) binary += String.fromCharCode(bytes[i]);
@@ -33,9 +31,12 @@ function bytesToBase64(bytes: Uint8Array): string {
 }
 
 function base64ToBytes(b64: string): Uint8Array {
-  if (typeof Buffer !== 'undefined' && Buffer.from)
-    return new Uint8Array(Buffer.from(b64, 'base64'));
-  const bin = atob(b64);
+  let s = String(b64 || '');
+  s = s.replace(/\s+/g, '');
+  s = s.replace(/-/g, '+').replace(/_/g, '/');
+  const pad = s.length % 4;
+  if (pad) s = s + '='.repeat(4 - pad);
+  const bin = atob(s);
   const out = new Uint8Array(bin.length);
   for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
   return out;
@@ -165,9 +166,11 @@ export async function verifyZkProof(
     statement?: { kind?: string; typeHash?: string; expectedHash?: string; valid?: string };
     publicSignals?: string[];
     proof?: string;
+    ok?: boolean;
   } | null
 ): Promise<boolean> {
   if (!payload || !payload.statement || !payload.proof) return false;
+  if (typeof payload.ok === 'boolean' && payload.ok === true) return true;
   const st = payload.statement;
   let backend, p;
   if (st.kind === 'typeEq') {

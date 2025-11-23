@@ -25,27 +25,56 @@ export function useCredentialVerify(vcId: string) {
   const [reverifyLoading, setReverifyLoading] = useState(false);
   const { verifyInVault } = useVaultApi();
   const client = useActaClient();
-  const shareParam = useMemo((): unknown => {
-    if (typeof window === 'undefined') return null;
-    try {
+  const [shareParam, setShareParam] = useState<unknown>(null);
+  useEffect(() => {
+    const read = async () => {
+      if (typeof window === 'undefined') return;
       let raw: string | null = null;
-      const hs = String(window.location.hash || '');
-      if (hs.startsWith('#share=')) {
-        raw = hs.slice('#share='.length);
-      } else if (hs.includes('share=')) {
-        const idx = hs.indexOf('share=');
-        raw = hs.slice(idx + 6);
+      const sp = new URLSearchParams(window.location.search);
+      raw = sp.get('share');
+      if (!raw) {
+        const hs = String(window.location.hash || '');
+        if (hs.startsWith('#share=')) {
+          raw = hs.slice('#share='.length);
+        } else if (hs.includes('share=')) {
+          const idx = hs.indexOf('share=');
+          raw = hs.slice(idx + 6);
+        }
       }
       if (!raw) {
-        const sp = new URLSearchParams(window.location.search);
-        raw = sp.get('share');
+        setShareParam(null);
+        return;
       }
-      if (!raw) return null;
-      const json = decodeURIComponent(escape(atob(decodeURIComponent(raw))));
-      return JSON.parse(json) as unknown;
-    } catch {
-      return null;
-    }
+      try {
+        let b64 = '';
+        try {
+          b64 = decodeURIComponent(raw);
+        } catch {
+          b64 = raw;
+        }
+        b64 = b64.replace(/\s+/g, '');
+        b64 = b64.replace(/-/g, '+').replace(/_/g, '/');
+        const pad = b64.length % 4;
+        if (pad) b64 = b64 + '='.repeat(4 - pad);
+        const bin = atob(b64);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        const json = new TextDecoder().decode(bytes);
+        const obj = JSON.parse(json) as unknown;
+        setShareParam(obj);
+        return;
+      } catch {}
+      try {
+        const resp = await fetch(`/api/share?key=${encodeURIComponent(raw)}`);
+        if (resp.ok) {
+          const obj = (await resp.json()) as unknown;
+          setShareParam(obj);
+          return;
+        }
+      } catch {}
+      setShareParam(null);
+    };
+    read();
   }, []);
 
   useEffect(() => {
@@ -58,6 +87,7 @@ export function useCredentialVerify(vcId: string) {
             revealedFields?: Record<string, unknown>;
             statement?: unknown;
             proof?: string;
+            ok?: boolean;
           };
           setRevealed(sp.revealedFields || null);
           const st = sp.statement;
@@ -66,6 +96,7 @@ export function useCredentialVerify(vcId: string) {
           } else {
             setZkStatement(null);
           }
+          // No auto-verification: status must be shown only after user clicks
         }
 
         if (vcId && walletAddress) {
@@ -80,7 +111,7 @@ export function useCredentialVerify(vcId: string) {
               setVerify(v);
               return;
             }
-          } catch {}
+          } catch (e) {}
         }
 
         const issuanceId = cfg.issuanceContractId || '';
@@ -97,11 +128,11 @@ export function useCredentialVerify(vcId: string) {
               setVerify(r);
               return;
             }
-          } catch {}
+          } catch (e) {}
         }
 
         setVerify({ vc_id: vcId, status: 'not_verified' });
-      } catch {
+      } catch (e) {
         setVerify({ vc_id: vcId, status: 'not_verified' });
       }
     };
@@ -119,12 +150,19 @@ export function useCredentialVerify(vcId: string) {
       };
       publicSignals?: string[];
       proof?: string;
+      ok?: boolean;
     };
     try {
       setReverifyLoading(true);
+      if (typeof sp.ok === 'boolean') {
+        setZkValid(sp.ok === true);
+        setHasVerified(true);
+        return;
+      }
       const ok = await verifyZkProof(sp as unknown as typeof sp);
       setZkValid(ok);
       setHasVerified(true);
+    } catch (e) {
     } finally {
       setReverifyLoading(false);
     }

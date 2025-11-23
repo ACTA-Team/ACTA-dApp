@@ -40,7 +40,7 @@ export default function ShareCredentialModal({
       try {
         const url =
           credential?.id && shareParam
-            ? `${window.location.origin}/credential/${credential.id}#share=${shareParam}`
+            ? `${window.location.origin}/credential/${credential.id}?share=${shareParam}`
             : '';
         if (!url) {
           setQrDataUrl('');
@@ -49,7 +49,7 @@ export default function ShareCredentialModal({
         const QR = await import('qrcode');
         const dataUrl = await QR.toDataURL(url, { width: 512, margin: 2 });
         setQrDataUrl(dataUrl);
-      } catch {}
+      } catch (e) {}
     })();
   }, [shareParam, credential?.id]);
 
@@ -59,12 +59,12 @@ export default function ShareCredentialModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative z-10 w-full max-w-4xl max-h-[90vh] rounded-xl border border-zinc-800 bg-black shadow-2xl overflow-hidden flex flex-col">
+      <div className="relative z-10 w-full max-w-full sm:max-w-4xl max-h-[90vh] rounded-xl border border-zinc-800 bg-black shadow-2xl overflow-hidden flex flex-col">
         <div className="border-b border-zinc-800 px-6 py-4">
-          <div className="flex items-start justify-between">
+          <div className="flex items-start justify-between gap-3">
             <div>
-              <h2 className="text-white font-semibold text-lg">Share Credential</h2>
-              <p className="text-xs text-zinc-500 mt-0.5">
+              <h2 className="text-white font-semibold text-base sm:text-lg">Share Credential</h2>
+              <p className="text-[11px] sm:text-xs text-zinc-500 mt-0.5">
                 Select fields and generate a secure QR code
               </p>
             </div>
@@ -85,7 +85,7 @@ export default function ShareCredentialModal({
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          <div className="grid lg:grid-cols-[340px_1fr] gap-6 p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-4 sm:gap-6 p-4 sm:p-6">
             <div className="flex flex-col gap-4">
               <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 backdrop-blur-sm">
                 <div className="flex items-center gap-2 mb-3">
@@ -107,7 +107,7 @@ export default function ShareCredentialModal({
                   <h3 className="text-white font-medium text-sm">QR Code</h3>
                 </div>
 
-                <div className="aspect-square rounded-xl border border-zinc-800 bg-zinc-950 p-4 flex items-center justify-center">
+                <div className="aspect-square rounded-xl border border-zinc-800 bg-zinc-950 p-3 sm:p-4 flex items-center justify-center max-w-[320px] sm:max-w-none mx-auto">
                   {qrDataUrl ? (
                     <Image
                       src={qrDataUrl || '/placeholder.svg'}
@@ -119,7 +119,7 @@ export default function ShareCredentialModal({
                   ) : (
                     <div className="text-center">
                       <svg
-                        className="w-12 h-12 text-zinc-700 mx-auto mb-2"
+                        className="w-10 h-10 sm:w-12 sm:h-12 text-zinc-700 mx-auto mb-2"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -131,18 +131,18 @@ export default function ShareCredentialModal({
                           d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
                         />
                       </svg>
-                      <p className="text-xs text-zinc-600">Generate proof</p>
+                      <p className="text-[11px] sm:text-xs text-zinc-600">Generate proof</p>
                     </div>
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 mt-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
                   <button
                     onClick={async () => {
                       await onCopy();
                     }}
                     disabled={!shareParam}
-                    className="rounded-lg bg-white text-black px-3 py-2 text-xs font-medium hover:bg-zinc-200 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                    className="rounded-lg bg-white text-black px-3 py-2 text-xs sm:text-[13px] font-medium hover:bg-zinc-200 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                   >
                     {copied ? '✓ Copied!' : 'Copy Link'}
                   </button>
@@ -157,7 +157,7 @@ export default function ShareCredentialModal({
                       document.body.removeChild(a);
                     }}
                     disabled={!qrDataUrl}
-                    className="rounded-lg border border-zinc-700 bg-zinc-900 text-white px-3 py-2 text-xs font-medium hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                    className="rounded-lg border border-zinc-700 bg-zinc-900 text-white px-3 py-2 text-xs sm:text-[13px] font-medium hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                   >
                     Download
                   </button>
@@ -167,7 +167,7 @@ export default function ShareCredentialModal({
 
             <div className="flex flex-col gap-4">
               <div>
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-between gap-2 mb-3">
                   <h3 className="text-white font-medium text-sm">Select Fields</h3>
                   <div className="flex items-center gap-2">
                     <button

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Credential, ZkStatement } from '@/@types/credentials';
 
 export function useShareCredential(credential: Credential | null) {
@@ -25,6 +25,7 @@ export function useShareCredential(credential: Credential | null) {
     statement: ZkStatement;
     publicSignals: string[];
     proof: string | null;
+    ok?: boolean;
   } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -58,21 +59,40 @@ export function useShareCredential(credential: Credential | null) {
     return obj;
   }, [fields, selected, credential]);
 
-  const shareParam = useMemo(() => {
-    try {
-      const payload: Record<string, unknown> = { revealedFields };
-      if (credential?.id) payload.vc_id = credential.id;
-      if (proof) {
-        payload.statement = proof.statement as unknown;
-        payload.publicSignals = proof.publicSignals as unknown;
-        payload.proof = proof.proof as unknown;
+  const [shareParam, setShareParam] = useState<string>('');
+  useEffect(() => {
+    (async () => {
+      try {
+        const payload: Record<string, unknown> = { revealedFields };
+        if (credential?.id) payload.vc_id = credential.id;
+        if (proof) {
+          payload.statement = proof.statement as unknown;
+          payload.publicSignals = proof.publicSignals as unknown;
+          payload.proof = proof.proof as unknown;
+          if (typeof proof.ok === 'boolean') payload.ok = proof.ok as unknown;
+        }
+        const resp = await fetch('/api/share', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (resp.ok) {
+          const j = (await resp.json()) as { id?: string };
+          if (j?.id) {
+            setShareParam(encodeURIComponent(j.id));
+            return;
+          }
+        }
+        const json = JSON.stringify(payload);
+        const bytes = new TextEncoder().encode(json);
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+        const encoded = encodeURIComponent(btoa(binary));
+        setShareParam(encoded);
+      } catch (e) {
+        setShareParam('');
       }
-      const json = JSON.stringify(payload);
-      const encoded = encodeURIComponent(btoa(unescape(encodeURIComponent(json))));
-      return encoded;
-    } catch {
-      return '';
-    }
+    })();
   }, [revealedFields, credential, proof]);
 
   const isExpired = useMemo(() => {
@@ -95,10 +115,10 @@ export function useShareCredential(credential: Credential | null) {
   const onCopy = async () => {
     try {
       const vcId = credential?.id || '';
-      const url = `${window.location.origin}/credential/${vcId}#share=${shareParam}`;
+      const url = `${window.location.origin}/credential/${vcId}?share=${shareParam}`;
       await navigator.clipboard.writeText(url);
       setCopied(true);
-    } catch {}
+    } catch (e) {}
   };
 
   async function onGenerateProof() {
@@ -141,6 +161,7 @@ export function useShareCredential(credential: Credential | null) {
           statement: res.statement as ZkStatement,
           publicSignals: res.publicSignals as string[],
           proof: res.proof,
+          ok: (res as unknown as { ok?: boolean }).ok === true,
         });
       }
     } catch (e: unknown) {
