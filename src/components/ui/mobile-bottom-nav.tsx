@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, FilePlus, IdCard, Book, User } from 'lucide-react';
 import type { ComponentType } from 'react';
-import React from 'react';
 
 function NavItem({
   href,
