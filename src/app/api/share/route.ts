@@ -5,9 +5,11 @@ const store = new Map<string, unknown>();
 export async function POST(req: Request) {
   try {
     const data = await req.json();
-    const id = (globalThis.crypto && 'randomUUID' in globalThis.crypto
-      ? (globalThis.crypto as unknown as { randomUUID: () => string }).randomUUID()
-      : Math.random().toString(36).slice(2)) as string;
+    const id = (
+      globalThis.crypto && 'randomUUID' in globalThis.crypto
+        ? (globalThis.crypto as unknown as { randomUUID: () => string }).randomUUID()
+        : Math.random().toString(36).slice(2)
+    ) as string;
     store.set(id, data);
     return NextResponse.json({ id });
   } catch (e) {

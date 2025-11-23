@@ -95,7 +95,10 @@ export function useShareCredential(credential: Credential | null) {
           fetch('/api/log', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ tag: 'share_build_error', error: String((e as any)?.message || e) }),
+            body: JSON.stringify({
+              tag: 'share_build_error',
+              error: String((e as any)?.message || e),
+            }),
           });
         } catch {}
         setShareParam('');
