@@ -90,17 +90,6 @@ export function useShareCredential(credential: Credential | null) {
         const encoded = encodeURIComponent(btoa(binary));
         setShareParam(encoded);
       } catch (e) {
-        try {
-          console.error('share_build_error', e);
-          fetch('/api/log', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              tag: 'share_build_error',
-              error: String((e as any)?.message || e),
-            }),
-          });
-        } catch {}
         setShareParam('');
       }
     })();
@@ -129,16 +118,7 @@ export function useShareCredential(credential: Credential | null) {
       const url = `${window.location.origin}/credential/${vcId}?share=${shareParam}`;
       await navigator.clipboard.writeText(url);
       setCopied(true);
-    } catch (e) {
-      try {
-        console.error('copy_error', e);
-        fetch('/api/log', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ tag: 'copy_error', error: String((e as any)?.message || e) }),
-        });
-      } catch {}
-    }
+    } catch (e) {}
   };
 
   async function onGenerateProof() {
@@ -185,14 +165,6 @@ export function useShareCredential(credential: Credential | null) {
         });
       }
     } catch (e: unknown) {
-      try {
-        console.error('proof_error', e);
-        fetch('/api/log', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ tag: 'proof_error', error: String((e as any)?.message || e) }),
-        });
-      } catch {}
       const msg =
         typeof e === 'object' && e && 'message' in e
           ? String((e as { message?: unknown }).message || '')

@@ -72,14 +72,6 @@ export function useCredentialVerify(vcId: string) {
           return;
         }
       } catch {}
-      try {
-        console.error('share_parse_error');
-        fetch('/api/log', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ tag: 'share_parse_error', error: String(raw || '') }),
-        });
-      } catch {}
       setShareParam(null);
     };
     read();
@@ -119,19 +111,7 @@ export function useCredentialVerify(vcId: string) {
               setVerify(v);
               return;
             }
-          } catch (e) {
-            try {
-              console.error('vault_verify_error', e);
-              fetch('/api/log', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  tag: 'vault_verify_error',
-                  error: String((e as any)?.message || e),
-                }),
-              });
-            } catch {}
-          }
+          } catch (e) {}
         }
 
         const issuanceId = cfg.issuanceContractId || '';
@@ -148,34 +128,11 @@ export function useCredentialVerify(vcId: string) {
               setVerify(r);
               return;
             }
-          } catch (e) {
-            try {
-              console.error('onchain_verify_error', e);
-              fetch('/api/log', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  tag: 'onchain_verify_error',
-                  error: String((e as any)?.message || e),
-                }),
-              });
-            } catch {}
-          }
+          } catch (e) {}
         }
 
         setVerify({ vc_id: vcId, status: 'not_verified' });
       } catch (e) {
-        try {
-          console.error('verify_run_error', e);
-          fetch('/api/log', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              tag: 'verify_run_error',
-              error: String((e as any)?.message || e),
-            }),
-          });
-        } catch {}
         setVerify({ vc_id: vcId, status: 'not_verified' });
       }
     };
@@ -206,14 +163,6 @@ export function useCredentialVerify(vcId: string) {
       setZkValid(ok);
       setHasVerified(true);
     } catch (e) {
-      try {
-        console.error('reverify_error', e);
-        fetch('/api/log', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ tag: 'reverify_error', error: String((e as any)?.message || e) }),
-        });
-      } catch {}
     } finally {
       setReverifyLoading(false);
     }
