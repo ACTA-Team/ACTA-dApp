@@ -52,14 +52,15 @@ export function WalletProvider({ children }: { children: ReactNode }) {
           new FreighterModule(),
           new AlbedoModule(),
           new WalletConnectModule({
-            url: 'https://dapp.acta.build',
-            projectId: '3a91e3876dc1b53df126947b152c4e16',
+            url: 'https://nft.acta.build',
+            projectId: '2c9b45e9231f749b2e48cc8cd8b3356a',
             method: WalletConnectAllowedMethods.SIGN,
-            description: 'ACTA dApp',
+            description: 'ACTA NFT Credential DApp',
             name: 'ACTA NFT',
-            icons: ['https://dapp.acta.build/logo.png'],
+            icons: ['https://nft.acta.build/white.png'],
             network: net,
           }),
+          new xBullModule(),
         ],
       });
     } catch {
