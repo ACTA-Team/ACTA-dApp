@@ -43,8 +43,22 @@ export function useCredentialVerify(vcId: string) {
         }
       }
       if (!raw) return null;
-      const b64 = decodeURIComponent(raw);
-      const bin = atob(b64);
+      let b64 = '';
+      try {
+        b64 = decodeURIComponent(raw);
+      } catch {
+        b64 = raw;
+      }
+      b64 = b64.replace(/\s+/g, '');
+      b64 = b64.replace(/-/g, '+').replace(/_/g, '/');
+      const pad = b64.length % 4;
+      if (pad) b64 = b64 + '='.repeat(4 - pad);
+      let bin = '';
+      try {
+        bin = atob(b64);
+      } catch {
+        return null;
+      }
       const bytes = new Uint8Array(bin.length);
       for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
       const json = new TextDecoder().decode(bytes);
@@ -64,6 +78,7 @@ export function useCredentialVerify(vcId: string) {
             revealedFields?: Record<string, unknown>;
             statement?: unknown;
             proof?: string;
+            ok?: boolean;
           };
           setRevealed(sp.revealedFields || null);
           const st = sp.statement;
@@ -71,6 +86,10 @@ export function useCredentialVerify(vcId: string) {
             setZkStatement(st as ZkStatement);
           } else {
             setZkStatement(null);
+          }
+          if (typeof sp.ok === 'boolean') {
+            setZkValid(sp.ok === true);
+            setHasVerified(true);
           }
         }
 
@@ -125,9 +144,15 @@ export function useCredentialVerify(vcId: string) {
       };
       publicSignals?: string[];
       proof?: string;
+      ok?: boolean;
     };
     try {
       setReverifyLoading(true);
+      if (typeof sp.ok === 'boolean') {
+        setZkValid(sp.ok === true);
+        setHasVerified(true);
+        return;
+      }
       const ok = await verifyZkProof(sp as unknown as typeof sp);
       setZkValid(ok);
       setHasVerified(true);
