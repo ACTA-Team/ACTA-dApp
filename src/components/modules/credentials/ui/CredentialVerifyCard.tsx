@@ -56,7 +56,9 @@ export function CredentialVerifyCard({
               </p>
             </div>
             <div className="text-left md:text-right w-full md:w-auto">
-              <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-2 sm:mb-3">ACTA</div>
+              <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-2 sm:mb-3">
+                ACTA
+              </div>
               <div
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border ${
                   displayStatus === 'Revoked'
@@ -75,7 +77,9 @@ export function CredentialVerifyCard({
           <div className="space-y-3 bg-zinc-900/40 backdrop-blur-sm rounded-xl p-4 sm:p-5 border border-[#edeed1]/20">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 items-center">
               <span className="text-sm sm:text-base font-medium text-white">VC ID</span>
-              <span className="text-xs sm:text-sm text-zinc-500 sm:text-right">Verification On-chain</span>
+              <span className="text-xs sm:text-sm text-zinc-500 sm:text-right">
+                Verification On-chain
+              </span>
             </div>
             <div className="font-mono text-xs sm:text-sm text-zinc-300 break-words leading-relaxed">
               {vcId || '-'}
