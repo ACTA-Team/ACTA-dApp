@@ -2,6 +2,7 @@
 
 import { ISupportedWallet } from '@creit.tech/stellar-wallets-kit';
 import { useWalletContext } from '@/providers/wallet.provider';
+import { toast } from 'sonner';
 
 export const useWalletKit = () => {
   const { setWalletInfo, clearWalletInfo, walletKit } = useWalletContext();
@@ -10,11 +11,17 @@ export const useWalletKit = () => {
     if (!walletKit) throw new Error('WalletKit not available');
     await walletKit.openModal({
       modalTitle: 'Connect your Stellar wallet',
-      onWalletSelected: async (option: ISupportedWallet) => {
+      onWalletSelected: (option: ISupportedWallet) => {
         walletKit.setWallet(option.id);
-        const { address } = await walletKit.getAddress();
-        const { name } = option;
-        await setWalletInfo(address, name);
+        void (async () => {
+          try {
+            const { address } = await walletKit.getAddress();
+            const { name } = option;
+            await setWalletInfo(address, name);
+          } catch {
+            toast.error('Failed to retrieve wallet address');
+          }
+        })();
       },
     });
   };

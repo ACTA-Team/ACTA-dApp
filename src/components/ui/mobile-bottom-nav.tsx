@@ -45,7 +45,21 @@ export default function MobileBottomNav() {
           <NavItem href="/dashboard/issue" label="Issue" icon={FilePlus} />
           <NavItem href="/dashboard/credentials" label="Creds" icon={IdCard} />
           <NavItem href="/dashboard/tutorials" label="Tutorials" icon={Book} />
-          <NavItem href="#settings" label="Profile" icon={User} />
+          <button
+            type="button"
+            aria-label="Profile"
+            onClick={() => {
+              try {
+                window.dispatchEvent(new CustomEvent('open-settings'));
+              } catch {}
+            }}
+            className={
+              'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl transition-colors text-zinc-300 hover:text-white hover:bg-zinc-800/40'
+            }
+          >
+            <User className="h-5 w-5" />
+            <span className="text-[10px] leading-none">Profile</span>
+          </button>
         </div>
       </div>
     </nav>
