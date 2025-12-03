@@ -29,16 +29,16 @@ Relates to #
 
 <!-- List the main changes made in this PR -->
 
-- 
-- 
-- 
+-
+-
+-
 
 ## Screenshots / Videos
 
 <!-- If applicable, add screenshots or videos to help explain your changes -->
 
 | Before | After |
-|--------|-------|
+| ------ | ----- |
 |        |       |
 
 ## Testing
@@ -47,15 +47,15 @@ Relates to #
 
 ### Test Cases
 
-- [ ] Test case 1: 
-- [ ] Test case 2: 
-- [ ] Test case 3: 
+- [ ] Test case 1:
+- [ ] Test case 2:
+- [ ] Test case 3:
 
 ### Manual Testing Steps
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ## Checklist
 
@@ -77,13 +77,16 @@ Relates to #
 <!-- List any new dependencies added or removed -->
 
 ### Added
-- 
+
+-
 
 ### Removed
-- 
+
+-
 
 ### Updated
-- 
+
+-
 
 ## Additional Notes
 
@@ -94,4 +97,3 @@ Relates to #
 <!-- Tag specific reviewers if needed -->
 
 /cc @
-
